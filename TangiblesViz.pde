@@ -10,6 +10,8 @@ import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 
 import java.util.Map.*;
+import java.util.concurrent.*;
+
 
 // Creates Variable and junk  
 Minim minim;
@@ -24,7 +26,7 @@ float block_height = 60;
 float block_width = 60;
 float table_size = 760;
 float scale_factor = 1;
-float obj_size = object_size*scale_factor; 
+//float obj_size = object_size*scale_factor; 
 float cur_size = cursor_size*scale_factor; 
 PFont font;
 
@@ -32,8 +34,12 @@ static int display_width = 640;
 static int display_height = 480;
 
 List<Block> allBlocks;
-//List<Block> playBlocks;
 List<Chain> allChains;
+
+
+
+
+boolean isInitiated = false;
 
 void setup()
 {
@@ -64,23 +70,31 @@ void setup()
   allBlocks = new ArrayList<Block>();
   //playBlocks = new ArrayList<Block>();
   allChains = new ArrayList<Chain>();
+  isInitiated = true;
 }
-
+ 
 
 void draw()
 {
+  TuioUpdate();
   background(255);
   textFont(font, 18*scale_factor);
 
   if (player.isPlaying) {
     player.Update();
   }
-
-  ExDrawTuioObjects();
   
- for (Chain c : allChains) {
+  else{
+
+  
+ //println(allChains.size());
+  for (Chain c : allChains) {
     c.drawChain();
   }
+  
+    ExDrawTuioObjects();
+  }
+
   
   
 }

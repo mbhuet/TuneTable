@@ -17,16 +17,19 @@ class Block{
   //float hold_time; //to prevent flickering
   
   Block(TuioObject tobj){
-    Update(tobj);
+    tuioObj = tobj;
+
+    Update();//tobj);
     type = idToType.get(sym_id);
     parameter = -1;
-    
-        Setup();
+    Setup();
 
   }
   
   Block(TuioObject tobj, TuioObject arg){
-    Update(tobj);
+        tuioObj = tobj;
+
+    Update();//tobj);
     type = idToType.get(sym_id);
     SetArgument(arg);
     
@@ -80,24 +83,31 @@ class Block{
       }
     }
         
+        //println("remove "  + this);
   BreakNeighbors();
+  for(Chain c : allChains){
+      if (c.containsBlock(this)){
+        c.Remove(this);
+      }
+    }
   }
   
   
   
-  public void Update(TuioObject tobj){
-    BreakNeighbors();
-    tuioObj = tobj;
-    sym_id = tobj.getSymbolID();
-    x_pos = tobj.getScreenX(width);
-    y_pos = tobj.getScreenY(height);
-    rotation = tobj.getAngle();
+  public void Update(){//TuioObject tobj){
+    sym_id = tuioObj.getSymbolID();
+    x_pos = tuioObj.getScreenX(width);
+    y_pos = tuioObj.getScreenY(height);
+    rotation = tuioObj.getAngle();
     FindNeighbors();
     
     //if this block is part of any chains, that chain should rebuild itself based on the new state
     for(Chain c : allChains){
-      if (c.containsBlock(this)){
-        c.Remove(this);
+      if (c.containsBlock(this) ||
+         (right_neighbor != null && c.containsBlock(right_neighbor)) ||
+         (left_neighbor != null && c.containsBlock(left_neighbor)))
+         {
+            c.BuildChain();
       }
     }
   }
@@ -112,24 +122,32 @@ class Block{
   }
   
   public void FindNeighbors(){
-    //TODO should check all blocks, if a block has not right neighbor, check with this one, same with left
     
-    for(Entry<Long, Block> entry: blockMap.entrySet()) {      
+    //check to see if current neighbors are still neighbors before anything else
+    if(left_neighbor != null && !BlockNeighbors(left_neighbor, this)){
+          left_neighbor = null;
+    }
+    if(right_neighbor != null && !BlockNeighbors(this, right_neighbor)){
+          right_neighbor = null;
+    }
+    
+    
+    //TODO should check all blocks, if a block has no right neighbor, check with this one, same with left 
+    for(Entry<Long, Block> entry: blockMap.entrySet()) {
+      
+      
       Block cur = entry.getValue();
       //println(cur);
       if (cur.right_neighbor ==  null){
         if(BlockNeighbors(cur, this)){
           cur.right_neighbor = this;
           this.left_neighbor = cur;
-          //println("left");
         }
       }
       if (cur.left_neighbor == null){
         if (BlockNeighbors(this, cur)){
           cur.left_neighbor = this;
           this.right_neighbor = cur;
-                    //println("right");
-
         }
       }
       
@@ -176,7 +194,6 @@ class Block{
     
     translate(this.x_pos, this.y_pos);
     rotate(this.rotation);
-    //translate(-obj_size/2, -obj_size/2);
     rect(- block_width/2.0 + spacer + block_width/4 * i, 
          - block_height/2.0,
             block_width/4 - 2*spacer, 
