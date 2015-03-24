@@ -96,6 +96,15 @@ void SetupClipDict(){
 
 }
 
+
+HashMap<Integer, Integer> idToEffect;
+
+void SetupIdToEffect(){
+  idToEffect = new HashMap<Integer, Integer>();
+}
+
+
+
 HashMap<Integer, Integer> idToArg;
 
 void SetupIdToArg(){

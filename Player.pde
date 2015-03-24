@@ -77,6 +77,8 @@ class Player {
             break;
 
           case SILENCE:
+             changeTimes[i] = runningTime + next.parameter * 1000;
+
             break;
 
           default:

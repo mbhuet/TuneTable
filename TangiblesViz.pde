@@ -15,6 +15,11 @@ import java.util.concurrent.*;
 
 // Creates Variable and junk  
 Minim minim;
+AudioOutput out;
+FilePlayer filePlayer;
+Delay myDelay;
+
+
 Player player;
 
 
@@ -65,6 +70,7 @@ void setup()
   SetupIdToArg();
   SetupIdToType();
   SetupBlockMap();
+  SetupIdToEffect();
 
   player = new Player();
   allBlocks = new ArrayList<Block>();
