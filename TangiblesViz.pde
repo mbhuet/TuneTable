@@ -21,7 +21,7 @@ Delay myDelay;
 
 
 Player player;
-
+boolean debug = true;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
@@ -40,6 +40,7 @@ static int display_height = 480;
 
 List<Block> allBlocks;
 List<Chain> allChains;
+List<Button> allButtons;
 
 
 
@@ -64,7 +65,6 @@ void setup()
   // since we add "this" class as an argument the TuioProcessing class expects
   // an implementation of the TUIO callback methods (see below)
   tuioClient  = new TuioProcessing(this);
-
   minim = new Minim(this);
   SetupClipDict();
   SetupIdToArg();
@@ -76,7 +76,11 @@ void setup()
   allBlocks = new ArrayList<Block>();
   //playBlocks = new ArrayList<Block>();
   allChains = new ArrayList<Chain>();
+  allButtons = new ArrayList<Button>();
+  
   isInitiated = true;
+  
+  PlayButton pB = new PlayButton(50, 50, 100);
 }
  
 
@@ -91,19 +95,17 @@ void draw()
   }
   
   else{
-
-  
- //println(allChains.size());
-  for (Chain c : allChains) {
-    c.drawChain();
-  }
-  
+    for (Chain c : allChains) {
+      c.drawChain();
+    }
+    for (Button b: allButtons){
+      b.drawButton();
+    }
     ExDrawTuioObjects();
-  }
-
-  
-  
+  }  
 }
+
+
 
 void keyPressed() {
   if (key == ' ') {
@@ -112,9 +114,24 @@ void keyPressed() {
   }
 }
 
-void Play() { 
-  if (!player.isPlaying) {
 
+
+void mousePressed(){
+  if (debug){
+    for(Button b : allButtons){
+      if (b.IsUnder(mouseX,mouseY)){
+        b.Trigger();
+      }
+    }
+  }
+}
+
+
+
+void Play() { 
+  
+  if (!player.isPlaying) {
+    println("play");
     List<Block>[] lists = new List[allChains.size()];
 
     for (int i = 0; i< allChains.size(); i++) {
@@ -124,6 +141,7 @@ void Play() {
     player.PlayLists(lists);
   }
 }
+
 
 
 List<Block> ResolveLoops(List<Block> blocks) {
@@ -169,6 +187,8 @@ List<Block> ResolveLoops(List<Block> blocks) {
   return new_list;
 }
 
+
+
 //Given a block list that begins with a loop start at [0], this will find the loop's ending index in the list
 int LoopEndIndex(List<Block> sub) {
   int starts = 0;
@@ -187,86 +207,6 @@ int LoopEndIndex(List<Block> sub) {
 }
 
 
-
-
-
-/*
-Chain[] FindChains() {
- List<Chain> chains = new LinkedList<Chain>();
- Vector tuioObjectList = tuioClient.getTuioObjects();
- 
- List<TuioObject> playBlocks =  new ArrayList<TuioObject>();
- List<TuioObject> objList =     new ArrayList<TuioObject>();
- 
- 
- //seperate out play blocks, put everything else into a single arrayList
- for (int i=0; i<tuioObjectList.size (); i++) {
- TuioObject tobj = (TuioObject)tuioObjectList.elementAt(i);
- if (tobj.getSymbolID() == 0) { // this is a Play block
- playBlocks.add(tobj);
- } else {
- objList.add(tobj);
- }
- }
- 
- 
- //look for chains starting at a play block
- for (TuioObject play : playBlocks) {
- List<Block> curChain = new LinkedList<Block>();    
- TuioObject start = FindArgument(play, objList);
- curChain.add(new Block(play, start));
- 
- boolean chainCont = false; //is the chain going to continue
- TuioObject cur = play;
- do {
- chainCont = false;
- int mil = (millis());
- 
- for (int i=0; i<objList.size (); i++) { // iterate through list of all unclaimed tuio objects
- TuioObject next = objList.get(i);
- 
- if (TuioObjectNeighbors(cur, next)) {
- Block nextBlock = new Block(next);
- 
- // if this next block should have an argument, search the object list for it
- if (nextBlock.requiresArgument()){
- TuioObject arg  = FindArgument(next, objList);
- if (arg != null){
- objList.remove(arg);
- nextBlock.SetArgument(arg);
- }
- }
- 
- curChain.add(nextBlock);
- objList.remove(next);
- cur = next;
- chainCont = true;
- break;
- }
- 
- 
- 
- }
- println(millis() - mil);
- 
- 
- 
- }
- while (chainCont);
- 
- Block[] curChainArray = new Block[0];//this array needs to exist to copy curChain into
- //println(curChain);
- chains.add(new Chain(curChain.toArray(curChainArray)));
- }
- //TODO look for chains without a play block
- 
- 
- 
- Chain[] chainArray = new Chain[0];
- return chains.toArray(chainArray);
- }
- 
- */
 
 TuioObject FindArgument(TuioObject main, List<TuioObject> objList) {
   for (int i=0; i<objList.size (); i++) {

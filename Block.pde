@@ -23,6 +23,7 @@ class Block{
     type = idToType.get(sym_id);
     parameter = -1;
     Setup();
+    println(tuioObj.getSessionID());
 
   }
   
