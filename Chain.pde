@@ -63,12 +63,14 @@ class Chain {
 
   boolean isValid() {
     if (blocks.size() <= 1) return false;
-
+    int loop_starts = 0;
+    int loop_ends = 0;
     for (Block b : blocks) {
-      if (b.requiresArgument() && b.parameter == -1) {
-        //return false;
-      }
+      if (b.type == BlockType.START_LOOP) loop_starts ++;
+      if (b.type == BlockType.END_LOOP) loop_ends ++;
+      
     }
+    if (loop_starts != loop_ends) return false;
     return true;
   }
 

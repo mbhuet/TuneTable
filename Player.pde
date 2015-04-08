@@ -24,7 +24,8 @@ class Player {
     finished = new boolean[lists.length];
     blockLists = lists;
 
-    Update();
+    Start();
+    //Update();
   }
   
   boolean IsFinished(){
@@ -32,6 +33,15 @@ class Player {
       if (!b) return false;
     }
     return true;
+  }
+  
+  
+  void Start(){
+    for (int i = 0; i<blockLists.length; i++) {
+      
+      changeTimes[i] = blockLists[i].get(0).parameter * 1000;
+         
+    }
   }
 
 
@@ -63,6 +73,7 @@ class Player {
           switch(next.type) {
 
           case PLAY:
+            changeTimes[i] = runningTime + next.parameter * 1000;
             break;
 
           case CLIP:

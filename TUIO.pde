@@ -170,7 +170,7 @@ boolean BlockNeighbors(Block left, Block right) {
     return false;
   }
 
-  float obj_length = left.block_width; // this needs to be replaced with a call to a table with block lengths for each ID
+  float obj_length = left.block_width;
   float searchX = left.x_pos + cos(left.rotation) * obj_length;
   float searchY = left.y_pos + sin(left.rotation) * obj_length;
   float searchRadius = block_height/2.0;

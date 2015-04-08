@@ -9,6 +9,7 @@ class Block {
   int block_length = 1;
   int clip_length;
   int parameter = 0;
+  int displayed_parameter;
   int max_arg = 9;
   
   float block_width;
@@ -50,7 +51,7 @@ class Block {
     sym_id = id;
     x_pos = width/2;
     y_pos = height/2;
-    rotation = PI/4;
+    rotation = 0;
     block_length = 1;
     type = idToType.get(id);
     parameter = 0;
@@ -159,36 +160,42 @@ class Block {
     translate(x_pos, y_pos);
     rotate(rotation);
     
-      pushMatrix();
-      translate((block_width - block_height)/ 2, 0);
-      fill(0);
-      rect(0,0,block_width, block_height);
-      popMatrix();
+    translate((block_width - block_height)/ 2, 0);
+    fill(0);
+    rect(0,0,block_width, block_height);
         
+    popMatrix();
+    
     if (requiresArgument()){
-      pushMatrix();
+      drawArgument();
+    }
+  }
+  
+  public void drawArgument(){
+    pushMatrix();
+    rectMode(CENTER);
+    translate(x_pos, y_pos);
+    rotate(rotation);
+    
       translate(button_offset_x,0);
+      
+      //White circle
       fill(255);
       ellipse(0,0,window_radius, window_radius);
       fill(0);
-      textAlign(CENTER,CENTER);
-      float a = textAscent();
       
+      //Argument number
+      textAlign(CENTER,CENTER);
       textSize(32);
       translate(0, -textAscent() * .1);
       String arg_string = ""+parameter;
-      if (parameter < 0){ arg_string = "Random";
-      textSize(7);  
-    }
+      if (parameter < 0){ 
+        arg_string = "Random";
+        textSize(7);  
+      }
       text(arg_string, 0, 0); 
-      popMatrix();
-    }
     
     popMatrix();
-        
-        fill(150);
-        ellipse(x_pos, y_pos, 10,10);
-
   }
 
   public void FindNeighbors() {
@@ -255,30 +262,37 @@ class Block {
     if (parameter < -1)
       parameter = max_arg;
   }
+  
+  
 
 
   public void Highlight(int numBars, boolean active) {
+    float extension_off_block = .2; //a factor of block height
+    rectMode(CORNER);
     strokeWeight(0);
 
     if (active) {
       fill(color(255, 0, 0));
     } else fill(150);
 
-    float spacer = block_width*.2;
+    float spacer = block_height*.2;
 
     for (int i = 0; i< numBars; i++) {
       pushMatrix();
       translate(this.x_pos, this.y_pos);
       rotate(this.rotation);
-      rect(- block_width/2.0 + spacer + block_width/4 * i, 
-      - block_height/2.0, 
-      block_width/4 - 2*spacer, 
-      block_height * 1.2);
+      rect(- block_height/2.0 + spacer + block_height/4 * i, 
+      - (block_height/2.0 + block_height * extension_off_block), 
+      block_height/4 - 2*spacer, 
+      block_height + block_height * extension_off_block * 2);
       popMatrix();
     }
   }
 
-
+  public int getArgument(){
+    return parameter;
+    
+  }
 
   public boolean requiresArgument() {
     return (this.type == BlockType.PLAY ||

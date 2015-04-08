@@ -41,6 +41,7 @@ static int display_height = 480;
 List<Block> allBlocks;
 List<Chain> allChains;
 List<Button> allButtons;
+Chain[] fakeChains;
 
 
 
@@ -77,13 +78,17 @@ void setup()
   //playBlocks = new ArrayList<Block>();
   allChains = new ArrayList<Chain>();
   allButtons = new ArrayList<Button>();
-  
+
   isInitiated = true;
-  
-  PlayButton pB = new PlayButton(50, 50, 0,50);
-  Block b = new Block(0);
+
+  PlayButton pB = new PlayButton(50, 50, 0, 50);
+
+  if (debug) {
+    //Block b = new Block(0);
+    fakeChains = CreateFakeChains();
+  }
 }
- 
+
 
 void draw()
 {
@@ -91,25 +96,27 @@ void draw()
   background(255);
   textFont(font, 18*scale_factor);
 
+  for (Block b : allBlocks) {
+    b.drawBlock();
+  }
+
   if (player.isPlaying) {
     player.Update();
-  }
-  
-  else{
-    for(Block b : allBlocks){
-      b.drawBlock();
-    }
+  } else {
+
     for (Chain c : allChains) {
       //c.drawChain();
     }
-    for (Button b: allButtons){
+    for (Button b : allButtons) {
       b.drawButton();
     }
     //ExDrawTuioObjects();
   } 
-  
-  fill(255,0,0);
-  ellipse(width/2,height/2,10,10);
+
+  if (debug) {
+    fill(255, 0, 0);
+    ellipse(width/2, height/2, 10, 10);
+  }
 }
 
 
@@ -123,10 +130,10 @@ void keyPressed() {
 
 
 
-void mousePressed(){
-  if (debug){
-    for(Button b : allButtons){
-      if (b.IsUnder(mouseX,mouseY)){
+void mousePressed() {
+  if (debug) {
+    for (Button b : allButtons) {
+      if (b.IsUnder(mouseX, mouseY)) {
         b.Trigger();
       }
     }
@@ -136,15 +143,24 @@ void mousePressed(){
 
 
 void Play() { 
-  
+
   if (!player.isPlaying) {
     println("play");
-    List<Block>[] lists = new List[allChains.size()];
+    List<Block>[] lists;
 
-    for (int i = 0; i< allChains.size(); i++) {
-      lists[i] = ResolveLoops(allChains.get(i).blocks);
+    if (debug) {
+      lists = new List[fakeChains.length];
 
-    }  
+      for (int i = 0; i< fakeChains.length; i++) {
+        lists[i] = ResolveLoops(fakeChains[i].blocks);
+      }
+    } else {
+      lists = new List[allChains.size()];
+
+      for (int i = 0; i< allChains.size (); i++) {
+        lists[i] = ResolveLoops(allChains.get(i).blocks);
+      }
+    }
     player.PlayLists(lists);
   }
 }
@@ -225,22 +241,22 @@ TuioObject FindArgument(TuioObject main, List<TuioObject> objList) {
   return null;
 }
 
-Chain[] FakeChains() {
+Chain[] CreateFakeChains() {
   Block[] b1 = new Block[] {
     new Block(0, 0), //play
-    
+    new Block(1), 
+    new Block(65)
     };
-    
+    /*
   Block[] b2 = new Block[] {
      new Block(0, 0), //play
-    
      };
-     
+     */
+
 
   return new Chain[] {
     new Chain(b1), 
-    new Chain(b2)
+    // new Chain(b2)
   };
 }
-
 
