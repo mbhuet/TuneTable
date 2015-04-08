@@ -28,7 +28,7 @@ boolean debug = true;
 float cursor_size = 15;
 float object_size = 60;
 float block_height = 60;
-float block_width = 60;
+//float block_width = 60;
 float table_size = 760;
 float scale_factor = 1;
 //float obj_size = object_size*scale_factor; 
@@ -80,7 +80,8 @@ void setup()
   
   isInitiated = true;
   
-  PlayButton pB = new PlayButton(50, 50, 100);
+  PlayButton pB = new PlayButton(50, 50, 0,50);
+  Block b = new Block(0);
 }
  
 
@@ -95,14 +96,20 @@ void draw()
   }
   
   else{
+    for(Block b : allBlocks){
+      b.drawBlock();
+    }
     for (Chain c : allChains) {
-      c.drawChain();
+      //c.drawChain();
     }
     for (Button b: allButtons){
       b.drawButton();
     }
-    ExDrawTuioObjects();
-  }  
+    //ExDrawTuioObjects();
+  } 
+  
+  fill(255,0,0);
+  ellipse(width/2,height/2,10,10);
 }
 
 
@@ -221,18 +228,12 @@ TuioObject FindArgument(TuioObject main, List<TuioObject> objList) {
 Chain[] FakeChains() {
   Block[] b1 = new Block[] {
     new Block(0, 0), //play
-    new Block(1), 
-    new Block(1), 
-    new Block(3), 
-    new Block(2), 
-    new Block(4), 
-    new Block(4)
+    
     };
     
   Block[] b2 = new Block[] {
      new Block(0, 0), //play
-     new Block(2), 
-     new Block(2),
+    
      };
      
 

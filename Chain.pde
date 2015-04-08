@@ -25,7 +25,6 @@ class Chain {
     //println("here");
 
 
-    pushMatrix();
 
     if (valid) {
       fill(0, 255, 0); //GREEN
@@ -39,7 +38,6 @@ class Chain {
      translate(-obj_size/2, -obj_size/2);
      rect(0, 0, total_length, obj_size);
      */
-    popMatrix();
 
 
     if (valid) {
@@ -55,6 +53,11 @@ class Chain {
     }
 
     line(head.x_pos, head.y_pos, blocks.get(numBlocks-1).x_pos, blocks.get(numBlocks-1).y_pos);
+     
+         strokeWeight(0);
+  
+        
+
   }
 
 

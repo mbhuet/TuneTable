@@ -109,7 +109,7 @@ void ExDrawTuioObjects() {
     pushMatrix();
     translate(tobj.getScreenX(width), tobj.getScreenY(height));
     rotate(tobj.getAngle());
-    rect(-block_width/2, -block_height/2, block_width, block_height);
+    rect(-block_height/2, -block_height/2, block_height, block_height);
     popMatrix();
 
     fill(255);
@@ -149,10 +149,10 @@ boolean TuioObjectNeighbors(TuioObject objA, TuioObject objB) {
     return false;
   }
 
-  float obj_length = block_width; // this needs to be replaced with a call to a table with block lengths for each ID
+  float obj_length = block_height; // this needs to be replaced with a call to a table with block lengths for each ID
   float searchX = objA.getScreenX(width) + cos(objA.getAngle()) * obj_length;
   float searchY = objA.getScreenY(height)+ sin(objA.getAngle()) * obj_length;
-  float searchRadius = block_width/2.0;
+  float searchRadius = block_height/2.0;
 
   fill(color(100));
   ellipse(searchX, searchY, searchRadius, searchRadius);
@@ -170,10 +170,10 @@ boolean BlockNeighbors(Block left, Block right) {
     return false;
   }
 
-  float obj_length = block_width; // this needs to be replaced with a call to a table with block lengths for each ID
+  float obj_length = left.block_width; // this needs to be replaced with a call to a table with block lengths for each ID
   float searchX = left.x_pos + cos(left.rotation) * obj_length;
   float searchY = left.y_pos + sin(left.rotation) * obj_length;
-  float searchRadius = block_width/2.0;
+  float searchRadius = block_height/2.0;
 
   fill(color(100));
   strokeWeight(0);
@@ -187,10 +187,10 @@ boolean BlockNeighbors(Block left, Block right) {
 
 boolean TuioObjectParameter(TuioObject objA, TuioObject objB) {
 
-  float obj_length = block_width; // this needs to be replaced with a call to a table with block lengths for each ID
+  float obj_length = block_height; // this needs to be replaced with a call to a table with block lengths for each ID
   float searchX = objA.getScreenX(width) + cos(objA.getAngle() + 3*PI/2) * obj_length;
   float searchY = objA.getScreenY(height)+ sin(objA.getAngle() + 3*PI/2) * obj_length;
-  float searchRadius = block_width/2.0;
+  float searchRadius = block_height/2.0;
 
   fill(color(100));
   ellipse(searchX, searchY, searchRadius, searchRadius);
