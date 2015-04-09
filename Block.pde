@@ -99,6 +99,11 @@ class Block {
       }
     }
     
+    if (requiresArgument()){
+      allButtons.remove(up);
+      allButtons.remove(down);
+    }
+    
     allBlocks.remove(this);
   }
   
