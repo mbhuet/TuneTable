@@ -38,8 +38,12 @@ class Player {
   
   void Start(){
     for (int i = 0; i<blockLists.length; i++) {
+      if (blockLists[i].get(0).parameter == 0){
       
-      changeTimes[i] = blockLists[i].get(0).parameter * 1000;
+      }
+      else{
+      changeTimes[i] = 1000;
+      }
          
     }
   }
@@ -73,7 +77,7 @@ class Player {
           switch(next.type) {
 
           case PLAY:
-            changeTimes[i] = runningTime + next.parameter * 1000;
+            changeTimes[i] = runningTime + 1000;
             break;
 
           case CLIP:
@@ -91,6 +95,13 @@ class Player {
              changeTimes[i] = runningTime + next.parameter * 1000;
 
             break;
+            
+          case START_LOOP:
+            next.DecrementDisplayedArgument();
+          break;
+          
+          case END_LOOP:
+          break;
 
           default:
             break;
@@ -101,6 +112,9 @@ class Player {
     
     if (IsFinished()){
       isPlaying =false;
+      for (Block b : allBlocks) {
+    b.OnEndPlay();
+  }
     }
   }
 }

@@ -10,6 +10,9 @@ AbstractQueue<Block> addQueue = new ConcurrentLinkedQueue<Block>();
 AbstractQueue<Block> killQueue = new ConcurrentLinkedQueue<Block>();
 AbstractQueue<Block> updateQueue = new ConcurrentLinkedQueue<Block>();
 
+AbstractQueue<TuioCursor> cursorQueue = new ConcurrentLinkedQueue<TuioCursor>();
+
+
 
 // these callback methods are called whenever a TUIO event occurs
 
@@ -91,6 +94,11 @@ void TuioUpdate() {
   while (updateQueue.peek () != null) {
     Block upBlock = updateQueue.poll();
     upBlock.Update();
+  }
+  
+  while (cursorQueue.peek () != null) {
+    TuioCursor cur = cursorQueue.poll();
+    Click((int)cur.getX(), (int)cur.getY());
   }
 }
 

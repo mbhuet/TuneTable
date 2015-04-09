@@ -41,6 +41,9 @@ static int display_height = 480;
 List<Block> allBlocks;
 List<Chain> allChains;
 List<Button> allButtons;
+
+List<Block> recentlyRemovedBlocks;
+
 Chain[] fakeChains;
 
 
@@ -78,6 +81,10 @@ void setup()
   //playBlocks = new ArrayList<Block>();
   allChains = new ArrayList<Chain>();
   allButtons = new ArrayList<Button>();
+  
+  recentlyRemovedBlocks = new ArrayList<Block>();
+  
+  
 
   isInitiated = true;
 
@@ -132,12 +139,17 @@ void keyPressed() {
 
 void mousePressed() {
   if (debug) {
-    for (Button b : allButtons) {
-      if (b.IsUnder(mouseX, mouseY)) {
+     Click(mouseX, mouseY);
+  }
+}
+
+
+void Click(int x, int y){
+  for (Button b : allButtons) {
+      if (b.IsUnder(x, y)) {
         b.Trigger();
       }
     }
-  }
 }
 
 
@@ -145,6 +157,10 @@ void mousePressed() {
 void Play() { 
 
   if (!player.isPlaying) {
+    
+    for (Block b : allBlocks) {
+    b.OnPlay();
+  }
     println("play");
     List<Block>[] lists;
 
@@ -176,6 +192,10 @@ List<Block> ResolveLoops(List<Block> blocks) {
     case PLAY:
       //should add silence to last until the Play begins
       new_list.add(cur_block);
+
+      for(int p = 1; p<cur_block.parameter; p++){
+        new_list.add(cur_block);
+      }
       break;
 
     case CLIP:
@@ -183,16 +203,18 @@ List<Block> ResolveLoops(List<Block> blocks) {
       break;
 
     case START_LOOP:
+      //new_list.add(cur_block);
       int end_loop = i + LoopEndIndex(blocks.subList(i, blocks.size()));//find where this loop ends
       List<Block> resolved_sub = ResolveLoops(blocks.subList(i+1, end_loop));//recursively resolve any loops inside this loop
       for (int loop = 0; loop < cur_block.parameter + 1; loop++) {//assumes the start loop block gets the argument, also assumes that "loop 0 times" means "only play through it once and don't repeat"
+        if (loop > 0)new_list.add(cur_block); //add the start loop block so we know when it's getting reached during play, that way we can decrement the number on it
         new_list.addAll(resolved_sub);
       }
-      i = end_loop; //skip to the end of this loop
+      i = end_loop-1; //skip to the end of this loop
       break;
 
     case END_LOOP:
-      //this should never happen
+      new_list.add(cur_block);
       break;
 
     case EFFECT:
@@ -207,6 +229,7 @@ List<Block> ResolveLoops(List<Block> blocks) {
       break;
     };
   }
+  println(new_list);
   return new_list;
 }
 
@@ -244,8 +267,10 @@ TuioObject FindArgument(TuioObject main, List<TuioObject> objList) {
 Chain[] CreateFakeChains() {
   Block[] b1 = new Block[] {
     new Block(0, 0), //play
-    new Block(1), 
-    new Block(65)
+    new Block(111,2),
+    //new Block(1), 
+    new Block(65),
+    new Block(112)
     };
     /*
   Block[] b2 = new Block[] {

@@ -8,8 +8,15 @@ class Chain {
 
   //good for making fake chains for debugging
   Chain(Block[] b) {
+    int x_offset = 0;
     blocks = new LinkedList<Block>();
     for (int i = 0; i< b.length; i++) {
+      b[i].x_pos+=x_offset;
+            x_offset+=b[i].block_width + 2;
+            if (b[i].requiresArgument()){
+            b[i].PlaceButtons();
+            }
+
       blocks.add(b[i]);
     }
     numBlocks = b.length;

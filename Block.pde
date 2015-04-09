@@ -9,7 +9,8 @@ class Block {
   int block_length = 1;
   int clip_length;
   int parameter = 0;
-  int displayed_parameter;
+  //int parameter;
+  int displayed_parameter; //displayed while playing
   int max_arg = 9;
   
   float block_width;
@@ -35,9 +36,10 @@ class Block {
     println(tuioObj.getSessionID());
   }
 
+  //FOR FAKE BLOCKS ONLY
   Block (int id, int arg) {
     sym_id = id;
-    x_pos = width/2;
+    x_pos = block_height;
     y_pos = height/2;
     rotation = 0;
     block_length = 1;
@@ -47,9 +49,10 @@ class Block {
     Setup();
   }
 
+  //FOR FAKE BLOCKS ONLY
   Block (int id) {
     sym_id = id;
-    x_pos = width/2;
+    x_pos = block_height;
     y_pos = height/2;
     rotation = 0;
     block_length = 1;
@@ -66,13 +69,13 @@ class Block {
     if (type == BlockType.CLIP) LoadClip();
 
     if (requiresArgument()) {
-      block_width = block_height * 2;
+      block_width = block_height * 1.8461;
       up = new UpButton(0, 0, 0, 10, this);
       down = new DownButton(0, 0, 0, 10, this);
       PlaceButtons();
     }
     else{
-      block_width = block_height;
+      block_width = block_height * 1.3076;
     }
     
   }
@@ -97,6 +100,13 @@ class Block {
     }
     
     allBlocks.remove(this);
+  }
+  
+  public void OnPlay(){
+    displayed_parameter = parameter;
+  }
+  
+  public void OnEndPlay(){
   }
 
 
@@ -189,9 +199,14 @@ class Block {
       textSize(32);
       translate(0, -textAscent() * .1);
       String arg_string = ""+parameter;
+      
       if (parameter < 0){ 
         arg_string = "Random";
         textSize(7);  
+      }
+      
+      if (player.isPlaying){
+        arg_string = displayed_parameter + "";
       }
       text(arg_string, 0, 0); 
     
@@ -199,7 +214,6 @@ class Block {
   }
 
   public void FindNeighbors() {
-
     //check to see if current neighbors are still neighbors before anything else
     if (left_neighbor != null && !BlockNeighbors(left_neighbor, this)) {
       left_neighbor = null;
@@ -261,6 +275,10 @@ class Block {
     parameter--;
     if (parameter < -1)
       parameter = max_arg;
+  }
+  
+  public void DecrementDisplayedArgument(){
+    displayed_parameter--;
   }
   
   
