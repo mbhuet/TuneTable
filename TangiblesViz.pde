@@ -21,7 +21,7 @@ Delay myDelay;
 
 
 Player player;
-boolean debug = true;
+boolean debug = false;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
@@ -53,8 +53,8 @@ boolean isInitiated = false;
 
 void setup()
 {
-  //size(screen.width,screen.height);
-  size(display_width, display_height);
+  size(display_width,display_height);
+  //size(displayWidth, displayHeight);
   noStroke();
   fill(0);
 
@@ -99,8 +99,9 @@ void setup()
 
 void draw()
 {
+    background(255);
+
   TuioUpdate();
-  background(255);
   textFont(font, 18*scale_factor);
 
   for (Block b : allBlocks) {
@@ -127,6 +128,10 @@ void draw()
 }
 
 
+boolean sketchFullScreen(){
+  return (false);
+}
+
 
 void keyPressed() {
   if (key == ' ') {
@@ -138,13 +143,17 @@ void keyPressed() {
 
 
 void mousePressed() {
-  if (debug) {
+  if (true) {
      Click(mouseX, mouseY);
   }
 }
 
 
 void Click(int x, int y){
+  if (debug){
+  fill(255,0,0);
+  ellipse(x,y,10,10);
+  }
   for (Button b : allButtons) {
       if (b.IsUnder(x, y)) {
         b.Trigger();

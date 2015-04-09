@@ -54,7 +54,7 @@ void updateTuioObject (TuioObject tobj) {
 // called when a cursor is added to the scene
 void addTuioCursor(TuioCursor tcur) {
   if (!isInitiated) return;
-
+  cursorQueue.add(tcur);
   //println("add cursor "+tcur.getCursorID()+" ("+tcur.getSessionID()+ ") " +tcur.getX()+" "+tcur.getY());
 }
 
@@ -97,8 +97,11 @@ void TuioUpdate() {
   }
   
   while (cursorQueue.peek () != null) {
-    TuioCursor cur = cursorQueue.poll();
-    Click((int)cur.getX(), (int)cur.getY());
+        TuioCursor cur = cursorQueue.poll();
+
+    //println(cur.getScreenX(width) + ", " + cur.getScreenY(height));
+    
+    Click((int)cur.getScreenX(width), (int)cur.getScreenY(height));
   }
 }
 
