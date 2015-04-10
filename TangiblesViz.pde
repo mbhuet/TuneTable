@@ -1,6 +1,7 @@
 // we need to import the TUIO library
 // and declare a TuioProcessing client variable
 
+//set resolution to 1280x1024
 
 import ddf.minim.spi.*;
 import ddf.minim.signals.*;
@@ -90,7 +91,7 @@ void setup()
 
   isInitiated = true;
 
-  PlayButton pB = new PlayButton(100,displayHeight-100, 0, 100);
+  //PlayButton pB = new PlayButton(100,displayHeight-100, 0, 100);
 
   if (debug) {
     //Block b = new Block(0);
@@ -182,8 +183,9 @@ void Play() {
 
     if (debug) {
         //List<Block>[] fake_lists = new List[fakeChains.length];
-        List<Block>[] comb_lists = new List[allChains.size() + fakeChains.length];
-          
+        //List<Block>[] comb_lists = new List[allChains.size() + fakeChains.length];
+      lists = new List[allChains.size() + fakeChains.length];
+   
       for (int i = 0; i< fakeChains.length; i++) {
         lists[i] = ResolveLoops(fakeChains[i].blocks);
       }
@@ -289,6 +291,8 @@ Chain[] CreateFakeChains() {
     new Block(0, 0), //play
     new Block(111,0),
         new Block(65),
+                new Block(30),
+
 
     new Block(111,0),
 
