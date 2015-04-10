@@ -21,7 +21,7 @@ Delay myDelay;
 
 
 Player player;
-boolean debug = false;
+boolean debug = true;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
@@ -258,7 +258,7 @@ int LoopEndIndex(List<Block> sub) {
       }
     }
   }
-  return 0; //end not found
+  return sub.size(); //end not found
 }
 
 
@@ -277,9 +277,11 @@ Chain[] CreateFakeChains() {
   Block[] b1 = new Block[] {
     new Block(0, 0), //play
     new Block(111,2),
+        new Block(111,1),
+
     //new Block(1), 
     new Block(65),
-    new Block(112)
+    new Block(24)
     };
     /*
   Block[] b2 = new Block[] {
