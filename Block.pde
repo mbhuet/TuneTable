@@ -17,7 +17,7 @@ class Block {
 
   UpButton up;
   DownButton down;
-  float button_offset_y = block_height * 1.5;
+  float button_offset_y = block_height * 1;
   float button_offset_x = block_height * 1; //TUNING
   float window_radius = block_height/2;//TUNING
 
@@ -70,8 +70,8 @@ class Block {
 
     if (requiresArgument()) {
       block_width = block_height * 1.8461;
-      up = new UpButton(0, 0, 0, 10, this);
-      down = new DownButton(0, 0, 0, 10, this);
+      up = new UpButton(0, 0, 0, block_height/4, this);
+      down = new DownButton(0, 0, 0, block_height/4, this);
       PlaceButtons();
     }
     else{

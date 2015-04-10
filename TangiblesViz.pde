@@ -22,12 +22,13 @@ Delay myDelay;
 
 Player player;
 boolean debug = true;
+boolean fullscreen = true;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
 float cursor_size = 15;
 float object_size = 60;
-float block_height = 60;
+float block_height = 120;
 //float block_width = 60;
 float table_size = 760;
 float scale_factor = 1;
@@ -53,8 +54,9 @@ boolean isInitiated = false;
 
 void setup()
 {
-  size(display_width,display_height);
-  //size(displayWidth, displayHeight);
+  if (fullscreen)  size(displayWidth, displayHeight);
+  else    size(display_width,display_height);
+  
   noStroke();
   fill(0);
 
@@ -88,7 +90,7 @@ void setup()
 
   isInitiated = true;
 
-  PlayButton pB = new PlayButton(50, 50, 0, 50);
+  PlayButton pB = new PlayButton(100,displayHeight-100, 0, 100);
 
   if (debug) {
     //Block b = new Block(0);
@@ -104,17 +106,21 @@ void draw()
   TuioUpdate();
   textFont(font, 18*scale_factor);
 
-  for (Block b : allBlocks) {
-    b.drawBlock();
-  }
+  
 
   if (player.isPlaying) {
     player.Update();
+    for (Block b : allBlocks) {
+    b.drawBlock();
+  }
   } else {
 
     for (Chain c : allChains) {
-      //c.drawChain();
+      c.drawChain();
     }
+    for (Block b : allBlocks) {
+    b.drawBlock();
+  }
     for (Button b : allButtons) {
       b.drawButton();
     }
@@ -129,7 +135,7 @@ void draw()
 
 
 boolean sketchFullScreen(){
-  return (false);
+  return (fullscreen);
 }
 
 
@@ -172,15 +178,20 @@ void Play() {
   }
     println("play");
     List<Block>[] lists;
+        lists = new List[allChains.size()];
 
     if (debug) {
-      lists = new List[fakeChains.length];
-
+        //List<Block>[] fake_lists = new List[fakeChains.length];
+        List<Block>[] comb_lists = new List[allChains.size() + fakeChains.length];
+          
       for (int i = 0; i< fakeChains.length; i++) {
         lists[i] = ResolveLoops(fakeChains[i].blocks);
       }
+      for (int i = 0; i< allChains.size (); i++) {
+        lists[i + fakeChains.length] = ResolveLoops(allChains.get(i).blocks);
+      }
+      
     } else {
-      lists = new List[allChains.size()];
 
       for (int i = 0; i< allChains.size (); i++) {
         lists[i] = ResolveLoops(allChains.get(i).blocks);
@@ -276,11 +287,12 @@ TuioObject FindArgument(TuioObject main, List<TuioObject> objList) {
 Chain[] CreateFakeChains() {
   Block[] b1 = new Block[] {
     new Block(0, 0), //play
-    new Block(111,2),
-        new Block(111,1),
+    new Block(111,0),
+        new Block(65),
+
+    new Block(111,0),
 
     //new Block(1), 
-    new Block(65),
     new Block(24)
     };
     /*
