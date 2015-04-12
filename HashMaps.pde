@@ -86,7 +86,7 @@ void SetupClipDict(){
   clipDict.put(59, new ClipInfo("Percussion2-Double1-2Second", 2));
   clipDict.put(60, new ClipInfo("Percussion2-Double2-1Second", 1));
   clipDict.put(61, new ClipInfo("Percussion2-Hold1-1Second", 1));
-  clipDict.put(62, new ClipInfo("Percussion3-Hold1-1Second", 1));
+  clipDict.put(62, new ClipInfo("Percussion3-Double1-1Second", 1));
   clipDict.put(63, new ClipInfo("Percussion3-Hold1-1Second", 1));
   clipDict.put(64, new ClipInfo("Scify1-End1-1Seconds", 1));
   clipDict.put(65, new ClipInfo("Scify1-Hold1-2Seconds", 2));

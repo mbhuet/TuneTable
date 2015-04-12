@@ -56,7 +56,7 @@ class Chain {
     strokeCap(PROJECT);
 
     if ((numBlocks != blocks.size())) {
-      println(numBlocks + ", " + blocks.size());
+      //println(numBlocks + ", " + blocks.size());
     }
 
     line(head.x_pos, head.y_pos, blocks.get(numBlocks-1).x_pos, blocks.get(numBlocks-1).y_pos);
@@ -77,7 +77,7 @@ class Chain {
       if (b.type == BlockType.END_LOOP) loop_ends ++;
       
     }
-    if (loop_starts != loop_ends) return false;
+    //if (loop_starts != loop_ends) return false;
     return true;
   }
 
@@ -104,7 +104,7 @@ class Chain {
       blocks.add(cur);
       iter++;
       if (iter > 10) {
-        println(cur + " " + cur.right_neighbor);
+        //println(cur + " " + cur.right_neighbor);
         break;
       }
     }

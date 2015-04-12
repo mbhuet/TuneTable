@@ -17,8 +17,8 @@ class Block {
 
   UpButton up;
   DownButton down;
-  float button_offset_y = block_height * 1;
-  float button_offset_x = block_height * 1; //TUNING
+  float button_offset_y = block_height * .7;
+  float button_offset_x = block_height * .88; //TUNING
   float window_radius = block_height/2;//TUNING
 
   Block left_neighbor;
@@ -33,7 +33,7 @@ class Block {
     type = idToType.get(sym_id);
     parameter = 0;
     Setup();
-    println(tuioObj.getSessionID());
+    //println(tuioObj.getSessionID());
   }
 
   //FOR FAKE BLOCKS ONLY
@@ -117,10 +117,13 @@ class Block {
 
 
   public void Update() {//TuioObject tobj){
-    sym_id = tuioObj.getSymbolID();
-    x_pos = tuioObj.getScreenX(width);
-    y_pos = tuioObj.getScreenY(height);
     rotation = tuioObj.getAngle();
+    if (sym_id >= 100) rotation = rotation + PI;
+    
+    sym_id = tuioObj.getSymbolID();
+    x_pos = tuioObj.getScreenX(width) - cos(rotation) * (.5/3.25) * block_height;
+    y_pos = tuioObj.getScreenY(height) - sin(rotation) * (.5/3.25) * block_height;
+    
     FindNeighbors();
 
     //if this block is part of any chains, that chain should rebuild itself based on the new state
@@ -269,14 +272,14 @@ class Block {
   }
 
   public void IncrementArgument() {
-    println("arg inc");
+    //println("arg inc");
 
     parameter++;
     if (parameter > max_arg)
       parameter = -1;
   }
   public void DecrementArgument() {
-    println("arg dec");
+    //println("arg dec");
     parameter--;
     if (parameter < -1)
       parameter = max_arg;

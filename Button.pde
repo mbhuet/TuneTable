@@ -39,7 +39,7 @@ class PlayButton extends Button{
     InitButton(x_pos,y_pos,rot,rad);
   }
   public void Trigger(){
-    println("play button hit");
+    //println("play button hit");
     Play();
   }
   public void drawButton(){
@@ -65,7 +65,7 @@ class UpButton extends Button{
     block = b;
   }
   public void Trigger(){
-        println("up");
+        //println("up");
 
     block.IncrementArgument();
   }
@@ -77,6 +77,10 @@ class UpButton extends Button{
     rotate(rotation);
     
     fill(color(0,0,0));
+      stroke(0);
+    rectMode(CENTER);
+    rect(0,size, size*2,size*2);
+    
     ellipse(0,0,size*2,size*2);
     
     //translate(block_width,0);
@@ -98,7 +102,7 @@ class DownButton extends Button{
     block = b;
   }
   public void Trigger(){
-    println("down");
+    //println("down");
     block.DecrementArgument();
   }
   public void drawButton(){
@@ -107,8 +111,14 @@ class DownButton extends Button{
     translate(x,y);
     //translate(size/6, 0);
     rotate(rotation);
-    
+          stroke(0);
+
     fill(color(0,0,0));
+    
+    rectMode(CENTER);
+    rect(0,-size, size*2,size*2);
+    
+    
     ellipse(0,0,size*2,size*2);
     
     //translate(block_width,0);

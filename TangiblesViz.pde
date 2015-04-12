@@ -22,14 +22,14 @@ Delay myDelay;
 
 
 Player player;
-boolean debug = true;
+boolean debug = false;
 boolean fullscreen = true;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
 float cursor_size = 15;
 float object_size = 60;
-float block_height = 120;
+float block_height = 115;
 //float block_width = 60;
 float table_size = 760;
 float scale_factor = 1;
@@ -102,36 +102,39 @@ void setup()
 
 void draw()
 {
+  println("start update");
     background(255);
 
-  TuioUpdate();
   textFont(font, 18*scale_factor);
+  TuioUpdate();
 
   
 
   if (player.isPlaying) {
     player.Update();
-    for (Block b : allBlocks) {
-    b.drawBlock();
-  }
+    
+  
   } else {
+
 
     for (Chain c : allChains) {
       c.drawChain();
     }
-    for (Block b : allBlocks) {
-    b.drawBlock();
-  }
+    
     for (Button b : allButtons) {
       b.drawButton();
     }
-    //ExDrawTuioObjects();
+    
   } 
+  for (Block b : allBlocks) {
+    b.drawBlock();
+  }
 
   if (debug) {
     fill(255, 0, 0);
     ellipse(width/2, height/2, 10, 10);
   }
+  println("stop update");
 }
 
 
@@ -142,7 +145,7 @@ boolean sketchFullScreen(){
 
 void keyPressed() {
   if (key == ' ') {
-    println("play");
+    //println("play");
     Play();
   }
 }
@@ -157,11 +160,13 @@ void mousePressed() {
 
 
 void Click(int x, int y){
-  if (debug){
+  if (true){
   fill(255,0,0);
   ellipse(x,y,10,10);
   }
-  for (Button b : allButtons) {
+Button[] buttons = new Button[allButtons.size()];
+allButtons.toArray(buttons); // fill the array  
+for (Button b : buttons) {
       if (b.IsUnder(x, y)) {
         b.Trigger();
       }
@@ -175,9 +180,9 @@ void Play() {
   if (!player.isPlaying) {
     
     for (Block b : allBlocks) {
-    b.OnPlay();
+    //b.OnPlay();
   }
-    println("play");
+    //println("play");
     List<Block>[] lists;
         lists = new List[allChains.size()];
 
@@ -251,7 +256,7 @@ List<Block> ResolveLoops(List<Block> blocks) {
       break;
     };
   }
-  println(new_list);
+  //println(new_list);
   return new_list;
 }
 
@@ -290,13 +295,9 @@ Chain[] CreateFakeChains() {
   Block[] b1 = new Block[] {
     new Block(0, 0), //play
     new Block(111,0),
-        new Block(65),
-                new Block(30),
-
-
+    new Block(65),
+    new Block(30),
     new Block(111,0),
-
-    //new Block(1), 
     new Block(24)
     };
     /*
