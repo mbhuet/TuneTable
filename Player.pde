@@ -39,10 +39,11 @@ class Player {
   void Start(){
     for (int i = 0; i<blockLists.length; i++) {
       if (blockLists[i].get(0).parameter == 0){
-      
+        
       }
       else{
       changeTimes[i] = 1000;
+      blockLists[i].get(0).DecrementDisplayedArgument();
       }
          
     }
@@ -60,10 +61,13 @@ class Player {
       for(int l = 0; l < playIndices[i]; l++){
           blockLists[i].get(l).Highlight(4, false);
       }
-      blockLists[i].get(playIndices[i]).Highlight(numBars, true);
       
       
-      if (finished[i]) {
+      if (!finished[i]) {
+          blockLists[i].get(playIndices[i]).Highlight(numBars, true);
+      }
+      
+      if (finished[i]){
         //maybe show some effect?
       } else if (runningTime >= changeTimes[i]) {//need to move to the next clip in this list
         if (playIndices[i] >= blockLists[i].size()-1) { //this list has finished playing
@@ -78,6 +82,7 @@ class Player {
 
           case PLAY:
             changeTimes[i] = runningTime + 1000;
+            next.DecrementDisplayedArgument();
             break;
 
           case CLIP:
@@ -92,7 +97,8 @@ class Player {
             break;
 
           case SILENCE:
-             changeTimes[i] = runningTime + next.parameter * 1000;
+             next.DecrementDisplayedArgument();
+             changeTimes[i] = runningTime + 1000;
 
             break;
             

@@ -6,7 +6,7 @@ import java.util.concurrent.*;
 TuioProcessing tuioClient;
 
 
-AbstractQueue<Block> addQueue = new ConcurrentLinkedQueue<Block>();
+AbstractQueue<TuioObject> addQueue = new ConcurrentLinkedQueue<TuioObject>();
 AbstractQueue<Block> killQueue = new ConcurrentLinkedQueue<Block>();
 AbstractQueue<Block> updateQueue = new ConcurrentLinkedQueue<Block>();
 
@@ -19,8 +19,8 @@ AbstractQueue<TuioCursor> cursorQueue = new ConcurrentLinkedQueue<TuioCursor>();
 // called when an object is added to the scene
 void addTuioObject(TuioObject tobj) {
   if (!isInitiated) return;
-    Block newBlock = new Block(tobj);
-    addQueue.offer(newBlock);
+    //Block newBlock = new Block(tobj);
+    addQueue.offer(tobj);
     
   //println("add object "+tobj.getSymbolID()+" ("+tobj.getSessionID()+") "+tobj.getX()+" "+tobj.getY()+" "+tobj.getAngle());
 }
@@ -82,13 +82,15 @@ void refresh(TuioTime bundleTime) {
 
 
 void TuioUpdate() {
+  //println("tuio update");
   while (killQueue.peek () != null) {
     Block remBlock = killQueue.poll();
     remBlock.OnRemove();
     blockMap.remove(remBlock.tuioObj.getSessionID());
   }
   while (addQueue.peek () != null) {
-    Block newBlock = addQueue.poll();
+    TuioObject tobj = addQueue.poll();
+    Block newBlock = new Block(tobj);
     blockMap.put(newBlock.tuioObj.getSessionID(), newBlock);
   }
   while (updateQueue.peek () != null) {
@@ -100,9 +102,9 @@ void TuioUpdate() {
         TuioCursor cur = cursorQueue.poll();
 
     //println(cur.getScreenX(width) + ", " + cur.getScreenY(height));
-    
     Click((int)cur.getScreenX(width), (int)cur.getScreenY(height));
   }
+  //println("tuio stop");
 }
 
 

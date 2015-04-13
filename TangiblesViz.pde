@@ -46,6 +46,7 @@ List<Button> allButtons;
 
 List<Block> recentlyRemovedBlocks;
 
+
 Chain[] fakeChains;
 
 
@@ -102,7 +103,7 @@ void setup()
 
 void draw()
 {
-  println("start update");
+  //println("start update");
     background(255);
 
   textFont(font, 18*scale_factor);
@@ -129,12 +130,13 @@ void draw()
   for (Block b : allBlocks) {
     b.drawBlock();
   }
+  
 
   if (debug) {
     fill(255, 0, 0);
     ellipse(width/2, height/2, 10, 10);
   }
-  println("stop update");
+  //println("stop update");
 }
 
 
@@ -154,7 +156,7 @@ void keyPressed() {
 
 void mousePressed() {
   if (true) {
-     Click(mouseX, mouseY);
+     Click(mouseX,mouseY);
   }
 }
 
@@ -180,7 +182,7 @@ void Play() {
   if (!player.isPlaying) {
     
     for (Block b : allBlocks) {
-    //b.OnPlay();
+    b.OnPlay();
   }
     //println("play");
     List<Block>[] lists;
@@ -249,7 +251,9 @@ List<Block> ResolveLoops(List<Block> blocks) {
       break;
 
     case SILENCE:
-      new_list.add(cur_block);
+      for(int p = 0; p<cur_block.parameter; p++){
+        new_list.add(cur_block);
+      }
       break;
 
     default:

@@ -23,6 +23,8 @@ class Block {
 
   Block left_neighbor;
   Block right_neighbor;
+  
+  boolean randomFlag = false;
 
   AudioPlayer clip;
   //float hold_time; //to prevent flickering
@@ -108,10 +110,17 @@ class Block {
   }
   
   public void OnPlay(){
+    if (parameter < 0) {
+      randomFlag = true;
+      parameter = int(random(10));
+    }
     displayed_parameter = parameter;
   }
   
   public void OnEndPlay(){
+    if (randomFlag){
+    parameter = -1;
+    }
   }
 
 
@@ -209,8 +218,8 @@ class Block {
       String arg_string = ""+parameter;
       
       if (parameter < 0){ 
-        arg_string = "Random";
-        textSize(7);  
+        arg_string = "R";
+        //textSize(7);  
       }
       
       if (player.isPlaying){
