@@ -114,6 +114,7 @@ class Block {
       randomFlag = true;
       parameter = int(random(10));
     }
+    else randomFlag = false;
     displayed_parameter = parameter;
   }
   
@@ -296,6 +297,7 @@ class Block {
   
   public void DecrementDisplayedArgument(){
     displayed_parameter--;
+    if (displayed_parameter < 0) displayed_parameter = parameter;
   }
   
   

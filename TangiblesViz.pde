@@ -92,7 +92,7 @@ void setup()
 
   isInitiated = true;
 
-  //PlayButton pB = new PlayButton(100,displayHeight-100, 0, 100);
+  PlayButton pB = new PlayButton(100,displayHeight-100, 0, 100);
 
   if (debug) {
     //Block b = new Block(0);
@@ -148,7 +148,7 @@ boolean sketchFullScreen(){
 void keyPressed() {
   if (key == ' ') {
     //println("play");
-    Play();
+    //Play();
   }
 }
 
@@ -156,7 +156,7 @@ void keyPressed() {
 
 void mousePressed() {
   if (true) {
-     Click(mouseX,mouseY);
+     //Click(mouseX,mouseY);
   }
 }
 

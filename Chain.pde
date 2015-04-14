@@ -58,8 +58,10 @@ class Chain {
     if ((numBlocks != blocks.size())) {
       //println(numBlocks + ", " + blocks.size());
     }
+    Block end = blocks.get(numBlocks-1);
 
-    line(head.x_pos, head.y_pos, blocks.get(numBlocks-1).x_pos, blocks.get(numBlocks-1).y_pos);
+    line(head.x_pos, head.y_pos, 
+    end.x_pos + cos(end.rotation) * (end.block_width - block_height/1), end.y_pos + sin(end.rotation) * (end.block_width - block_height/1));
      
          strokeWeight(0);
   
