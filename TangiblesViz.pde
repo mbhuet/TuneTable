@@ -107,7 +107,6 @@ void draw()
     background(255);
 
   textFont(font, 18*scale_factor);
-  TuioUpdate();
 
   
 
@@ -116,6 +115,7 @@ void draw()
     
   
   } else {
+  TuioUpdate();
 
 
     for (Chain c : allChains) {
