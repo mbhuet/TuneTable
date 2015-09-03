@@ -23,6 +23,7 @@ Delay myDelay;
 
 Player player;
 boolean debug = false;
+boolean showFPS = true;
 boolean fullscreen = true;
 
 // these are some helper variables which are used
@@ -63,7 +64,7 @@ void setup()
   fill(0);
 
   loop();
-  frameRate(30);
+  frameRate(60);
 
   hint(ENABLE_NATIVE_FONTS);
   font = createFont("Arial", 18);
@@ -103,8 +104,15 @@ void setup()
 
 void draw()
 {
-  //println("start update");
-    background(255);
+  background(255);
+  
+  if (showFPS){
+  textSize(32);
+  fill(255, 0, 0);
+  text((int)frameRate, 10, 30); 
+  println(frameRate);
+  }
+    
 
   textFont(font, 18*scale_factor);
 
@@ -137,6 +145,7 @@ void draw()
     ellipse(width/2, height/2, 10, 10);
   }
   //println("stop update");
+
 }
 
 
