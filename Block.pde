@@ -241,12 +241,11 @@ class Block {
     }
 
 
-    //TODO should check all blocks, if a block has no right neighbor, check with this one, same with left 
-    for (Entry<Long, Block> entry : blockMap.entrySet ()) {
+    for (Block cur : allBlocks) {
+      if (cur == this)
+        continue;
 
-
-      Block cur = entry.getValue();
-      //println(cur);
+      //Block cur = entry.getValue();
       if (cur.right_neighbor ==  null) {
         if (BlockNeighbors(cur, this)) {
           cur.right_neighbor = this;

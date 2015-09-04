@@ -106,8 +106,9 @@ void draw()
   
   if (showFPS){
   textSize(32);
+  textAlign(LEFT, TOP);
   fill(255, 0, 0);
-  text((int)frameRate, 10, 30); 
+  text((int)frameRate, 10, 10); 
   //println(frameRate);
   }
     
@@ -160,7 +161,7 @@ boolean sketchFullScreen(){
 void keyPressed() {
   if (key == ' ') {
     //println("play");
-    //Play();
+    Play();
   }
 }
 

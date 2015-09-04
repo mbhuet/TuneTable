@@ -10,3 +10,11 @@ enum BlockType
     FLOAT
     
 };
+
+enum TuioAction
+{
+    ADD,
+    REMOVE,
+    UPDATE
+    
+};

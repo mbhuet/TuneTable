@@ -16,7 +16,7 @@ public void Tooltip(String[] info){
   fill(255);
   rectMode(CORNER);
   pushMatrix();
-  translate((mouseX + boxWidth >= width ? mouseX-boxWidth : mouseX), (mouseY + boxHeight >= height ? mouseY : mouseY-boxHeight));
+  translate((mouseX + boxWidth >= width ? mouseX-boxWidth : mouseX), (mouseY - boxHeight <= 0 ? mouseY : mouseY-boxHeight));
   rect(0, 0, boxWidth, boxHeight);
   
   textAlign(LEFT, TOP);
