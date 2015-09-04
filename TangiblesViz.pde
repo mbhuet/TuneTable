@@ -24,17 +24,15 @@ Delay myDelay;
 Player player;
 boolean debug = false;
 boolean showFPS = true;
+boolean hoverDebug = true;
 boolean fullscreen = true;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
 float cursor_size = 15;
-float object_size = 60;
-float block_height = 115;
-//float block_width = 60;
+float block_height = 115; //because block height is uniform, this is all we need to scale the block shadows
 float table_size = 760;
 float scale_factor = 1;
-//float obj_size = object_size*scale_factor; 
 float cur_size = cursor_size*scale_factor; 
 PFont font;
 
@@ -110,7 +108,7 @@ void draw()
   textSize(32);
   fill(255, 0, 0);
   text((int)frameRate, 10, 30); 
-  println(frameRate);
+  //println(frameRate);
   }
     
 
@@ -141,8 +139,13 @@ void draw()
   
 
   if (debug) {
+    //puts a dot in the middle of the screen
     fill(255, 0, 0);
     ellipse(width/2, height/2, 10, 10);
+  }
+  
+  if (hoverDebug){
+    HoverDebug();
   }
   //println("stop update");
 
@@ -165,8 +168,25 @@ void keyPressed() {
 
 void mousePressed() {
   if (true) {
-     //Click(mouseX,mouseY);
+     Click(mouseX,mouseY);
   }
+}
+
+void HoverDebug(){
+  Block[] blocks = new Block[allBlocks.size()];
+allBlocks.toArray(blocks); // fill the array  
+for (Block b : blocks) {
+      if (b.IsUnder(mouseX, mouseY)) {
+        Tooltip(new String[]{"symbol id: " + b.sym_id,
+                             "arg: " + b.parameter,
+                             "x: " + b.x_pos,
+                             "y: " + b.y_pos,
+                             "rotation" + b.rotation,
+                             "left neighbor id: " + (b.left_neighbor == null ? "null": b.left_neighbor.sym_id),
+                             "right neighbor id: " + (b.right_neighbor == null ? "null": b.right_neighbor.sym_id)});
+      }
+    }
+  
 }
 
 

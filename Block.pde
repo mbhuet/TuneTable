@@ -288,6 +288,7 @@ class Block {
     if (parameter > max_arg)
       parameter = -1;
   }
+  
   public void DecrementArgument() {
     //println("arg dec");
     parameter--;
@@ -318,10 +319,10 @@ class Block {
       pushMatrix();
       translate(this.x_pos, this.y_pos);
       rotate(this.rotation);
-      rect(- block_height/2.0 + spacer + block_height/4 * i, 
-      - (block_height/2.0 + block_height * extension_off_block), 
-      block_height/4 - 2*spacer, 
-      block_height + block_height * extension_off_block * 2);
+      rect(- block_height/2.0 + spacer + block_height/4 * i,           //top left x
+           - (block_height/2.0 + block_height * extension_off_block),  //top left y
+           block_height/4 - 2*spacer,                                  //width
+           block_height + block_height * extension_off_block * 2);     //height
       popMatrix();
     }
   }
@@ -336,6 +337,13 @@ class Block {
       this.type == BlockType.START_LOOP ||
       this.type == BlockType.EFFECT ||
       this.type == BlockType.SILENCE);
+  }
+  
+  public boolean IsUnder(int hit_x, int hit_y){
+    //will only return true if the hit is near the symbol position
+    //checking if a point is within the full rectangular area would require calculating all corner points, and I don't want to do that right now.
+        return (dist(hit_x, hit_y, x_pos, y_pos) < block_height/2);
+
   }
 
   void LoadClip() {
