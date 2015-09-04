@@ -120,7 +120,7 @@ void TuioUpdate() {
     upBlock.Update();
   }
   */
-  
+  println("blocks " + blockQueue.size() + " actions " + actionQueue.size());
   while (blockQueue.peek () != null) {
     TuioObject curBlock = blockQueue.poll();
     switch(actionQueue.poll()){

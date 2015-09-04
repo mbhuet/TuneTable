@@ -134,6 +134,7 @@ class Player {
 
             case START_LOOP:
               next.DecrementDisplayedArgument();
+              next.ResetInnerLoops();
               break;
 
             case END_LOOP:

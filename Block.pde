@@ -219,7 +219,7 @@ class Block {
       String arg_string = ""+parameter;
       
       if (parameter < 0){ 
-        arg_string = "R";
+        arg_string = "?";
         //textSize(7);  
       }
       
@@ -234,9 +234,16 @@ class Block {
   public void FindNeighbors() {
     //check to see if current neighbors are still neighbors before anything else
     if (left_neighbor != null && !BlockNeighbors(left_neighbor, this)) {
+      if (left_neighbor.right_neighbor == this){
+        left_neighbor.right_neighbor = null;
+      }
       left_neighbor = null;
+      
     }
     if (right_neighbor != null && !BlockNeighbors(this, right_neighbor)) {
+      if (right_neighbor.left_neighbor == this){
+        right_neighbor.left_neighbor = null;
+      }
       right_neighbor = null;
     }
 
@@ -298,6 +305,27 @@ class Block {
   public void DecrementDisplayedArgument(){
     displayed_parameter--;
     if (displayed_parameter < 0) displayed_parameter = parameter;
+  }
+  
+  //this method will continue through the chain and reset any displayed loop arguments to their max
+  public void ResetInnerLoops(){
+    Block cur = this;
+    int starts = 0;
+    int ends = 0;
+    while (cur != null){
+      if (cur.type == BlockType.START_LOOP){
+        starts++;
+        if (cur != this){
+          cur.displayed_parameter = cur.parameter;
+        }
+      }
+      if(cur.type == BlockType.END_LOOP){
+        ends++;
+        if (starts == ends)
+          break;  
+        }
+      cur = cur.right_neighbor;
+    }
   }
   
   
