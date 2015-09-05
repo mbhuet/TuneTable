@@ -11,13 +11,19 @@ AbstractQueue<Block> killQueue = new ConcurrentLinkedQueue<Block>();
 AbstractQueue<Block> updateQueue = new ConcurrentLinkedQueue<Block>();
 */
 
-AbstractQueue<TuioObject> blockQueue = new ConcurrentLinkedQueue<TuioObject>();
-AbstractQueue<TuioAction> actionQueue = new ConcurrentLinkedQueue<TuioAction>();
-
-
-
+AbstractQueue<TuioActionWrapper> actionQueue = new ConcurrentLinkedQueue<TuioActionWrapper>();
 AbstractQueue<TuioCursor> cursorQueue = new ConcurrentLinkedQueue<TuioCursor>();
 
+
+class TuioActionWrapper{
+  TuioAction action;
+  TuioObject tObject;
+  
+  TuioActionWrapper(TuioObject tObj, TuioAction act){
+    action = act;
+    tObject = tObj;
+  }
+}
 
 
 // these callback methods are called whenever a TUIO event occurs
@@ -25,8 +31,7 @@ AbstractQueue<TuioCursor> cursorQueue = new ConcurrentLinkedQueue<TuioCursor>();
 // called when an object is added to the scene
 void addTuioObject(TuioObject tobj) {
   if (!isInitiated) return;
-  blockQueue.offer(tobj);
-  actionQueue.offer(TuioAction.ADD);
+  actionQueue.offer(new TuioActionWrapper(tobj, TuioAction.ADD));
     
   /*
   Block newBlock = new Block(tobj);
@@ -40,8 +45,7 @@ void addTuioObject(TuioObject tobj) {
 void removeTuioObject(TuioObject tobj) {
   if (!isInitiated) return;
   
-  blockQueue.offer(tobj);
-  actionQueue.offer(TuioAction.REMOVE);
+  actionQueue.offer(new TuioActionWrapper(tobj, TuioAction.REMOVE));
   
   /*
   Block remBlock = blockMap.get(tobj.getSessionID());
@@ -56,8 +60,7 @@ void removeTuioObject(TuioObject tobj) {
 void updateTuioObject (TuioObject tobj) {
   if (!isInitiated) return;
   
-  blockQueue.offer(tobj);
-  actionQueue.offer(TuioAction.UPDATE);
+  actionQueue.offer(new TuioActionWrapper(tobj, TuioAction.UPDATE));
   
   /*
   Block b = blockMap.get(tobj.getSessionID());
@@ -120,10 +123,11 @@ void TuioUpdate() {
     upBlock.Update();
   }
   */
-  println("blocks " + blockQueue.size() + " actions " + actionQueue.size());
-  while (blockQueue.peek () != null) {
-    TuioObject curBlock = blockQueue.poll();
-    switch(actionQueue.poll()){
+  
+  while (actionQueue.peek () != null) {
+    TuioActionWrapper wrap = actionQueue.poll();
+    TuioObject curBlock = wrap.tObject;
+    switch(wrap.action){
       case ADD :
         Block newBlock = new Block(curBlock);
         blockMap.put(newBlock.tuioObj.getSessionID(), newBlock);

@@ -27,6 +27,11 @@ class Block {
   boolean randomFlag = false;
 
   AudioPlayer clip;
+  
+  ArrayList<PVector> posHistory = new ArrayList<PVector>();
+  ArrayList<Float> rotHistory = new ArrayList<Float>();
+  int historyVals = 10;
+  
   //float hold_time; //to prevent flickering
 
   Block(TuioObject tobj) {
@@ -127,12 +132,54 @@ class Block {
 
 
   public void Update() {//TuioObject tobj){
-    rotation = tuioObj.getAngle();
-    if (sym_id >= 100) rotation = rotation + PI;
     
     sym_id = tuioObj.getSymbolID();
-    x_pos = tuioObj.getScreenX(width) - cos(rotation) * (.5/3.25) * block_height;
-    y_pos = tuioObj.getScreenY(height) - sin(rotation) * (.5/3.25) * block_height;
+    float new_x_pos = tuioObj.getScreenX(width) - cos(rotation) * (.5/3.25) * block_height;
+    float new_y_pos = tuioObj.getScreenY(height) - sin(rotation) * (.5/3.25) * block_height;
+    
+    rotHistory.add(tuioObj.getAngle());
+    posHistory.add(new PVector(new_x_pos, new_y_pos));
+    
+    if (posHistory.size() < historyVals){
+      x_pos = new_x_pos;
+      y_pos = new_y_pos;
+      rotation = tuioObj.getAngle();
+    }
+    else{
+    
+        if (posHistory.size() > historyVals){
+          posHistory.remove(0);
+        }
+        
+        if (rotHistory.size() > historyVals){
+          rotHistory.remove(0);
+        }
+        
+        float avg_x = 0;
+        float avg_y = 0;
+        float avg_rot = 0;
+      
+        for (int i = 0; i<posHistory.size(); i++){
+          avg_x += posHistory.get(i).x;
+          avg_y += posHistory.get(i).y;
+        }
+        
+        for (int i = 0; i<rotHistory.size(); i++){
+          avg_rot += rotHistory.get(i);
+        }
+        
+        avg_x = avg_x/posHistory.size();
+        avg_y = avg_y/posHistory.size();
+        avg_rot = avg_rot/rotHistory.size();
+        
+        x_pos = avg_x;
+        y_pos = avg_y;
+        rotation = avg_rot;
+    }
+    
+    
+    if (sym_id >= 100) rotation = rotation + PI; //this is because some pucks are upside down
+
     
     FindNeighbors();
 
@@ -183,6 +230,7 @@ class Block {
   
   public void drawBlock(){
     pushMatrix();
+    noStroke();
     rectMode(CENTER);
 
     translate(x_pos, y_pos);

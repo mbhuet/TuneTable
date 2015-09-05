@@ -43,7 +43,6 @@ List<Block> allBlocks;
 List<Chain> allChains;
 List<Button> allButtons;
 
-List<Block> recentlyRemovedBlocks;
 
 
 Chain[] fakeChains;
@@ -85,8 +84,6 @@ void setup()
   allChains = new ArrayList<Chain>();
   allButtons = new ArrayList<Button>();
   
-  recentlyRemovedBlocks = new ArrayList<Block>();
-  
   
 
   isInitiated = true;
@@ -102,6 +99,7 @@ void setup()
 
 void draw()
 {
+  //println(allBlocks.size());
   background(255);
   
   if (showFPS){
