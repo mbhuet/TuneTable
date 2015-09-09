@@ -157,7 +157,10 @@ class Block {
         
         float avg_x = 0;
         float avg_y = 0;
+        
         float avg_rot = 0;
+        float sum_cos = 0;
+        float sum_sin = 0;
       
         for (int i = 0; i<posHistory.size(); i++){
           avg_x += posHistory.get(i).x;
@@ -165,15 +168,18 @@ class Block {
         }
         
         for (int i = 0; i<rotHistory.size(); i++){
-          avg_rot += rotHistory.get(i);
+          sum_cos += cos(rotHistory.get(i));
+          sum_sin += sin(rotHistory.get(i));
         }
+        
+        avg_rot = atan2(sum_sin, sum_cos);
         
         avg_x = avg_x/posHistory.size();
         avg_y = avg_y/posHistory.size();
-        avg_rot = avg_rot/rotHistory.size();
         
         x_pos = avg_x;
         y_pos = avg_y;
+        println(avg_rot);
         rotation = avg_rot;
     }
     
