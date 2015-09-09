@@ -88,7 +88,9 @@ void setup()
 
   isInitiated = true;
 
-  PlayButton pB = new PlayButton(100,displayHeight-100, 0, 100);
+  PlayButton playButton = new PlayButton(100,displayHeight-100, 0, 100);
+  //StopButton stopButton = new StopButton(100,displayHeight-100, 0, 100);
+  //stopButton.SetShowing(false);
 
   if (debug) {
     //Block b = new Block(0);
@@ -128,6 +130,7 @@ void draw()
     }
     
     for (Button b : allButtons) {
+      if (b.isShowing)
       b.drawButton();
     }
     
@@ -197,7 +200,7 @@ void Click(int x, int y){
 Button[] buttons = new Button[allButtons.size()];
 allButtons.toArray(buttons); // fill the array  
 for (Button b : buttons) {
-      if (b.IsUnder(x, y)) {
+      if (b.isShowing && b.IsUnder(x, y)) {
         b.Trigger();
       }
     }
@@ -208,10 +211,16 @@ for (Button b : buttons) {
 void Play() { 
 
   if (!player.isPlaying) {
+    for (Block block : allBlocks) {
+    block.OnPlay();
     
-    for (Block b : allBlocks) {
-    b.OnPlay();
-  }
+    for (Button butt : allButtons) {
+      butt.FlipShowing();
+    }
+}
+  
+  
+    
     //println("play");
     List<Block>[] lists;
         lists = new List[allChains.size()];
@@ -236,6 +245,13 @@ void Play() {
     }
     player.PlayLists(lists);
   }
+}
+
+void Stop(){
+  for (Button butt : allButtons) {
+        //butt.FlipShowing();
+      }
+
 }
 
 

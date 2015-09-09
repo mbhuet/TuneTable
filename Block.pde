@@ -112,6 +112,8 @@ class Block {
     }
     
     allBlocks.remove(this);
+    
+    if (clip != null) clip.close();
   }
   
   public void OnPlay(){
@@ -179,7 +181,6 @@ class Block {
         
         x_pos = avg_x;
         y_pos = avg_y;
-        println(avg_rot);
         rotation = avg_rot;
     }
     
