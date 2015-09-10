@@ -21,6 +21,9 @@ class Chain {
     }
     numBlocks = b.length;
     valid = isValid();
+    
+          println(blocks.size());
+
   }
 
   Chain(Block head) {

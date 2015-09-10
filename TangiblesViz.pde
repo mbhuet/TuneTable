@@ -11,6 +11,7 @@ import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 
 import java.util.Map.*;
+import java.util.Iterator.*;
 import java.util.concurrent.*;
 
 
@@ -21,11 +22,14 @@ FilePlayer filePlayer;
 Delay myDelay;
 
 
+
+
 Player player;
-boolean debug = false;
-boolean showFPS = true;
-boolean hoverDebug = true;
+boolean debug = true;
+boolean showFPS = false;
+boolean hoverDebug = false;
 boolean fullscreen = true;
+boolean analyticsOn = true;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
@@ -84,7 +88,7 @@ void setup()
   allChains = new ArrayList<Chain>();
   allButtons = new ArrayList<Button>();
   
-  
+
 
   isInitiated = true;
 
@@ -212,12 +216,16 @@ void Play() {
 
   if (!player.isPlaying) {
     for (Block block : allBlocks) {
-    block.OnPlay();
-    
-    for (Button butt : allButtons) {
-      butt.FlipShowing();
+        block.OnPlay();
+        
+        for (Button butt : allButtons) {
+          butt.FlipShowing();
+        }
     }
-}
+    
+    if (analyticsOn){
+      SaveData();
+    }
   
   
     
