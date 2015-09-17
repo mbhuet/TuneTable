@@ -27,6 +27,11 @@ class Block {
   boolean randomFlag = false;
 
   AudioPlayer clip;
+  
+  ArrayList<PVector> posHistory = new ArrayList<PVector>();
+  ArrayList<Float> rotHistory = new ArrayList<Float>();
+  int historyVals = 10;
+  
   //float hold_time; //to prevent flickering
 
   Block(TuioObject tobj) {
@@ -107,6 +112,8 @@ class Block {
     }
     
     allBlocks.remove(this);
+    
+    if (clip != null) clip.close();
   }
   
   public void OnPlay(){
@@ -127,12 +134,59 @@ class Block {
 
 
   public void Update() {//TuioObject tobj){
-    rotation = tuioObj.getAngle();
-    if (sym_id >= 100) rotation = rotation + PI;
     
     sym_id = tuioObj.getSymbolID();
-    x_pos = tuioObj.getScreenX(width) - cos(rotation) * (.5/3.25) * block_height;
-    y_pos = tuioObj.getScreenY(height) - sin(rotation) * (.5/3.25) * block_height;
+    float new_x_pos = tuioObj.getScreenX(width) - cos(rotation) * (.5/3.25) * block_height;
+    float new_y_pos = tuioObj.getScreenY(height) - sin(rotation) * (.5/3.25) * block_height;
+    
+    rotHistory.add(tuioObj.getAngle());
+    posHistory.add(new PVector(new_x_pos, new_y_pos));
+    
+    if (posHistory.size() < historyVals){
+      x_pos = new_x_pos;
+      y_pos = new_y_pos;
+      rotation = tuioObj.getAngle();
+    }
+    else{
+    
+        if (posHistory.size() > historyVals){
+          posHistory.remove(0);
+        }
+        
+        if (rotHistory.size() > historyVals){
+          rotHistory.remove(0);
+        }
+        
+        float avg_x = 0;
+        float avg_y = 0;
+        
+        float avg_rot = 0;
+        float sum_cos = 0;
+        float sum_sin = 0;
+      
+        for (int i = 0; i<posHistory.size(); i++){
+          avg_x += posHistory.get(i).x;
+          avg_y += posHistory.get(i).y;
+        }
+        
+        for (int i = 0; i<rotHistory.size(); i++){
+          sum_cos += cos(rotHistory.get(i));
+          sum_sin += sin(rotHistory.get(i));
+        }
+        
+        avg_rot = atan2(sum_sin, sum_cos);
+        
+        avg_x = avg_x/posHistory.size();
+        avg_y = avg_y/posHistory.size();
+        
+        x_pos = avg_x;
+        y_pos = avg_y;
+        rotation = avg_rot;
+    }
+    
+    
+    if (sym_id >= 100) rotation = rotation + PI; //this is because some pucks are upside down
+
     
     FindNeighbors();
 
@@ -183,6 +237,7 @@ class Block {
   
   public void drawBlock(){
     pushMatrix();
+    noStroke();
     rectMode(CENTER);
 
     translate(x_pos, y_pos);
@@ -219,7 +274,7 @@ class Block {
       String arg_string = ""+parameter;
       
       if (parameter < 0){ 
-        arg_string = "R";
+        arg_string = "?";
         //textSize(7);  
       }
       
@@ -234,19 +289,25 @@ class Block {
   public void FindNeighbors() {
     //check to see if current neighbors are still neighbors before anything else
     if (left_neighbor != null && !BlockNeighbors(left_neighbor, this)) {
+      if (left_neighbor.right_neighbor == this){
+        left_neighbor.right_neighbor = null;
+      }
       left_neighbor = null;
+      
     }
     if (right_neighbor != null && !BlockNeighbors(this, right_neighbor)) {
+      if (right_neighbor.left_neighbor == this){
+        right_neighbor.left_neighbor = null;
+      }
       right_neighbor = null;
     }
 
 
-    //TODO should check all blocks, if a block has no right neighbor, check with this one, same with left 
-    for (Entry<Long, Block> entry : blockMap.entrySet ()) {
+    for (Block cur : allBlocks) {
+      if (cur == this)
+        continue;
 
-
-      Block cur = entry.getValue();
-      //println(cur);
+      //Block cur = entry.getValue();
       if (cur.right_neighbor ==  null) {
         if (BlockNeighbors(cur, this)) {
           cur.right_neighbor = this;
@@ -288,6 +349,7 @@ class Block {
     if (parameter > max_arg)
       parameter = -1;
   }
+  
   public void DecrementArgument() {
     //println("arg dec");
     parameter--;
@@ -298,6 +360,27 @@ class Block {
   public void DecrementDisplayedArgument(){
     displayed_parameter--;
     if (displayed_parameter < 0) displayed_parameter = parameter;
+  }
+  
+  //this method will continue through the chain and reset any displayed loop arguments to their max
+  public void ResetInnerLoops(){
+    Block cur = this;
+    int starts = 0;
+    int ends = 0;
+    while (cur != null){
+      if (cur.type == BlockType.START_LOOP){
+        starts++;
+        if (cur != this){
+          cur.displayed_parameter = cur.parameter;
+        }
+      }
+      if(cur.type == BlockType.END_LOOP){
+        ends++;
+        if (starts == ends)
+          break;  
+        }
+      cur = cur.right_neighbor;
+    }
   }
   
   
@@ -318,10 +401,10 @@ class Block {
       pushMatrix();
       translate(this.x_pos, this.y_pos);
       rotate(this.rotation);
-      rect(- block_height/2.0 + spacer + block_height/4 * i, 
-      - (block_height/2.0 + block_height * extension_off_block), 
-      block_height/4 - 2*spacer, 
-      block_height + block_height * extension_off_block * 2);
+      rect(- block_height/2.0 + spacer + block_height/4 * i,           //top left x
+           - (block_height/2.0 + block_height * extension_off_block),  //top left y
+           block_height/4 - 2*spacer,                                  //width
+           block_height + block_height * extension_off_block * 2);     //height
       popMatrix();
     }
   }
@@ -336,6 +419,13 @@ class Block {
       this.type == BlockType.START_LOOP ||
       this.type == BlockType.EFFECT ||
       this.type == BlockType.SILENCE);
+  }
+  
+  public boolean IsUnder(int hit_x, int hit_y){
+    //will only return true if the hit is near the symbol position
+    //checking if a point is within the full rectangular area would require calculating all corner points, and I don't want to do that right now.
+        return (dist(hit_x, hit_y, x_pos, y_pos) < block_height/2);
+
   }
 
   void LoadClip() {

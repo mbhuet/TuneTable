@@ -2,8 +2,10 @@ abstract class Button{
   int x,y;
   float rotation;
   float size;
+  boolean isShowing;
   
   void InitButton(int x_pos, int y_pos, float rot, float rad){
+    isShowing = true;
     x = x_pos;
     y = y_pos;
     rotation = rot;
@@ -25,6 +27,14 @@ abstract class Button{
     //println(hit_x + ", " + x + ", " + hit_y + ", " + y);
     
     return (dist(hit_x, hit_y, x, y) < size);
+  }
+  
+  public void FlipShowing(){
+    isShowing = !isShowing;
+  }
+  
+  public void SetShowing(boolean b){
+    isShowing = b;
   }
   
   abstract void Trigger();
@@ -53,6 +63,28 @@ class PlayButton extends Button{
     triangle(-size/2,-size/2,
              -size/2, size/2,
              size/2, 0);
+    popMatrix();
+  }
+}
+
+class StopButton extends Button{
+
+  StopButton(int x_pos, int y_pos, float rot, float rad){
+    InitButton(x_pos,y_pos,rot,rad);
+  }
+  public void Trigger(){
+    println("stop button hit");
+    Stop();
+  }
+  
+  public void drawButton(){
+    fill(color(0,0,0));
+    ellipse(x,y,size*2,size*2);
+    pushMatrix();
+    translate(x,y);
+    rectMode(CENTER);
+    fill(color(255,255,255));
+    rect(0,0,size*.75, size*.75);
     popMatrix();
   }
 }
