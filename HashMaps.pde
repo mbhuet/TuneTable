@@ -129,7 +129,7 @@ void SetupIdToType(){
   idToType = new HashMap<Integer, BlockType>();
   
   //PLAY
-  idToType.put(0, BlockType.PLAY);
+  idToType.put(0, BlockType.FUNCTION);
   
   //CLIPS
   for(int i = 1; i < 100; i++){
@@ -137,8 +137,8 @@ void SetupIdToType(){
   }
   
   //LOOPS
-  idToType.put(111, BlockType.START_LOOP);
-  idToType.put(112, BlockType.END_LOOP);
-  idToType.put(113, BlockType.SILENCE);
+  idToType.put(111, BlockType.COUNTDOWN);
+  idToType.put(112, BlockType.CONDITIONAL);
+  idToType.put(113, BlockType.BOOLEAN);
   
 }

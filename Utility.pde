@@ -39,6 +39,7 @@ public void SaveData(){
 
     HashMap<BlockType, Integer> blockCount = new HashMap<BlockType, Integer>();
     
+    /*
     for(Chain c : allChains){
         for(Block b : c.blocks){
             if (blockCount.containsKey(b.type)) {
@@ -56,8 +57,8 @@ public void SaveData(){
         output.println(pair.getKey() + " " + pair.getValue());
         it.remove(); // avoids a ConcurrentModificationException
     }
+    */
     
     output.flush();  // Writes the remaining data to the file
     output.close();  // Finishes the file
-  
 }

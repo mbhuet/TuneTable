@@ -49,8 +49,8 @@ class PlayButton extends Button{
     InitButton(x_pos,y_pos,rot,rad);
   }
   public void Trigger(){
-    //println("play button hit");
-    Play();
+    println("play button hit");
+    //Play();
   }
   public void drawButton(){
     fill(color(0,0,0));
@@ -74,7 +74,7 @@ class StopButton extends Button{
   }
   public void Trigger(){
     println("stop button hit");
-    Stop();
+    //Stop();
   }
   
   public void drawButton(){
@@ -90,9 +90,9 @@ class StopButton extends Button{
 }
 
 class UpButton extends Button{
-  Block block;
+  CountdownBlock block;
   
-  UpButton(int x_pos, int y_pos, float rot, float rad, Block b){
+  UpButton(int x_pos, int y_pos, float rot, float rad, CountdownBlock b){
     InitButton(x_pos,y_pos,rot, rad);
     block = b;
   }
@@ -127,9 +127,9 @@ class UpButton extends Button{
 }
 
 class DownButton extends Button{
-  Block block;
+  CountdownBlock block;
   
-  DownButton(int x_pos, int y_pos, float rot, float rad, Block b){
+  DownButton(int x_pos, int y_pos, float rot, float rad, CountdownBlock b){
     InitButton(x_pos,y_pos,rot, rad);
     block = b;
   }
