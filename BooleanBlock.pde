@@ -5,10 +5,17 @@ class BooleanBlock extends Block{
   }
   
   void Setup(){
+    boolMap.put(sym_id, true);
+  }
   
-    }
-  void Update(){}
-  void OnRemove(){}
+  void Update(){
+    super.Update();
+  }
+  
+  void OnRemove(){
+    super.OnRemove();
+    boolMap.put(sym_id, false);  
+  }
   void Activate(){}
 
 }

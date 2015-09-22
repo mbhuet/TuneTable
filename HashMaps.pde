@@ -2,7 +2,12 @@ HashMap<Long, Block> blockMap;
 
 void SetupBlockMap(){
   blockMap = new HashMap<Long, Block>();
-  
+}
+
+HashMap<Integer, Block> funcMap;
+
+void SetupFuncMap(){
+  funcMap = new HashMap<Integer, Block>();
 }
 
 
@@ -105,22 +110,20 @@ void SetupIdToEffect(){
 
 
 
-HashMap<Integer, Integer> idToArg;
+HashMap<Integer, Boolean> boolMap;
 
-void SetupIdToArg(){
-  idToArg = new HashMap<Integer, Integer>();
-  idToArg.put(100, 0);
-  idToArg.put(101, 1);
-  idToArg.put(102, 2);
-  idToArg.put(103, 3);
-  idToArg.put(104, 4);
-  idToArg.put(105, 5);
-  idToArg.put(106, 6);
-  idToArg.put(107, 7);
-  idToArg.put(108, 8);
-  idToArg.put(109, 9);
-  idToArg.put(110, 10);
-  
+void SetupBoolMap(){
+  boolMap = new HashMap<Integer, Boolean>();
+  boolMap.put(100, false);
+  boolMap.put(101, false);
+  boolMap.put(102, false);
+  boolMap.put(103, false);
+  boolMap.put(104, false);
+  boolMap.put(105, false);
+  boolMap.put(106, false);
+  boolMap.put(107, false);
+  boolMap.put(108, false);
+  boolMap.put(109, false);
 }
 
 HashMap<Integer, BlockType> idToType;
@@ -128,17 +131,32 @@ HashMap<Integer, BlockType> idToType;
 void SetupIdToType(){
   idToType = new HashMap<Integer, BlockType>();
   
-  //PLAY
-  idToType.put(0, BlockType.FUNCTION);
+  //FUNCTION
+  for(int i = 0; i < 10; i++){
+    idToType.put(i, BlockType.FUNCTION);
+  }
+  
+  //CALL
+  for(int i = 10; i < 20; i++){
+    idToType.put(i, BlockType.CALL);
+  }
   
   //CLIPS
-  for(int i = 1; i < 100; i++){
+  for(int i = 20; i < 100; i++){
     idToType.put(i, BlockType.CLIP);
   }
   
-  //LOOPS
-  idToType.put(111, BlockType.COUNTDOWN);
-  idToType.put(112, BlockType.CONDITIONAL);
-  idToType.put(113, BlockType.BOOLEAN);
+  //BOOLEANS
+  for(int i = 100; i < 110; i++){
+    idToType.put(i, BlockType.BOOLEAN);
+  }
+  
+  //CONDITIONALS
+  for(int i = 110; i < 120; i++){
+    idToType.put(i, BlockType.CONDITIONAL);
+  }
+  
+  //COUNTDOWN
+  idToType.put(120, BlockType.COUNTDOWN);
   
 }

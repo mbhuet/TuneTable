@@ -54,8 +54,8 @@ boolean isInitiated = false;
 void setup()
 {
   if (fullscreen)  size(displayWidth, displayHeight);
-  else    size(display_width,display_height);
-  
+  else    size(display_width, display_height);
+
   noStroke();
   fill(0);
 
@@ -72,7 +72,8 @@ void setup()
   tuioClient  = new TuioProcessing(this);
   minim = new Minim(this);
   SetupClipDict();
-  SetupIdToArg();
+  SetupFuncMap();
+  SetupBoolMap();
   SetupIdToType();
   SetupBlockMap();
   SetupIdToEffect();
@@ -81,7 +82,7 @@ void setup()
   //playBlocks = new ArrayList<Block>();
   allFunctionBlocks = new ArrayList<FunctionBlock>();
   allButtons = new ArrayList<Button>();
-  
+
 
 
   isInitiated = true;
@@ -96,73 +97,78 @@ void setup()
 void draw()
 {
   background(255);
-  
-  if (showFPS){
-      textSize(32);
-      textAlign(LEFT, TOP);
-      fill(255, 0, 0);
-      text((int)frameRate, 10, 10); 
+
+  if (showFPS) {
+    textSize(32);
+    textAlign(LEFT, TOP);
+    fill(255, 0, 0);
+    text((int)frameRate, 10, 10);
   }
-    
+
   textFont(font, 18*scale_factor);
 
   TuioUpdate();
 
   strokeWeight(5);
   stroke(0);
-    for (Button b : allButtons) {
-      if (b.isShowing)
+  for (Button b : allButtons) {
+    if (b.isShowing)
       b.drawButton();
-    }
-     
-  for (Block b : allBlocks) {
-    b.drawShadow();
-  }
-  
-  
-  if (hoverDebug){
-    HoverDebug();
   }
 
+  for (Block b : allBlocks) {
+    b.Update();
+    b.draw();
+  }
+
+
+  if (hoverDebug) {
+    HoverDebug();
+  }
 }
 
 
-boolean sketchFullScreen(){
+boolean sketchFullScreen() {
   return (fullscreen);
 }
 
 
 void keyPressed() {
   if (key == ' ') {
-    //println("space pressed");
+    for(FunctionBlock func : allFunctionBlocks){
+      func.Activate();
+    
+    }
   }
 }
 
 void mousePressed() {
   if (true) {
-     Click(mouseX,mouseY);
+    Click(mouseX, mouseY);
   }
 }
 
-void HoverDebug(){
+void HoverDebug() {
   Block[] blocks = new Block[allBlocks.size()];
-allBlocks.toArray(blocks); // fill the array  
-for (Block b : blocks) {
-      if (b.IsUnder(mouseX, mouseY)) {
-        Tooltip(new String[]{"symbol id: " + b.sym_id,
-                             "x: " + b.x_pos,
-                             "y: " + b.y_pos,
-                             "rotation" + b.rotation});
+  allBlocks.toArray(blocks); // fill the array  
+  for (Block b : blocks) {
+    if (b.IsUnder(mouseX, mouseY)) {
+      Tooltip(new String[] {
+        "symbol id: " + b.sym_id, 
+        "x: " + b.x_pos, 
+        "y: " + b.y_pos, 
+        "rotation" + b.rotation
       }
+      );
     }
-  
+  }
 }
 
 
-void Click(int x, int y){
-  if (debug){
-    fill(255,0,0);
-    ellipse(x,y,10,10);
+void Click(int x, int y) {
+  if (debug) {
+    fill(255, 0, 0);
+    ellipse(x, y, 10, 10);
   }
   Button[] buttons = new Button[allButtons.size()];
   allButtons.toArray(buttons); // fill the array  
@@ -172,3 +178,4 @@ void Click(int x, int y){
     }
   }
 }
+

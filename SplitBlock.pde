@@ -1,13 +1,22 @@
-class SplitBlock extends Block{
-  
-  SplitBlock(TuioObject tObj){
-    numLeads = 2;
-    Init(tObj);
-  }
-  
-  void Setup(){}
-  void Update(){}
-  void OnRemove(){}
-  void Activate(){}
+class SplitBlock extends Block {
 
+  SplitBlock(TuioObject tObj) {
+    Init(tObj, 2);
+  }
+
+  void Setup() {
+  }
+  void Update() {
+    super.Update();
+  }
+  void OnRemove() {
+        super.OnRemove();
+
+  }
+  void Activate() {
+    for (Block b : children) {
+      if (b != null) b.Activate();
+    }
+  }
 }
+

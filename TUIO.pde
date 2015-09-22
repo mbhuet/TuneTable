@@ -157,7 +157,7 @@ void TuioUpdate() {
       case UPDATE :
         Block upBlock = blockMap.get(curObj.getSessionID());
         if (upBlock!=null){
-          upBlock.Update();
+          upBlock.UpdatePosition();
         }
         break;
         
