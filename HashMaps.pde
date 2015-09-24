@@ -131,32 +131,32 @@ HashMap<Integer, BlockType> idToType;
 void SetupIdToType(){
   idToType = new HashMap<Integer, BlockType>();
   
-  //FUNCTION
+  //FUNCTION 0-9
   for(int i = 0; i < 10; i++){
     idToType.put(i, BlockType.FUNCTION);
   }
   
-  //CALL
+  //CALL 10-19
   for(int i = 10; i < 20; i++){
     idToType.put(i, BlockType.CALL);
   }
   
-  //CLIPS
+  //CLIPS 20-99
   for(int i = 20; i < 100; i++){
     idToType.put(i, BlockType.CLIP);
   }
   
-  //BOOLEANS
+  //BOOLEANS 100-109
   for(int i = 100; i < 110; i++){
     idToType.put(i, BlockType.BOOLEAN);
   }
   
-  //CONDITIONALS
+  //CONDITIONALS 110-119
   for(int i = 110; i < 120; i++){
     idToType.put(i, BlockType.CONDITIONAL);
   }
   
-  //COUNTDOWN
+  //COUNTDOWN 120
   idToType.put(120, BlockType.COUNTDOWN);
   
 }

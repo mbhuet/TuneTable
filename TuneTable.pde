@@ -26,14 +26,14 @@ Delay myDelay;
 
 boolean debug = true;
 boolean showFPS = false;
-boolean hoverDebug = false;
+boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = true;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
 float cursor_size = 15;
-int block_diameter = 115; //because block height is uniform, this is all we need to scale the block shadows
+int block_diameter = 300; //because block height is uniform, this is all we need to scale the block shadows
 float table_size = 760;
 float scale_factor = 1;
 float cur_size = cursor_size*scale_factor; 
@@ -157,7 +157,8 @@ void HoverDebug() {
         "symbol id: " + b.sym_id, 
         "x: " + b.x_pos, 
         "y: " + b.y_pos, 
-        "rotation" + b.rotation
+        "rotation: " + b.rotation,
+        "children: " + Arrays.toString(b.children)
       }
       );
     }

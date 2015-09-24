@@ -139,11 +139,15 @@ void TuioUpdate() {
           case SPLIT:
                       newBlock = new SplitBlock(curObj);
           break;
+          
+          default:
+                      newBlock = new FunctionBlock(curObj);
+          break;
         }
-      /*
-        Block newBlock = new Block(curBlock);
+      
+        //Block newBlock = new Block(curBlock);
         blockMap.put(newBlock.tuioObj.getSessionID(), newBlock);
-        */
+        
         break;
         
       case REMOVE :

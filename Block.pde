@@ -27,6 +27,7 @@ abstract class Block {
     sym_id = tobj.getSymbolID();
     allBlocks.add(this);
 
+    parents = new ArrayList<Block>();
     children = new Block[numLeads];
     leads = new Lead[numLeads];
 
@@ -38,15 +39,18 @@ abstract class Block {
   }
 
   void Update() { 
-    for (Lead l : leads) {
+    for (int i = 0; i< numLeads; i++) {
+      Lead l = leads[i];
       l.Update();
+      if (l.distance > l.break_distance){
+        breakConnection(i);
+      }
     }
   }
   
   void OnRemove(){
     breakAllConnections();
     allBlocks.remove(this);
-    blockMap.remove(tuioObj.getSessionId());
   }
 
 
@@ -125,8 +129,8 @@ abstract class Block {
 
   public void findParents() {
     for (Block block : allBlocks) {
-      for (int i = 0; i<numLeads; i++) {
-        if (children[i] == null) {
+      for (int i = 0; i< block.numLeads; i++) {
+        if (block.children[i] == null) {
           if (!(block.parents.contains(this) || this.parents.contains(block)) && block.leads[i].isUnderBlock(this)) {
             block.makeConnection(this, i);
           }
@@ -139,7 +143,9 @@ abstract class Block {
     for(int i = 0; i< numLeads; i++){
       breakConnection(i);
     }
-    for(Block p : parents){
+    Block[] parentsArray = new Block[parents.size()];
+    parents.toArray(parentsArray);
+    for(Block p : parentsArray){
       p.breakConnection(this);
     }
   }

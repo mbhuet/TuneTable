@@ -3,7 +3,8 @@ class Lead{
   Block occupant;
   float rotation;
   
-  float distance = block_diameter * 1.5;
+  float distance;
+  float reg_distance = block_diameter * 1.5;
   float break_distance = block_diameter * 2; //at what distance will a connection break;
   float connect_snap_dist = block_diameter / 2; //how close does a block need to be to connect to this lead?
   boolean occupied;
@@ -12,14 +13,12 @@ class Lead{
     this.owner = owner;
     this.rotation = rot;
     occupied = false;
+    distance = reg_distance;
   }
   
   public void Update(){
     if (occupied){
       trackBlock(occupant);
-      if (distance > break_distance){
-        disconnect();
-      }
     }
   }
   
@@ -31,12 +30,13 @@ class Lead{
     translate(owner.x_pos, owner.y_pos);
     rotate(rotation);
 
-    line(0, 0, distance, 0);
+    line(0, 0, distance - block_diameter/2, 0);
     
     translate(distance,0);
     stroke(0);
     strokeWeight(3);
     dashedCircle(0, 0, block_diameter, 10);
+    popMatrix();
   }
   
   public boolean isUnderBlock(Block b){
@@ -55,11 +55,12 @@ class Lead{
   public void disconnect(){
     occupant = null;
     occupied = false;
+    distance = reg_distance;
   }
   
   void trackBlock(Block block){                       
-    rotation = atan(block.y_pos - owner.y_pos /
-                    block.x_pos - owner.x_pos);
+    rotation = atan2((block.y_pos - owner.y_pos) ,
+                    (block.x_pos - owner.x_pos));
     distance = dist(block.x_pos, block.y_pos, owner.x_pos, owner.y_pos);
   }
 

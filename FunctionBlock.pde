@@ -1,7 +1,9 @@
 class FunctionBlock extends Block {
-
+  color funcColor;
+  
   FunctionBlock(TuioObject tObj) {
     Init(tObj, 1);
+    funcColor = color(0,255,0);
   }
 
   void Setup() {
