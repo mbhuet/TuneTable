@@ -188,6 +188,8 @@ abstract class Block {
     fill(0);  // Set fill to black
     ellipse(x_pos, y_pos, block_diameter, block_diameter);
   }
+  
+  
 
   void drawLeads() {
     for (Lead l : leads) {
@@ -204,4 +206,3 @@ abstract class Block {
     return ("\nid: " + sym_id + "  x: " + x_pos + "  y: " + y_pos);
   }
 }
-

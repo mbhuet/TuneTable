@@ -33,7 +33,7 @@ boolean analyticsOn = true;
 // these are some helper variables which are used
 // to create scalable graphical feedback
 float cursor_size = 15;
-int block_diameter = 300; //because block height is uniform, this is all we need to scale the block shadows
+int block_diameter = 300;
 float table_size = 760;
 float scale_factor = 1;
 float cur_size = cursor_size*scale_factor; 
@@ -179,4 +179,3 @@ void Click(int x, int y) {
     }
   }
 }
-
