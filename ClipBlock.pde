@@ -56,6 +56,10 @@ class ClipBlock extends Block {
       //println(clip_length);
     } else {
       println("No clip found for " + sym_id + ": Possible typo");
+      ClipInfo info =  clipDict.get(1);
+      String clip_name = info.name;
+      clip = minim.loadFile("clips/"+clip_name+".wav");
+      clip.rewind();
     }
   }
 

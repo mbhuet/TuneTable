@@ -1,7 +1,7 @@
 class PlayHead {
   Block activeBlock;
   LinkedList<Lead> path;
-  float pathDecayRate = 0.1f;
+  float pathDecayRate = 0.05f;
   float pathDist = 0;
   color playColor;
   int lastMillis = 0;
@@ -37,9 +37,10 @@ class PlayHead {
   }
 
   void travel() {
-    println("playhead travel");
+    //println("playhead travel");
     int[] nextBlockIndices = activeBlock.getSuccessors();
     for (int i = 0; i<nextBlockIndices.length; i++) {
+
       Block nextBlock = activeBlock.children[nextBlockIndices[i]];
       if (nextBlock != null) {
         if (i > 0) {
@@ -47,8 +48,9 @@ class PlayHead {
           newPlay.addLead(activeBlock.leads[nextBlockIndices[i]]);
         } else {
           addLead(activeBlock.leads[nextBlockIndices[i]]);
-          nextBlock.Activate(this, activeBlock);
+          Block lastBlock = activeBlock;
           activeBlock = nextBlock;
+          nextBlock.Activate(this, lastBlock);
         }
       } else {
         dead = true;

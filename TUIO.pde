@@ -106,8 +106,8 @@ void TuioUpdate() {
     switch(wrap.action){
       case ADD :
         Block newBlock;
-        println(curObj.getSymbolID());
-        BlockType type = idToType.get(curObj.getSymbolID());
+        BlockType type = BlockType.FUNCTION;
+        type = idToType.get(curObj.getSymbolID());
         switch (type){
           case FUNCTION:
               newBlock = new FunctionBlock(curObj);

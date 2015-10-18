@@ -59,6 +59,7 @@ abstract class Block {
   //previous is the block that has lead the PlayHead to this block
   public void Activate(PlayHead play, Block previous) {
     playHeadList.add(play);
+    //println(sym_id);
   }
 
   public void finish() {

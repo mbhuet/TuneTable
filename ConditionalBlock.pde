@@ -7,21 +7,23 @@ class ConditionalBlock extends Block {
   }
 
   void Setup() {
-    boolId = sym_id - 10; //booleans are 100-109, corresponding conditionals are 110-119
-    isTrue = boolMap.get(boolId);
+    boolId = 112;//sym_id - 10; //booleans are 100-109, corresponding conditionals are 110-119
+    isTrue =( boolMap.containsKey(boolId) && boolMap.get(boolId));
   }
 
   void Update() {
     super.Update();
-
-    isTrue = boolMap.get(boolId);
+    leadsActive =  (parents.size() > 0) ? true : false;
+    
+    isTrue = ( boolMap.containsKey(boolId) && boolMap.get(boolId));
   }
   void OnRemove() {
         super.OnRemove();
 
   }
     public void Activate(PlayHead play, Block previous) {
-    super.Activate(play, previous);
+      super.Activate(play, previous);
+    
     finish();
   }
   
