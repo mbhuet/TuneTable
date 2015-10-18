@@ -33,7 +33,7 @@ boolean analyticsOn = true;
 // these are some helper variables which are used
 // to create scalable graphical feedback
 float cursor_size = 15;
-int block_diameter = 300;
+int block_diameter = 120;
 float table_size = 760;
 float scale_factor = 1;
 float cur_size = cursor_size*scale_factor;
@@ -48,6 +48,7 @@ static int display_height = 480;
 List<Block> allBlocks;
 List<FunctionBlock> allFunctionBlocks;
 List<Button> allButtons;
+List<PlayHead> allPlayHeads;
 
 
 
@@ -80,11 +81,12 @@ void setup()
   SetupIdToType();
   SetupBlockMap();
   SetupIdToEffect();
-
+  
   allBlocks = new ArrayList<Block>();
   //playBlocks = new ArrayList<Block>();
   allFunctionBlocks = new ArrayList<FunctionBlock>();
   allButtons = new ArrayList<Button>();
+  allPlayHeads = new ArrayList<PlayHead>();
 
 
 
@@ -126,6 +128,11 @@ void draw()
     b.Update();
     b.draw();
   }
+  
+  for (PlayHead p : allPlayHeads) {
+    p.Update();
+    p.draw();
+  }
 
 
   if (hoverDebug) {
@@ -141,6 +148,7 @@ boolean sketchFullScreen() {
 
 void keyPressed() {
   if (key == ' ') {
+    println("space " + millis());
     for(FunctionBlock func : allFunctionBlocks){
       func.execute();
     

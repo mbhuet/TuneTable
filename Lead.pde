@@ -55,7 +55,6 @@ class Lead{
     line( (distance - block_diameter) * (1.0-percent), 0, distance - block_diameter, 0);
     
     popMatrix();
-    println(1.0-percent);
     
   }
   

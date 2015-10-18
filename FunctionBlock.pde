@@ -23,8 +23,9 @@ class FunctionBlock extends Block {
     funcMap.remove(sym_id);
   }
 
-  void Activate(PlayHead play){
-    super.Activate(play);
+    public void Activate(PlayHead play, Block previous) {
+    super.Activate(play, previous);
+    println("func activated");
     finish();
   }
   

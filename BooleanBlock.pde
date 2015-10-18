@@ -17,8 +17,8 @@ class BooleanBlock extends Block{
     boolMap.put(sym_id, false);  
   }
   
-  void Activate(PlayHead play){
-    super.Activate(play);
+  void Activate(PlayHead play, Block previous){
+    super.Activate(play, previous);
   }
   
   public int[] getSuccessors(){

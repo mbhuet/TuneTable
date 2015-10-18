@@ -3,8 +3,9 @@ class ClipBlock extends Block {
   int playTimer = 0;
   int startTime = 0;
   boolean isPlaying = false;
-  
   boolean pie = true;
+  
+  Block previous;
 
   ClipBlock(TuioObject tObj) {
     Init(tObj, 1);
@@ -29,8 +30,9 @@ class ClipBlock extends Block {
     }
   
 
-  void Activate(PlayHead play){
-    super.Activate(play);
+    public void Activate(PlayHead play, Block previous) {
+    super.Activate(play, previous);
+    this.previous = previous;
     Play();
   }
   
@@ -79,7 +81,9 @@ class ClipBlock extends Block {
     fill(0, 102, 153);
     noStroke();
     translate(x_pos, y_pos);
-    rotate(0); //should rotate such that the start angle points to the parent
+    float arcRot = atan2((previous.y_pos - this.y_pos) ,
+                    (previous.x_pos - this.x_pos));
+    rotate(arcRot); //should rotate such that the start angle points to the parent
     arc(0, 0, block_diameter * 1.25f, block_diameter * 1.25f, 0, (float)clip.position()/(float)clip.length() * 2*PI, PIE);
     popMatrix();
 

@@ -13,8 +13,8 @@ class SplitBlock extends Block {
         super.OnRemove();
 
   }
-  void Activate(PlayHead play){
-    super.Activate(play);
+    public void Activate(PlayHead play, Block previous) {
+    super.Activate(play, previous);
     finish();
   }
   

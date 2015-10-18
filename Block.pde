@@ -56,7 +56,8 @@ abstract class Block {
     allBlocks.remove(this);
   }
 
-  public void Activate(PlayHead play) {
+  //previous is the block that has lead the PlayHead to this block
+  public void Activate(PlayHead play, Block previous) {
     playHeadList.add(play);
   }
 

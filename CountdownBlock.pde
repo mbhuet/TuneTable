@@ -26,8 +26,8 @@ class CountdownBlock extends Block {
 
   }
 
-  void Activate(PlayHead play){
-    super.Activate(play);
+    public void Activate(PlayHead play, Block previous) {
+    super.Activate(play, previous);
     count--;
     finish();
   }
