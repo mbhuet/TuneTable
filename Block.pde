@@ -7,6 +7,7 @@ abstract class Block {
   float rotation;
   BlockType type;
   int numLeads = 0;
+  boolean leadsActive = false;
 
   float block_width;
 
@@ -14,12 +15,14 @@ abstract class Block {
   Block[] children;
   Lead[] leads;
 
+  LinkedList<PlayHead> playHeadList = new LinkedList<PlayHead>();
+
   ArrayList<PVector> posHistory = new ArrayList<PVector>();
   ArrayList<Float> rotHistory = new ArrayList<Float>();
   int historyVals = 10;
 
   abstract void Setup();
-  abstract void Activate();
+  abstract int[] getSuccessors();
 
   void Init(TuioObject tobj, int numLeads) {
     this.numLeads = numLeads;
@@ -42,16 +45,26 @@ abstract class Block {
     for (int i = 0; i< numLeads; i++) {
       Lead l = leads[i];
       l.Update();
-      if (l.distance > l.break_distance){
+      if (l.distance > l.break_distance) {
         breakConnection(i);
       }
     }
   }
-  
-  void OnRemove(){
+
+  void OnRemove() {
     breakAllConnections();
     allBlocks.remove(this);
   }
+
+  public void Activate(PlayHead play) {
+    playHeadList.add(play);
+  }
+
+  public void finish() {
+    PlayHead play = playHeadList.pop();
+    play.travel();
+  }
+
 
 
 
@@ -106,10 +119,12 @@ abstract class Block {
       }
       rotation = avg_rot;
     }
-    
+
     //these two methods could be combined for efficiency, if necessary
     findParents();
-    findChildren();
+    if (leadsActive) {
+      findChildren();
+    }
   }
 
 
@@ -138,14 +153,14 @@ abstract class Block {
       }
     }
   }
-  
-  public void breakAllConnections(){
-    for(int i = 0; i< numLeads; i++){
+
+  public void breakAllConnections() {
+    for (int i = 0; i< numLeads; i++) {
       breakConnection(i);
     }
     Block[] parentsArray = new Block[parents.size()];
     parents.toArray(parentsArray);
-    for(Block p : parentsArray){
+    for (Block p : parentsArray) {
       p.breakConnection(this);
     }
   }
@@ -165,13 +180,13 @@ abstract class Block {
       leads[i].disconnect();
     }
   }
-  
+
   void breakConnection(Block b) {
-    for (int i = 0; i<numLeads; i++){
-      if (children[i] == b){
-          children[i].parents.remove(this);
-          children[i] = null;
-          leads[i].disconnect();
+    for (int i = 0; i<numLeads; i++) {
+      if (children[i] == b) {
+        children[i].parents.remove(this);
+        children[i] = null;
+        leads[i].disconnect();
       }
     }
   }
@@ -179,7 +194,8 @@ abstract class Block {
 
   public void draw() {
     drawShadow();
-    drawLeads();
+    if (leadsActive)
+      drawLeads();
   }
 
   void drawShadow() {
@@ -188,10 +204,11 @@ abstract class Block {
     fill(0);  // Set fill to black
     ellipse(x_pos, y_pos, block_diameter, block_diameter);
   }
-  
-  
+
+
 
   void drawLeads() {
+
     for (Lead l : leads) {
       l.draw();
     }
@@ -206,3 +223,4 @@ abstract class Block {
     return ("\nid: " + sym_id + "  x: " + x_pos + "  y: " + y_pos);
   }
 }
+

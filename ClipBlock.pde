@@ -15,6 +15,7 @@ class ClipBlock extends Block {
   }
   void Update() {
     super.Update();
+    leadsActive =  (parents.size() > 0) ? true : false;
     //println("---"+clip.position());
     if (isPlaying) {
       if(pie)drawArc();
@@ -23,15 +24,18 @@ class ClipBlock extends Block {
       if (clip.position() >= clip.length()) {
         //println("reached end " + playTimer + " / " + clip_length);
         Stop();
-        if (children[0] != null)
-          children[0].Activate();
+        }
       }
     }
-  }
+  
 
-  void Activate() {
-    //println("activate at " + millis());
+  void Activate(PlayHead play){
+    super.Activate(play);
     Play();
+  }
+  
+  public int[] getSuccessors(){
+    return new int[]{0};
   }
 
   void OnRemove() {
@@ -39,6 +43,7 @@ class ClipBlock extends Block {
 
     clip.close();
   }
+  
 
   void LoadClip() {
     if (clipDict.containsKey(sym_id)) {
@@ -66,6 +71,7 @@ class ClipBlock extends Block {
     isPlaying = false;
     clip.rewind();
     //println("rewind " + clip.position() + " at millis " + millis());
+    finish();
   }
   
   void drawArc(){

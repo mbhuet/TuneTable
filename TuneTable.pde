@@ -36,7 +36,10 @@ float cursor_size = 15;
 int block_diameter = 300;
 float table_size = 760;
 float scale_factor = 1;
-float cur_size = cursor_size*scale_factor; 
+float cur_size = cursor_size*scale_factor;
+int bpm = 60;
+int millisPerBeat;
+int beatNo = 0;
 PFont font;
 
 static int display_width = 640;
@@ -86,7 +89,7 @@ void setup()
 
 
   isInitiated = true;
-
+  millisPerBeat = 6000/bpm;
 
   if (debug) {
     //Block b = new Block(0);
@@ -104,7 +107,10 @@ void draw()
     fill(255, 0, 0);
     text((int)frameRate, 10, 10);
   }
-
+  
+  beatNo = (millis() /millisPerBeat);
+  //println("millis " + millis() + " beat " + beatNo + " rem " + millis()%millisPerBeat);
+  
   textFont(font, 18*scale_factor);
 
   TuioUpdate();
@@ -136,7 +142,7 @@ boolean sketchFullScreen() {
 void keyPressed() {
   if (key == ' ') {
     for(FunctionBlock func : allFunctionBlocks){
-      func.Activate();
+      func.execute();
     
     }
   }

@@ -13,7 +13,13 @@ class EffectBlock extends Block {
         super.OnRemove();
 
   }
-  void Activate() {
+  void Activate(PlayHead play){
+    super.Activate(play);
+    finish();
+  }
+  
+  public int[] getSuccessors(){
+    return new int[]{0};
   }
 }
 

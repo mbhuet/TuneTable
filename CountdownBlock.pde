@@ -26,10 +26,15 @@ class CountdownBlock extends Block {
 
   }
 
-  void Activate() {
-    if (count > 0 && children[0] != null) children[0].Activate();
-    else if (count ==0 && children[1] != null) children[1].Activate();
+  void Activate(PlayHead play){
+    super.Activate(play);
     count--;
+    finish();
+  }
+  
+  public int[] getSuccessors(){
+    if (count > 0) return new int[]{0};
+    else return new int[]{1};
   }
 
 

@@ -39,6 +39,26 @@ class Lead{
     popMatrix();
   }
   
+  public void highlightTravelled(float percent, color col){
+    percent = min(1,percent);
+    percent = max(0,percent);
+    stroke(col);
+    strokeWeight(block_diameter/4);
+    strokeCap(SQUARE);
+
+    pushMatrix();
+    
+    translate(owner.x_pos, owner.y_pos);
+    rotate(rotation);
+    translate(block_diameter/2,0);
+
+    line( (distance - block_diameter) * (1.0-percent), 0, distance - block_diameter, 0);
+    
+    popMatrix();
+    println(1.0-percent);
+    
+  }
+  
   public boolean isUnderBlock(Block b){
     float look_x = owner.x_pos + cos(rotation) * distance;
     float look_y = owner.y_pos + sin(rotation) * distance;

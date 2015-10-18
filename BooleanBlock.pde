@@ -16,6 +16,13 @@ class BooleanBlock extends Block{
     super.OnRemove();
     boolMap.put(sym_id, false);  
   }
-  void Activate(){}
+  
+  void Activate(PlayHead play){
+    super.Activate(play);
+  }
+  
+  public int[] getSuccessors(){
+    return new int[]{};
+  }
 
 }

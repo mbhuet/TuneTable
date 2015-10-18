@@ -3,6 +3,7 @@ class FunctionBlock extends Block {
   
   FunctionBlock(TuioObject tObj) {
     Init(tObj, 1);
+    leadsActive = true;
     funcColor = color(0,255,0);
   }
 
@@ -22,8 +23,19 @@ class FunctionBlock extends Block {
     funcMap.remove(sym_id);
   }
 
-  void Activate() {
-    if (children[0] != null) children[0].Activate();
+  void Activate(PlayHead play){
+    super.Activate(play);
+    finish();
   }
+  
+  public int[] getSuccessors(){
+    return new int[]{0};
+  }
+  
+  
+  void execute(){
+     PlayHead pHead = new PlayHead(this, color(0, 102, 153));
+  }
+  
 }
 

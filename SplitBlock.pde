@@ -13,10 +13,18 @@ class SplitBlock extends Block {
         super.OnRemove();
 
   }
-  void Activate() {
-    for (Block b : children) {
-      if (b != null) b.Activate();
+  void Activate(PlayHead play){
+    super.Activate(play);
+    finish();
+  }
+  
+  //TODO should return two blocks
+  public int[] getSuccessors(){
+    int[] suc = new int[children.length];
+    for(int i = 0; i<suc.length; i++){
+      suc[i] = i;
     }
+    return suc;
   }
 }
 

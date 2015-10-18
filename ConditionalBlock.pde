@@ -20,9 +20,14 @@ class ConditionalBlock extends Block {
         super.OnRemove();
 
   }
-  void Activate() {
-    if (isTrue && children[0] != null) children[0].Activate();
-    else if (!isTrue && children[1] != null) children[1].Activate();
+  void Activate(PlayHead play){
+    super.Activate(play);
+    finish();
+  }
+  
+  public int[] getSuccessors(){
+    if (isTrue) return new int[]{0};
+    else return new int[]{1};
   }
 }
 
