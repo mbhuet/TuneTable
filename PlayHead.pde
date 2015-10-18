@@ -11,8 +11,8 @@ class PlayHead{
   }
   
   void travel(){
-    int[] nextBlockIndices = activeBlock.getSuccessos();
-    for(int i = 0; i<nextBlocks.length; i++){
+    int[] nextBlockIndices = activeBlock.getSuccessors();
+    for(int i = 0; i<nextBlockIndices.length; i++){
       Block nextBlock = activeBlock.children[nextBlockIndices[i]];
       if (nextBlock != null){
         if (i > 0){
