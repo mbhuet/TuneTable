@@ -46,6 +46,7 @@ static int display_width = 640;
 static int display_height = 480;
 
 List<Block> allBlocks;
+List<Block> missingBlocks;
 List<FunctionBlock> allFunctionBlocks;
 List<Button> allButtons;
 List<PlayHead> allPlayHeads;
@@ -83,7 +84,7 @@ void setup()
   SetupIdToEffect();
   
   allBlocks = new ArrayList<Block>();
-  //playBlocks = new ArrayList<Block>();
+  missingBlocks = new ArrayList<Block>();
   allFunctionBlocks = new ArrayList<FunctionBlock>();
   allButtons = new ArrayList<Button>();
   allPlayHeads = new ArrayList<PlayHead>();

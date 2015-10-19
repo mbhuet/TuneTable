@@ -8,6 +8,7 @@ abstract class Block {
   BlockType type;
   int numLeads = 0;
   boolean leadsActive = false;
+  boolean isMissing = false;
 
   float block_width;
 
@@ -20,6 +21,8 @@ abstract class Block {
   ArrayList<PVector> posHistory = new ArrayList<PVector>();
   ArrayList<Float> rotHistory = new ArrayList<Float>();
   int historyVals = 10;
+  int missingSince = 0;
+  final int deathDelay = 2000;
 
   abstract void Setup();
   abstract int[] getSuccessors();
@@ -49,9 +52,22 @@ abstract class Block {
         breakConnection(i);
       }
     }
+    if (isMissing){
+      if (millis() - missingSince >= deathDelay){
+        Die();
+      }
+    }
   }
+  
+  
 
   void OnRemove() {
+    missingBlocks.add(this);
+    isMissing = true;
+    missingSince = millis();
+  }
+  
+  void Die(){
     breakAllConnections();
     allBlocks.remove(this);
   }
