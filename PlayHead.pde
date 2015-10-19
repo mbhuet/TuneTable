@@ -60,6 +60,7 @@ class PlayHead {
   }
 
   void highlightPath() {
+    if (path.peekFirst() == null) return;
 
     float totalDist = 0;
     for (Lead l : path) {

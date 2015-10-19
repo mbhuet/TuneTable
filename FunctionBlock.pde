@@ -19,6 +19,11 @@ class FunctionBlock extends Block {
   void OnRemove() {
         super.OnRemove();
 
+    
+  }
+  
+  void Die(){
+    super.Die();
     allFunctionBlocks.remove(this);
     funcMap.remove(sym_id);
   }

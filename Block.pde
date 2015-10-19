@@ -73,13 +73,14 @@ abstract class Block {
     isMissing = true;
     missingSince = millis();
     blockMap.remove(tuioObj.getSessionID());
-
+    //println("block missing " + this);
   }
   
   void find(TuioObject newObj){
     isMissing = false;
     missingBlocks.remove(this);
     setTuioObject(newObj);
+    //println("block found " + this);
   }
   
   void Die(){
@@ -255,7 +256,7 @@ abstract class Block {
   }
 
   public String toString() {
-    return ("\nid: " + sym_id + "  x: " + x_pos + "  y: " + y_pos);
+    return ("id: " + sym_id + "  x: " + x_pos + "  y: " + y_pos);
   }
 }
 

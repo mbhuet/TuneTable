@@ -19,11 +19,12 @@ class ClipBlock extends Block {
     leadsActive =  (parents.size() > 0) ? true : false;
     //println("---"+clip.position());
     if (isPlaying) {
+      //println(clip.isPlaying() + " at " + clip.position() + " / " + clip.length());
       if(pie)drawArc();
       else drawBeat();
       playTimer += millis() - startTime;
       if (clip.position() >= clip.length()) {
-        //println("reached end " + playTimer + " / " + clip_length);
+        println("reached end " + clip.length());
         Stop();
         }
       }
@@ -42,8 +43,12 @@ class ClipBlock extends Block {
 
   void OnRemove() {
         super.OnRemove();
+  }
+  
+  void Die(){
+    super.Die();
+        clip.close();
 
-    clip.close();
   }
   
 
@@ -64,11 +69,12 @@ class ClipBlock extends Block {
   }
 
   void Play() {
-    println("play " + clip.position() + " at millis " + millis());
     playTimer = 0;
     isPlaying = true;
     clip.play();
     startTime = millis();
+    println(clip.isPlaying() +" play " + clip.length() + " at millis " + millis());
+
   }
 
   void Stop() {
@@ -85,8 +91,11 @@ class ClipBlock extends Block {
     fill(0, 102, 153);
     noStroke();
     translate(x_pos, y_pos);
-    float arcRot = atan2((previous.y_pos - this.y_pos) ,
+    float arcRot = 0;
+    if (previous != null){
+    arcRot = atan2((previous.y_pos - this.y_pos) ,
                     (previous.x_pos - this.x_pos));
+    }
     rotate(arcRot); //should rotate such that the start angle points to the parent
     arc(0, 0, block_diameter * 1.25f, block_diameter * 1.25f, 0, (float)clip.position()/(float)clip.length() * 2*PI, PIE);
     popMatrix();
