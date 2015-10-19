@@ -22,15 +22,14 @@ abstract class Block {
   ArrayList<Float> rotHistory = new ArrayList<Float>();
   int historyVals = 10;
   int missingSince = 0;
-  final int deathDelay = 2000;
+  final int deathDelay = 500;
 
   abstract void Setup();
   abstract int[] getSuccessors();
 
   void Init(TuioObject tobj, int numLeads) {
     this.numLeads = numLeads;
-    tuioObj = tobj;
-    sym_id = tobj.getSymbolID();
+    setTuioObject(tobj);
     allBlocks.add(this);
 
     parents = new ArrayList<Block>();
@@ -43,6 +42,13 @@ abstract class Block {
 
     Setup();
   }
+  
+  void setTuioObject(TuioObject tobj){
+    tuioObj = tobj;
+    sym_id = tobj.getSymbolID();
+    blockMap.put(tobj.getSessionID(), this);
+
+  }
 
   void Update() { 
     for (int i = 0; i< numLeads; i++) {
@@ -54,29 +60,40 @@ abstract class Block {
     }
     if (isMissing){
       if (millis() - missingSince >= deathDelay){
-        Die();
+        missingBlocks.remove(this);
+        killBlocks.add(this);
       }
     }
   }
   
   
 
-  void OnRemove() {
+  void OnRemove() {    
     missingBlocks.add(this);
     isMissing = true;
     missingSince = millis();
+    blockMap.remove(tuioObj.getSessionID());
+
+  }
+  
+  void find(TuioObject newObj){
+    isMissing = false;
+    missingBlocks.remove(this);
+    setTuioObject(newObj);
   }
   
   void Die(){
     breakAllConnections();
     allBlocks.remove(this);
+    missingBlocks.remove(this);
+    blockMap.remove(tuioObj.getSessionID());
   }
 
   //previous is the block that has lead the PlayHead to this block
   public void Activate(PlayHead play, Block previous) {
     playHeadList.add(play);
-    //println(sym_id);
-  }
+    println("block activated " + this);
+  } 
 
   public void finish() {
     PlayHead play = playHeadList.pop();

@@ -54,6 +54,7 @@ class PlayHead {
         }
       } else {
         dead = true;
+        println("playhead dead");
       }
     }
   }

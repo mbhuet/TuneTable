@@ -9,11 +9,11 @@ AbstractQueue<TuioActionWrapper> actionQueue = new ConcurrentLinkedQueue<TuioAct
 AbstractQueue<TuioCursor> cursorQueue = new ConcurrentLinkedQueue<TuioCursor>();
 
 
-class TuioActionWrapper{
+class TuioActionWrapper {
   TuioAction action;
   TuioObject tObject;
-  
-  TuioActionWrapper(TuioObject tObj, TuioAction act){
+
+  TuioActionWrapper(TuioObject tObj, TuioAction act) {
     action = act;
     tObject = tObj;
   }
@@ -26,26 +26,26 @@ class TuioActionWrapper{
 void addTuioObject(TuioObject tobj) {
   if (!isInitiated) return;
   actionQueue.offer(new TuioActionWrapper(tobj, TuioAction.ADD));
-    
+
   /*
   Block newBlock = new Block(tobj);
-  */
-  
+   */
+
   //println("add object "+tobj.getSymbolID()+" ("+tobj.getSessionID()+") "+tobj.getX()+" "+tobj.getY()+" "+tobj.getAngle());
 }
 
-  
+
 // called when an object is removed from the scene
 void removeTuioObject(TuioObject tobj) {
   if (!isInitiated) return;
-  
+
   actionQueue.offer(new TuioActionWrapper(tobj, TuioAction.REMOVE));
-  
+
   /*
   Block remBlock = blockMap.get(tobj.getSessionID());
-  if (remBlock != null)  killQueue.add(remBlock);
-  */
-  
+   if (remBlock != null)  killQueue.add(remBlock);
+   */
+
   //println("remove object "+tobj.getSymbolID()+" ("+tobj.getSessionID()+")");
 }
 
@@ -53,17 +53,17 @@ void removeTuioObject(TuioObject tobj) {
 // called when an object is moved
 void updateTuioObject (TuioObject tobj) {
   if (!isInitiated) return;
-  
+
   actionQueue.offer(new TuioActionWrapper(tobj, TuioAction.UPDATE));
-  
+
   /*
   Block b = blockMap.get(tobj.getSessionID());
-  
-  if (b!=null){
-    updateQueue.add(b);
-  }
-  */
-  
+   
+   if (b!=null){
+   updateQueue.add(b);
+   }
+   */
+
   //println("update object "+tobj.getSymbolID()+" ("+tobj.getSessionID()+") "+tobj.getX()+" "+tobj.getY()+" "+tobj.getAngle()
   //        +" "+tobj.getMotionSpeed()+" "+tobj.getRotationSpeed()+" "+tobj.getMotionAccel()+" "+tobj.getRotationAccel());
 }
@@ -99,85 +99,98 @@ void refresh(TuioTime bundleTime) {
 
 
 void TuioUpdate() {
-  
+
   while (actionQueue.peek () != null) {
     TuioActionWrapper wrap = actionQueue.poll();
     TuioObject curObj = wrap.tObject;
-    switch(wrap.action){
-      case ADD :
+    switch(wrap.action) {
+    case ADD :
+      if (!checkMissing(curObj)) {
         Block newBlock;
-        BlockType type = BlockType.FUNCTION;
-        type = idToType.get(curObj.getSymbolID());
-        switch (type){
-          case FUNCTION:
-              newBlock = new FunctionBlock(curObj);
+        BlockType type = idToType.get(curObj.getSymbolID());
+        if (type == null) type = BlockType.FUNCTION; //why is it null sometimes?
+
+        switch (type) {
+        case FUNCTION:
+          newBlock = new FunctionBlock(curObj);
           break;
-          
-          case CLIP:
-                      newBlock = new ClipBlock(curObj);
+
+        case CLIP:
+          newBlock = new ClipBlock(curObj);
           break;
-          
-          case COUNTDOWN:            
-                      newBlock = new CountdownBlock(curObj);
+
+        case COUNTDOWN:            
+          newBlock = new CountdownBlock(curObj);
           break;
-    
-          case CONDITIONAL:
-                      newBlock = new ConditionalBlock(curObj);
+
+        case CONDITIONAL:
+          newBlock = new ConditionalBlock(curObj);
           break;
-          
-          case EFFECT:
-                      newBlock = new EffectBlock(curObj);
+
+        case EFFECT:
+          newBlock = new EffectBlock(curObj);
           break;
-          
-          case BOOLEAN:
-                      newBlock = new BooleanBlock(curObj);
+
+        case BOOLEAN:
+          newBlock = new BooleanBlock(curObj);
           break;
-          
-          case CALL:
-                      newBlock = new CallBlock(curObj);
+
+        case CALL:
+          newBlock = new CallBlock(curObj);
           break;
-          
-          case SPLIT:
-                      newBlock = new SplitBlock(curObj);
+
+        case SPLIT:
+          newBlock = new SplitBlock(curObj);
           break;
-          
-          default:
-                      newBlock = new FunctionBlock(curObj);
+
+        default:
+          newBlock = new FunctionBlock(curObj);
           break;
         }
-      
+
         //Block newBlock = new Block(curBlock);
-        blockMap.put(newBlock.tuioObj.getSessionID(), newBlock);
-        
-        break;
-        
-      case REMOVE :
-        Block remBlock = blockMap.get(curObj.getSessionID());
-        if (remBlock != null){
-          remBlock.OnRemove();
-          blockMap.remove(remBlock.tuioObj.getSessionID());
-        }
-        break;
-        
-      case UPDATE :
-        Block upBlock = blockMap.get(curObj.getSessionID());
-        if (upBlock!=null){
-          upBlock.UpdatePosition();
-        }
-        break;
-        
+      }
+      break;
+
+
+    case REMOVE :
+      Block remBlock = blockMap.get(curObj.getSessionID());
+      if (remBlock != null) {
+        remBlock.OnRemove();
+      }
+      break;
+
+    case UPDATE :
+      Block upBlock = blockMap.get(curObj.getSessionID());
+      if (upBlock!=null) {
+        upBlock.UpdatePosition();
+      }
+      break;
     }
   }
-  
-  
+
+  killRemoved();
+
+
   while (cursorQueue.peek () != null) {
-        TuioCursor cur = cursorQueue.poll();
+    TuioCursor cur = cursorQueue.poll();
 
     //println(cur.getScreenX(width) + ", " + cur.getScreenY(height));
     Click((int)cur.getScreenX(width), (int)cur.getScreenY(height));
   }
   //println("tuio stop");
 }
+
+boolean checkMissing(TuioObject tObj) {
+  for (Block miss : missingBlocks) {
+    if (dist(miss.x_pos, miss.y_pos, tObj.getScreenX(width), tObj.getScreenY(height)) < block_diameter/2) { //if this block is close a recently missing block
+      miss.find(tObj);
+      return true;
+    }
+  }
+  return false;
+}
+
 
 
 

@@ -47,6 +47,8 @@ static int display_height = 480;
 
 List<Block> allBlocks;
 List<Block> missingBlocks;
+List<Block> killBlocks;
+
 List<FunctionBlock> allFunctionBlocks;
 List<Button> allButtons;
 List<PlayHead> allPlayHeads;
@@ -85,6 +87,7 @@ void setup()
   
   allBlocks = new ArrayList<Block>();
   missingBlocks = new ArrayList<Block>();
+  killBlocks = new ArrayList<Block>();
   allFunctionBlocks = new ArrayList<FunctionBlock>();
   allButtons = new ArrayList<Button>();
   allPlayHeads = new ArrayList<PlayHead>();
@@ -115,7 +118,8 @@ void draw()
   //println("millis " + millis() + " beat " + beatNo + " rem " + millis()%millisPerBeat);
   
   textFont(font, 18*scale_factor);
-
+  
+  killRemoved();
   TuioUpdate();
 
   strokeWeight(5);
@@ -193,4 +197,11 @@ void Click(int x, int y) {
       b.Trigger();
     }
   }
+}
+
+void killRemoved(){
+  for(Block b : killBlocks){
+    b.Die();
+  }
+  killBlocks.clear();
 }

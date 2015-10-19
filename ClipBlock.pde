@@ -30,7 +30,7 @@ class ClipBlock extends Block {
     }
   
 
-    public void Activate(PlayHead play, Block previous) {
+  public void Activate(PlayHead play, Block previous) {
     super.Activate(play, previous);
     this.previous = previous;
     Play();
@@ -56,7 +56,7 @@ class ClipBlock extends Block {
       //println(clip_length);
     } else {
       println("No clip found for " + sym_id + ": Possible typo");
-      ClipInfo info =  clipDict.get(1);
+      ClipInfo info =  clipDict.get(48);
       String clip_name = info.name;
       clip = minim.loadFile("clips/"+clip_name+".wav");
       clip.rewind();
@@ -64,7 +64,7 @@ class ClipBlock extends Block {
   }
 
   void Play() {
-    //println("play " + clip.position() + " at millis " + millis());
+    println("play " + clip.position() + " at millis " + millis());
     playTimer = 0;
     isPlaying = true;
     clip.play();
