@@ -108,5 +108,7 @@ void SetupIdToType() {
 
   idToType.put(112, BlockType.BOOLEAN);
   idToType.put(111, BlockType.CONDITIONAL);
+    idToType.put(113, BlockType.SPLIT);
+
 }
 

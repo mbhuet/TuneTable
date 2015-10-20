@@ -12,9 +12,9 @@ abstract class Block {
 
   float block_width;
 
-  ArrayList<Block> parents;
-  Block[] children;
-  Lead[] leads;
+  public ArrayList<Block> parents;
+  public Block[] children;
+  public Lead[] leads;
 
   LinkedList<PlayHead> playHeadList = new LinkedList<PlayHead>();
 
@@ -60,8 +60,10 @@ abstract class Block {
     }
     if (isMissing){
       if (millis() - missingSince >= deathDelay){
-        missingBlocks.remove(this);
-        killBlocks.add(this);
+        if(isReadyToDie()){
+          missingBlocks.remove(this);
+          killBlocks.add(this);
+        }
       }
     }
   }
@@ -88,6 +90,10 @@ abstract class Block {
     allBlocks.remove(this);
     missingBlocks.remove(this);
     blockMap.remove(tuioObj.getSessionID());
+  }
+  
+  boolean isReadyToDie(){
+    return true;
   }
 
   //previous is the block that has lead the PlayHead to this block

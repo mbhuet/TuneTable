@@ -39,12 +39,14 @@ class PlayHead {
   void travel() {
     //println("playhead travel");
     int[] nextBlockIndices = activeBlock.getSuccessors();
-    for (int i = 0; i<nextBlockIndices.length; i++) {
-
+    for (int i = nextBlockIndices.length -1; i>=0; i--) {
+      println("looking for child " + i);
+      println(activeBlock.children);
       Block nextBlock = activeBlock.children[nextBlockIndices[i]];
       if (nextBlock != null) {
         if (i > 0) {
-          PlayHead newPlay = new PlayHead(nextBlock, playColor);
+          println("here");
+          PlayHead newPlay = new PlayHead(nextBlock, activeBlock, playColor);
           newPlay.addLead(activeBlock.leads[nextBlockIndices[i]]);
         } else {
           addLead(activeBlock.leads[nextBlockIndices[i]]);
@@ -52,7 +54,7 @@ class PlayHead {
           activeBlock = nextBlock;
           nextBlock.Activate(this, lastBlock);
         }
-      } else {
+      }  else if(i == 0) {
         dead = true;
         println("playhead dead");
       }

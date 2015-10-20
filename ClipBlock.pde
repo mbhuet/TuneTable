@@ -36,7 +36,7 @@ class ClipBlock extends Block {
     this.previous = previous;
     Play();
   }
-  
+     
   public int[] getSuccessors(){
     return new int[]{0};
   }
@@ -49,6 +49,10 @@ class ClipBlock extends Block {
     super.Die();
         clip.close();
 
+  }
+  
+  boolean isReadyToDie(){
+    return (!isPlaying);
   }
   
 

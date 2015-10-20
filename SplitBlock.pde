@@ -8,6 +8,7 @@ class SplitBlock extends Block {
   }
   void Update() {
     super.Update();
+    leadsActive =  (parents.size() > 0) ? true : false;
   }
   void OnRemove() {
         super.OnRemove();
