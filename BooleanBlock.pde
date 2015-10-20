@@ -6,6 +6,7 @@ class BooleanBlock extends Block{
   
   void Setup(){
     boolMap.put(sym_id, true);
+    canBeChained = false;
   }
   
   void Update(){

@@ -8,6 +8,7 @@ abstract class Block {
   BlockType type;
   int numLeads = 0;
   boolean leadsActive = false;
+  boolean canBeChained = true;
   boolean isMissing = false;
 
   float block_width;
@@ -37,7 +38,7 @@ abstract class Block {
     leads = new Lead[numLeads];
 
     for (int i = 0; i<numLeads; i++) {
-      leads[i] = new Lead(this, i * 2*PI / numLeads);
+      leads[i] = new Lead(this, rotation + i * 2*PI / numLeads);
     }
 
     Setup();
@@ -248,26 +249,25 @@ abstract class Block {
     ellipse(x_pos, y_pos, block_diameter, block_diameter);
   }
 
-  void updateLeads(float offset, color col, boolean isActive) {
+  void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> visited) {
     for (int i = 0; i< numLeads; i++) {
+      boolean active = false;
       if (isActive && childIsSuccessor(i)) {
         leads[i].options.dashed = true;
         leads[i].options.offset = offset;
         leads[i].options.col = col;
         leads[i].options.weight = 10;
-        if (children[i] != null) {
-
-          children[i].updateLeads(offset, col, true);
-        }
+        active = true;
       } else {
         leads[i].options.dashed = false;
         leads[i].options.col = color(0);
         leads[i].options.weight = 3;
-        if (children[i] != null) {
-
-          children[i].updateLeads(offset, col, false);
-        }
       }
+        if (children[i] != null && !visited.contains(children[i])) {
+          visited.add(children[i]);
+          children[i].updateLeads(offset, col, active, visited);
+        }
+      
       /*
  
        }

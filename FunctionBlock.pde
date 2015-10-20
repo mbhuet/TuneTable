@@ -13,6 +13,7 @@ class FunctionBlock extends Block {
     allFunctionBlocks.add(this);
     funcMap.put(sym_id, this);
     spawnedPlayHeads = new ArrayList<PlayHead>();
+    canBeChained = false;
   }
 
   void Update() {
@@ -21,7 +22,9 @@ class FunctionBlock extends Block {
   }
   
   void startHighlightPath(){
-    updateLeads(dashedLineOffset, funcColor, true);
+    ArrayList<Block> visited = new ArrayList<Block>();
+    visited.add(this);
+    updateLeads(dashedLineOffset, funcColor, true, visited);
   }
 
   void OnRemove() {
@@ -48,7 +51,9 @@ class FunctionBlock extends Block {
 
 
   void execute() {
+    if (spawnedPlayHeads.size() == 0){
     PlayHead pHead = new PlayHead(this, this, color(0, 102, 153));
+    }
   }
   
   void stop(){

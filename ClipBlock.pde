@@ -64,7 +64,7 @@ class ClipBlock extends Block {
       clip.rewind();
       //println(clip_length);
     } else {
-      println("No clip found for " + sym_id + ": Possible typo");
+      //println("No clip found for " + sym_id + ": Possible typo");
       ClipInfo info =  clipDict.get(48);
       String clip_name = info.name;
       clip = minim.loadFile("clips/"+clip_name+".wav");
@@ -75,6 +75,7 @@ class ClipBlock extends Block {
   void Play() {
     playTimer = 0;
     isPlaying = true;
+    clip.cue(millis() % millisPerBeat);
     clip.play();
     startTime = millis();
     println(clip.isPlaying() +" play " + clip.length() + " at millis " + millis());
@@ -92,8 +93,8 @@ class ClipBlock extends Block {
   
   void drawArc(){
     pushMatrix();
-    fill(0, 102, 153);
     noStroke();
+    fill(0, 102, 153);
     translate(x_pos, y_pos);
     float arcRot = 0;
     if (previous != null){
