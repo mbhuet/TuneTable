@@ -168,6 +168,10 @@ abstract class Block {
     }
   }
 
+  public boolean childIsSuccessor(int i) {
+    return (i < numLeads);
+  }
+
 
 
 
@@ -235,8 +239,6 @@ abstract class Block {
 
   public void draw() {
     drawShadow();
-    if (leadsActive)
-      drawLeads();
   }
 
   void drawShadow() {
@@ -246,18 +248,35 @@ abstract class Block {
     ellipse(x_pos, y_pos, block_diameter, block_diameter);
   }
 
-  void highlightPath(float offset, color col, boolean isActive) {
-    for (int i : this.getSuccessors ()) {
-      Block b = children[i];
-      if (b != null) {
-        //leads[i].highlightActive(offset, col);
-      }
-    }
-    for(Block child : children){
-      if(child != null){
-         //child.highlightPath(offset, col);
+  void updateLeads(float offset, color col, boolean isActive) {
+    for (int i = 0; i< numLeads; i++) {
+      if (isActive && childIsSuccessor(i)) {
+        leads[i].options.dashed = true;
+        leads[i].options.offset = offset;
+        leads[i].options.col = col;
+        leads[i].options.weight = 10;
+        if (children[i] != null) {
 
+          children[i].updateLeads(offset, col, true);
+        }
+      } else {
+        leads[i].options.dashed = false;
+        leads[i].options.col = color(0);
+        leads[i].options.weight = 3;
+        if (children[i] != null) {
+
+          children[i].updateLeads(offset, col, false);
+        }
       }
+      /*
+ 
+       }
+       else{
+       leads[i].options.dashed = false;
+       leads[i].options.col = color(0);
+       leads[i].options.weight = 3;
+       }
+       */
     }
   }
 

@@ -16,9 +16,10 @@ class ConditionalBlock extends Block {
   void Update() {
     super.Update();
     leadsActive =  (parents.size() > 0) ? true : false;
-    
     isTrue = ( boolMap.containsKey(boolId) && boolMap.get(boolId));
   }
+  
+  
   void OnRemove() {
         super.OnRemove();
 
@@ -27,6 +28,11 @@ class ConditionalBlock extends Block {
       super.Activate(play, previous);
     
     finish();
+  }
+  
+  public boolean childIsSuccessor(int i){
+    if (i == 0) return isTrue;
+    else return !isTrue;
   }
   
   public int[] getSuccessors(){

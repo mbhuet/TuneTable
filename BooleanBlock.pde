@@ -14,7 +14,12 @@ class BooleanBlock extends Block{
   
   void OnRemove(){
     super.OnRemove();
-    boolMap.put(sym_id, false);  
+  }
+  
+  void Die(){
+    super.Die();
+        boolMap.put(sym_id, false);  
+
   }
   
   void Activate(PlayHead play, Block previous){

@@ -141,7 +141,10 @@ void draw()
 
   for (Block b : allBlocks) {
     b.Update();
-    b.draw();
+    if (b.leadsActive)
+      b.drawLeads();
+    b.drawShadow();
+
   }
   
   for (PlayHead p : allPlayHeads) {

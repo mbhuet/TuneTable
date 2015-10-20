@@ -21,7 +21,7 @@ class FunctionBlock extends Block {
   }
   
   void startHighlightPath(){
-    highlightPath(dashedLineOffset, funcColor, true);
+    updateLeads(dashedLineOffset, funcColor, true);
   }
 
   void OnRemove() {
