@@ -184,14 +184,13 @@ void TuioUpdate() {
 boolean checkMissing(TuioObject tObj) {
   for (Block miss : missingBlocks) {
     if (dist(miss.x_pos, miss.y_pos, tObj.getScreenX(width), tObj.getScreenY(height)) < block_diameter/2 &&
-    miss.sym_id == tObj.getSymbolID()) { //if this block is close a recently missing block
+      miss.sym_id == tObj.getSymbolID()) { //if this block is close a recently missing block
       miss.find(tObj);
       return true;
     }
   }
   return false;
 }
-
 
 
 

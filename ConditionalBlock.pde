@@ -9,6 +9,8 @@ class ConditionalBlock extends Block {
   void Setup() {
     boolId = 112;//sym_id - 10; //booleans are 100-109, corresponding conditionals are 110-119
     isTrue =( boolMap.containsKey(boolId) && boolMap.get(boolId));
+    leads[0].options.image = unlock;
+    leads[1].options.image = lock;
   }
 
   void Update() {

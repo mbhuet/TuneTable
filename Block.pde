@@ -42,12 +42,11 @@ abstract class Block {
 
     Setup();
   }
-  
-  void setTuioObject(TuioObject tobj){
+
+  void setTuioObject(TuioObject tobj) {
     tuioObj = tobj;
     sym_id = tobj.getSymbolID();
     blockMap.put(tobj.getSessionID(), this);
-
   }
 
   void Update() { 
@@ -58,17 +57,17 @@ abstract class Block {
         breakConnection(i);
       }
     }
-    if (isMissing){
-      if (millis() - missingSince >= deathDelay){
-        if(isReadyToDie()){
+    if (isMissing) {
+      if (millis() - missingSince >= deathDelay) {
+        if (isReadyToDie()) {
           missingBlocks.remove(this);
           killBlocks.add(this);
         }
       }
     }
   }
-  
-  
+
+
 
   void OnRemove() {    
     missingBlocks.add(this);
@@ -77,22 +76,22 @@ abstract class Block {
     blockMap.remove(tuioObj.getSessionID());
     //println("block missing " + this);
   }
-  
-  void find(TuioObject newObj){
+
+  void find(TuioObject newObj) {
     isMissing = false;
     missingBlocks.remove(this);
     setTuioObject(newObj);
     //println("block found " + this);
   }
-  
-  void Die(){
+
+  void Die() {
     breakAllConnections();
     allBlocks.remove(this);
     missingBlocks.remove(this);
     blockMap.remove(tuioObj.getSessionID());
   }
-  
-  boolean isReadyToDie(){
+
+  boolean isReadyToDie() {
     return true;
   }
 
@@ -245,6 +244,21 @@ abstract class Block {
     ellipseMode(CENTER);  // Set ellipseMode to CENTER
     fill(0);  // Set fill to black
     ellipse(x_pos, y_pos, block_diameter, block_diameter);
+  }
+
+  void highlightPath(float offset, color col, boolean isActive) {
+    for (int i : this.getSuccessors ()) {
+      Block b = children[i];
+      if (b != null) {
+        //leads[i].highlightActive(offset, col);
+      }
+    }
+    for(Block child : children){
+      if(child != null){
+         //child.highlightPath(offset, col);
+
+      }
+    }
   }
 
 

@@ -1,4 +1,5 @@
 class PlayHead {
+  FunctionBlock origin;
   Block activeBlock;
   LinkedList<Lead> path;
   float pathDecayRate = 0.05f;
@@ -7,20 +8,22 @@ class PlayHead {
   int lastMillis = 0;
   boolean dead = false;
 
-  void Init(Block start, color c){
+  void Init(FunctionBlock origin, Block start, color c) {
     path = new LinkedList<Lead>();
     playColor = c;
     activeBlock = start;
     allPlayHeads.add(this);
+    this.origin = origin;
+    origin.spawnedPlayHeads.add(this);
   }
-  
-  PlayHead(Block start, color c) {
-    Init(start, c);
+
+  PlayHead(FunctionBlock origin, Block start, color c) {
+    Init(origin, start, c);
     activeBlock.Activate(this, null);
   }
-  
-  PlayHead(Block start, Block previous, color c) {
-    Init(start, c);
+
+  PlayHead(FunctionBlock origin, Block start, Block previous, color c) {
+    Init(origin, start, c);
     activeBlock.Activate(this, previous);
   }
 
@@ -28,6 +31,7 @@ class PlayHead {
     pathDist = pathDist * (1-pathDecayRate);// * ((float)(millis() - lastMillis)/1000.0));
     lastMillis = millis();
     if (dead && pathDist <= 0) {
+      origin.spawnedPlayHeads.remove(this);
       //allPlayHeads.remove(this); //causes concurrent modification exception
     }
   }
@@ -37,16 +41,12 @@ class PlayHead {
   }
 
   void travel() {
-    //println("playhead travel");
     int[] nextBlockIndices = activeBlock.getSuccessors();
     for (int i = nextBlockIndices.length -1; i>=0; i--) {
-      println("looking for child " + i);
-      println(activeBlock.children);
       Block nextBlock = activeBlock.children[nextBlockIndices[i]];
       if (nextBlock != null) {
         if (i > 0) {
-          println("here");
-          PlayHead newPlay = new PlayHead(nextBlock, activeBlock, playColor);
+          PlayHead newPlay = new PlayHead(origin, nextBlock, activeBlock, playColor);
           newPlay.addLead(activeBlock.leads[nextBlockIndices[i]]);
         } else {
           addLead(activeBlock.leads[nextBlockIndices[i]]);
@@ -54,7 +54,7 @@ class PlayHead {
           activeBlock = nextBlock;
           nextBlock.Activate(this, lastBlock);
         }
-      }  else if(i == 0) {
+      } else if (i == 0) {
         dead = true;
         println("playhead dead");
       }
@@ -70,7 +70,7 @@ class PlayHead {
     }
 
     while (totalDist - (path.getLast ().distance - block_diameter) > pathDist) {
-            totalDist = totalDist - (path.getLast().distance - block_diameter);
+      totalDist = totalDist - (path.getLast().distance - block_diameter);
 
       path.removeLast();
     }

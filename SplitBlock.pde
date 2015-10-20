@@ -11,18 +11,17 @@ class SplitBlock extends Block {
     leadsActive =  (parents.size() > 0) ? true : false;
   }
   void OnRemove() {
-        super.OnRemove();
-
+    super.OnRemove();
   }
-    public void Activate(PlayHead play, Block previous) {
+  public void Activate(PlayHead play, Block previous) {
     super.Activate(play, previous);
     finish();
   }
-  
+
   //TODO should return two blocks
-  public int[] getSuccessors(){
+  public int[] getSuccessors() {
     int[] suc = new int[children.length];
-    for(int i = 0; i<suc.length; i++){
+    for (int i = 0; i<suc.length; i++) {
       suc[i] = i;
     }
     return suc;

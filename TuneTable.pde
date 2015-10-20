@@ -45,6 +45,9 @@ PFont font;
 static int display_width = 640;
 static int display_height = 480;
 
+PImage lock;
+PImage unlock;
+
 List<Block> allBlocks;
 List<Block> missingBlocks;
 List<Block> killBlocks;
@@ -92,7 +95,14 @@ void setup()
   allButtons = new ArrayList<Button>();
   allPlayHeads = new ArrayList<PlayHead>();
 
-
+  float scaleFactor = 1;
+  lock = loadImage("images/lock.png");
+    scaleFactor = ((float)block_diameter/3.0) / (float)lock.height;
+    lock.resize((int)(lock.width * scaleFactor), (int)(lock.height * scaleFactor));
+  unlock = loadImage("images/unlock.png");
+    scaleFactor = ((float)block_diameter/3.0) / (float)unlock.height;
+    unlock.resize((int)(unlock.width * scaleFactor), (int)(unlock.height * scaleFactor));
+  
 
   isInitiated = true;
   millisPerBeat = 6000/bpm;
@@ -138,6 +148,11 @@ void draw()
     p.Update();
     p.draw();
   }
+  for(FunctionBlock func : allFunctionBlocks){
+      func.startHighlightPath();
+    
+    }
+
 
 
   if (hoverDebug) {
