@@ -21,6 +21,8 @@ AudioOutput out;
 FilePlayer filePlayer;
 Delay myDelay;
 
+PlayButton playButt;
+
 
 
 
@@ -106,6 +108,7 @@ void setup()
 
   isInitiated = true;
   millisPerBeat = 6000/bpm;
+  playButt = new PlayButton(width - 50,height - 50,0,100);
 
   if (debug) {
     //Block b = new Block(0);
@@ -177,6 +180,13 @@ void keyPressed() {
     
     }
   }
+}
+
+void Play(){
+  for(FunctionBlock func : allFunctionBlocks){
+      func.execute();
+    
+    }
 }
 
 void mousePressed() {

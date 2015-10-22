@@ -24,7 +24,7 @@ class ClipBlock extends Block {
       else drawBeat();
       playTimer += millis() - startTime;
       if (clip.position() >= clip.length()) {
-        println("reached end " + clip.length());
+        //println("reached end " + clip.length());
         Stop();
         }
       }
@@ -64,8 +64,8 @@ class ClipBlock extends Block {
       clip.rewind();
       //println(clip_length);
     } else {
-      //println("No clip found for " + sym_id + ": Possible typo");
-      ClipInfo info =  clipDict.get(48);
+      println("No clip found for " + sym_id + ": Possible typo");
+      ClipInfo info =  clipDict.get(1);
       String clip_name = info.name;
       clip = minim.loadFile("clips/"+clip_name+".wav");
       clip.rewind();
@@ -78,7 +78,7 @@ class ClipBlock extends Block {
     clip.cue(millis() % millisPerBeat);
     clip.play();
     startTime = millis();
-    println(clip.isPlaying() +" play " + clip.length() + " at millis " + millis());
+    //println(clip.isPlaying() +" play " + clip.length() + " at millis " + millis());
 
   }
 

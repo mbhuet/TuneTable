@@ -51,7 +51,8 @@ class FunctionBlock extends Block {
 
 
   void execute() {
-    if (spawnedPlayHeads.size() == 0){
+    //if (spawnedPlayHeads.size() == 0){
+      if (true){
     PlayHead pHead = new PlayHead(this, this, color(0, 102, 153));
     }
   }

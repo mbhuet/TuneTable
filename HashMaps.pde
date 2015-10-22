@@ -16,18 +16,18 @@ HashMap<Integer, ClipInfo> clipDict;
 void SetupClipDict() {
   clipDict = new HashMap<Integer, ClipInfo>();
 
-  clipDict.put(48, new ClipInfo("abstract/beep-1", 1));
-  clipDict.put(45, new ClipInfo("abstract/beep-2", 1));
-  clipDict.put(65, new ClipInfo("abstract/electronic-1", 1));
-  clipDict.put(33, new ClipInfo("abstract/harp-1", 1));
-  clipDict.put(3, new ClipInfo("abstract/harp-2", 2));
-  clipDict.put(7, new ClipInfo("abstract/keyboard-1", 1));
-  clipDict.put(9, new ClipInfo("abstract/keyboard-2", 1));
-  clipDict.put(20, new ClipInfo("abstract/marimba-1", 1));
+  clipDict.put(1, new ClipInfo("abstract/beep-1", 1));
+  clipDict.put(2, new ClipInfo("abstract/beep-2", 1));
+  clipDict.put(3, new ClipInfo("abstract/electronic-1", 1));
+  clipDict.put(4, new ClipInfo("abstract/harp-1", 1));
+  clipDict.put(5, new ClipInfo("abstract/harp-2", 2));
+  clipDict.put(6, new ClipInfo("abstract/keyboard-1", 1));
+  clipDict.put(7, new ClipInfo("abstract/keyboard-2", 1));
+  clipDict.put(8, new ClipInfo("abstract/marimba-1", 1));
 
-  clipDict.put(54, new ClipInfo("abstract/marimba-2", 1));
-  clipDict.put(52, new ClipInfo("abstract/marimba-3", 1));
-  clipDict.put(62, new ClipInfo("abstract/trill-1", 1));
+  clipDict.put(9, new ClipInfo("abstract/marimba-2", 1));
+  clipDict.put(10, new ClipInfo("abstract/marimba-3", 1));
+  clipDict.put(11, new ClipInfo("abstract/trill-1", 1));
   
    clipDict.put(12, new ClipInfo("trad/bass-asc-progression", 1));
  clipDict.put(13, new ClipInfo("trad/bass-fx-slap", 1));
@@ -106,9 +106,9 @@ void SetupIdToType() {
   //COUNTDOWN 120
   idToType.put(120, BlockType.COUNTDOWN);
 
-  idToType.put(112, BlockType.BOOLEAN);
-  idToType.put(111, BlockType.CONDITIONAL);
-    idToType.put(113, BlockType.SPLIT);
+  idToType.put(100, BlockType.BOOLEAN);
+  idToType.put(110, BlockType.CONDITIONAL);
+    idToType.put(120, BlockType.SPLIT);
 
 }
 

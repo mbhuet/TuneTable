@@ -50,7 +50,7 @@ class PlayButton extends Button{
   }
   public void Trigger(){
     println("play button hit");
-    //Play();
+    Play();
   }
   public void drawButton(){
     fill(color(0,0,0));

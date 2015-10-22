@@ -99,7 +99,7 @@ abstract class Block {
   //previous is the block that has lead the PlayHead to this block
   public void Activate(PlayHead play, Block previous) {
     playHeadList.add(play);
-    println("block activated " + this);
+    //println("block activated " + this);
   } 
 
   public void finish() {
@@ -163,7 +163,9 @@ abstract class Block {
     }
 
     //these two methods could be combined for efficiency, if necessary
+    if (this.canBeChained){
     findParents();
+    }
     if (leadsActive) {
       findChildren();
     }
@@ -180,7 +182,7 @@ abstract class Block {
     for (int i = 0; i<numLeads; i++) {
       if (children[i] == null) {
         for (Block block : allBlocks) {
-          if (!(block.parents.contains(this) || this.parents.contains(block)) && leads[i].isUnderBlock(block)) {
+          if (!(block.parents.contains(this) || this.parents.contains(block)) && leads[i].isUnderBlock(block) && block.canBeChained) {
             makeConnection(block, i);
           }
         }
