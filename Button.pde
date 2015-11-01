@@ -37,18 +37,43 @@ abstract class Button{
     isShowing = b;
   }
   
-  abstract void Trigger();
+  abstract void Trigger(Cursor cursor);
   abstract void drawButton();
 }
 
+class ExecuteButton extends Button{
+  FunctionBlock func;
+  
+  ExecuteButton(FunctionBlock funcBlock, int x_pos, int y_pos, float rot, float rad){
+    InitButton(x_pos,y_pos,rot,rad);
+    func = funcBlock;
+    println("exec button");
+  }
+  public void Trigger(Cursor cursor){
+    println("play button hit");
+    func.execute();
+  }
+  public void drawButton(){
+    fill(color(0,0,0));
+    ellipse(x,y,size*2,size*2);
+    pushMatrix();
+    translate(x,y);
+    scale(.8);
+    translate(size/6, 0);
+    fill(color(255,255,255));
+    triangle(-size/2,-size/2,
+             -size/2, size/2,
+             size/2, 0);
+    popMatrix();
+  }
+}
 
+class PlayAllButton extends Button{
 
-class PlayButton extends Button{
-
-  PlayButton(int x_pos, int y_pos, float rot, float rad){
+  PlayAllButton(int x_pos, int y_pos, float rot, float rad){
     InitButton(x_pos,y_pos,rot,rad);
   }
-  public void Trigger(){
+  public void Trigger(Cursor cursor){
     println("play button hit");
     Play();
   }
@@ -72,7 +97,7 @@ class StopButton extends Button{
   StopButton(int x_pos, int y_pos, float rot, float rad){
     InitButton(x_pos,y_pos,rot,rad);
   }
-  public void Trigger(){
+  public void Trigger(Cursor cursor){
     println("stop button hit");
     //Stop();
   }
@@ -96,7 +121,7 @@ class UpButton extends Button{
     InitButton(x_pos,y_pos,rot, rad);
     block = b;
   }
-  public void Trigger(){
+  public void Trigger(Cursor cursor){
         //println("up");
 
     block.IncrementArgument();
@@ -133,7 +158,7 @@ class DownButton extends Button{
     InitButton(x_pos,y_pos,rot, rad);
     block = b;
   }
-  public void Trigger(){
+  public void Trigger(Cursor cursor){
     //println("down");
     block.DecrementArgument();
   }
@@ -164,3 +189,5 @@ class DownButton extends Button{
     
   }
 }
+
+

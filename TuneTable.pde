@@ -21,12 +21,13 @@ AudioOutput out;
 FilePlayer filePlayer;
 Delay myDelay;
 
-PlayButton playButt;
+//PlayButton playButt;
 
 
 
 
 boolean debug = true;
+boolean invertColor = false;
 boolean showFPS = false;
 boolean hoverDebug = true;
 boolean fullscreen = true;
@@ -54,11 +55,13 @@ List<Block> allBlocks;
 List<Block> missingBlocks;
 List<Block> killBlocks;
 
+List<Cursor> cursors;
+
 List<FunctionBlock> allFunctionBlocks;
 List<Button> allButtons;
 List<PlayHead> allPlayHeads;
 
-
+Cursor mouse;
 
 
 boolean isInitiated = false;
@@ -88,6 +91,7 @@ void setup()
   SetupBoolMap();
   SetupIdToType();
   SetupBlockMap();
+  SetupCursorMap();
   SetupIdToEffect();
   
   allBlocks = new ArrayList<Block>();
@@ -96,6 +100,9 @@ void setup()
   allFunctionBlocks = new ArrayList<FunctionBlock>();
   allButtons = new ArrayList<Button>();
   allPlayHeads = new ArrayList<PlayHead>();
+  
+  cursors = new ArrayList<Cursor>();
+
 
   float scaleFactor = 1;
   lock = loadImage("images/lock.png");
@@ -108,17 +115,17 @@ void setup()
 
   isInitiated = true;
   millisPerBeat = 6000/bpm;
-  playButt = new PlayButton(width - 50,height - 50,0,100);
+  //playButt = new PlayButton(width - 50,height - 50,0,100);
 
   if (debug) {
-    //Block b = new Block(0);
+    BeatBlock testBeat = new BeatBlock(400,400);
   }
 }
 
 
 void draw()
 {
-  background(255);
+  background(invertColor ? 0 : 255);
 
   if (showFPS) {
     textSize(32);
@@ -137,9 +144,10 @@ void draw()
 
   strokeWeight(5);
   stroke(0);
-  for (Button b : allButtons) {
-    if (b.isShowing)
-      b.drawButton();
+  
+  
+  for (Cursor c : cursors) {
+    c.Update();
   }
 
   for (Block b : allBlocks) {
@@ -147,7 +155,12 @@ void draw()
     if (b.leadsActive)
       b.drawLeads();
     b.drawShadow();
-
+    b.inChain = false;
+  }
+  
+  for (Button b : allButtons) {
+    if (b.isShowing)
+      b.drawButton();
   }
   
   for (PlayHead p : allPlayHeads) {
@@ -155,7 +168,7 @@ void draw()
     p.draw();
   }
   for(FunctionBlock func : allFunctionBlocks){
-      func.startHighlightPath();
+      func.startUpdatePath();
     
     }
 
@@ -190,9 +203,11 @@ void Play(){
 }
 
 void mousePressed() {
-  if (true) {
-    Click(mouseX, mouseY);
-  }
+  mouse = new Cursor();
+}
+
+void mouseReleased() {
+  mouse.OnRemove();
 }
 
 void HoverDebug() {
@@ -212,20 +227,6 @@ void HoverDebug() {
   }
 }
 
-
-void Click(int x, int y) {
-  if (debug) {
-    fill(255, 0, 0);
-    ellipse(x, y, 10, 10);
-  }
-  Button[] buttons = new Button[allButtons.size()];
-  allButtons.toArray(buttons); // fill the array  
-  for (Button b : buttons) {
-    if (b.isShowing && b.IsUnder(x, y)) {
-      b.Trigger();
-    }
-  }
-}
 
 void killRemoved(){
   for(Block b : killBlocks){

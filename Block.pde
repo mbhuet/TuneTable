@@ -8,8 +8,11 @@ abstract class Block {
   BlockType type;
   int numLeads = 0;
   boolean leadsActive = false;
+  boolean inChain = false;
   boolean canBeChained = true;
   boolean isMissing = false;
+  boolean isFake;
+  color blockColor;
 
   float block_width;
 
@@ -40,7 +43,28 @@ abstract class Block {
     for (int i = 0; i<numLeads; i++) {
       leads[i] = new Lead(this, rotation + i * 2*PI / numLeads);
     }
+    
+    blockColor = color(invertColor ? 255 : 0);
+    
+    Setup();
+  }
+  
+  void Init(int numLeads, int x, int y){
+    this.numLeads = numLeads;
+    allBlocks.add(this);
 
+    parents = new ArrayList<Block>();
+    children = new Block[numLeads];
+    leads = new Lead[numLeads];
+
+    for (int i = 0; i<numLeads; i++) {
+      leads[i] = new Lead(this, rotation + i * 2*PI / numLeads);
+    }
+    
+    blockColor = color(invertColor ? 255 : 0);
+    isFake = true;
+    x_pos = x; y_pos = y;
+    
     Setup();
   }
 
@@ -74,14 +98,14 @@ abstract class Block {
     missingBlocks.add(this);
     isMissing = true;
     missingSince = millis();
-    blockMap.remove(tuioObj.getSessionID());
+    if(!isFake)blockMap.remove(tuioObj.getSessionID());
     //println("block missing " + this);
   }
 
   void find(TuioObject newObj) {
     isMissing = false;
     missingBlocks.remove(this);
-    setTuioObject(newObj);
+    if(!isFake)setTuioObject(newObj);
     //println("block found " + this);
   }
 
@@ -89,7 +113,7 @@ abstract class Block {
     breakAllConnections();
     allBlocks.remove(this);
     missingBlocks.remove(this);
-    blockMap.remove(tuioObj.getSessionID());
+    if(!isFake)blockMap.remove(tuioObj.getSessionID());
   }
 
   boolean isReadyToDie() {
@@ -203,10 +227,18 @@ abstract class Block {
   }
 
   public void breakAllConnections() {
+    breakChildConnections();
+    breakParentConnections();
+  }
+  
+  public void breakChildConnections(){
     for (int i = 0; i< numLeads; i++) {
       breakConnection(i);
     }
-    Block[] parentsArray = new Block[parents.size()];
+  }
+  
+  public void breakParentConnections(){
+     Block[] parentsArray = new Block[parents.size()];
     parents.toArray(parentsArray);
     for (Block p : parentsArray) {
       p.breakConnection(this);
@@ -247,40 +279,39 @@ abstract class Block {
   void drawShadow() {
     strokeWeight(0);
     ellipseMode(CENTER);  // Set ellipseMode to CENTER
-    fill(0);  // Set fill to black
+    fill(blockColor);  // Set fill to black
     ellipse(x_pos, y_pos, block_diameter, block_diameter);
   }
 
-  void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> visited) {
-    for (int i = 0; i< numLeads; i++) {
-      boolean active = false;
+  void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
+    this.inChain = true;
+    blockColor = col;
+
+    for (int i = 0; i< numLeads; i++) {     
       if (isActive && childIsSuccessor(i)) {
         leads[i].options.dashed = true;
         leads[i].options.offset = offset;
         leads[i].options.col = col;
         leads[i].options.weight = 10;
-        active = true;
+        
+        if (children[i] != null && !activeVisited.contains(children[i])) {
+          activeVisited.add(children[i]);
+          children[i].updateLeads(offset, col, true, activeVisited, inactiveVisited);
+        }
+        
       } else {
         leads[i].options.dashed = false;
         leads[i].options.col = color(0);
         leads[i].options.weight = 3;
-      }
-        if (children[i] != null && !visited.contains(children[i])) {
-          visited.add(children[i]);
-          children[i].updateLeads(offset, col, active, visited);
-        }
       
-      /*
- 
-       }
-       else{
-       leads[i].options.dashed = false;
-       leads[i].options.col = color(0);
-       leads[i].options.weight = 3;
-       }
-       */
+        if (children[i] != null && !activeVisited.contains(children[i]) && !inactiveVisited.contains(children[i])) {
+          inactiveVisited.add(children[i]);
+          children[i].updateLeads(offset, col, false, activeVisited, inactiveVisited);
+        }
+      }
     }
   }
+
 
 
 

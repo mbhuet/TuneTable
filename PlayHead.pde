@@ -69,7 +69,7 @@ class PlayHead {
       totalDist += l.distance - block_diameter;
     }
 
-    while (totalDist - (path.getLast ().distance - block_diameter) > pathDist) {
+    while (totalDist - (path.getLast ().distance - block_diameter) > pathDist) { //NO SUCH ELEMENT EXCEPTION
       totalDist = totalDist - (path.getLast().distance - block_diameter);
 
       path.removeLast();

@@ -1,11 +1,4 @@
-class ClipBlock extends Block {
-  AudioPlayer clip;
-  int playTimer = 0;
-  int startTime = 0;
-  boolean isPlaying = false;
-  boolean pie = true;
-  
-  Block previous;
+class ClipBlock extends SoundBlock {
 
   ClipBlock(TuioObject tObj) {
     Init(tObj, 1);
@@ -16,7 +9,7 @@ class ClipBlock extends Block {
   }
   void Update() {
     super.Update();
-    leadsActive =  (parents.size() > 0) ? true : false;
+    leadsActive = inChain;
     //println("---"+clip.position());
     if (isPlaying) {
       //println(clip.isPlaying() + " at " + clip.position() + " / " + clip.length());
@@ -82,40 +75,4 @@ class ClipBlock extends Block {
 
   }
 
-  void Stop() {
-    //println("stop " + clip.position() + " at millis " + millis());
-    playTimer = 0;
-    isPlaying = false;
-    clip.rewind();
-    //println("rewind " + clip.position() + " at millis " + millis());
-    finish();
-  }
-  
-  void drawArc(){
-    pushMatrix();
-    noStroke();
-    fill(0, 102, 153);
-    translate(x_pos, y_pos);
-    float arcRot = 0;
-    if (previous != null){
-    arcRot = atan2((previous.y_pos - this.y_pos) ,
-                    (previous.x_pos - this.x_pos));
-    }
-    rotate(arcRot); //should rotate such that the start angle points to the parent
-    arc(0, 0, block_diameter * 1.25f, block_diameter * 1.25f, 0, (float)clip.position()/(float)clip.length() * 2*PI, PIE);
-    popMatrix();
-
-  }
-  
-  void drawBeat(){
-    pushMatrix();
-    fill(0, 102, 153);
-    noStroke();
-    translate(x_pos, y_pos);
-    rotate(0); //should rotate such that the start angle points to the parent
-    //arc(0, 0, block_diameter * 1.25f, block_diameter * 1.25f, 0, (float)clip.position()/(float)clip.length() * 2*PI, PIE);
-    float beatSize = block_diameter * 1.25f * (1.0- .5f *(float)(clip.position()%255) / (float)255);
-    ellipse(0, 0, beatSize, beatSize);
-    popMatrix();
-  }
 }

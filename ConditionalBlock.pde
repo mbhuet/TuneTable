@@ -15,7 +15,7 @@ class ConditionalBlock extends Block {
 
   void Update() {
     super.Update();
-    leadsActive =  (parents.size() > 0) ? true : false;
+    leadsActive = inChain;
     isTrue = ( boolMap.containsKey(boolId) && boolMap.get(boolId));
   }
   

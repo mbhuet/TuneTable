@@ -6,8 +6,7 @@ import java.util.concurrent.*;
 TuioProcessing tuioClient;
 
 AbstractQueue<TuioActionWrapper> actionQueue = new ConcurrentLinkedQueue<TuioActionWrapper>();
-AbstractQueue<TuioCursor> cursorQueue = new ConcurrentLinkedQueue<TuioCursor>();
-
+AbstractQueue<CursorActionWrapper> cursorQueue = new ConcurrentLinkedQueue<CursorActionWrapper>();
 
 class TuioActionWrapper {
   TuioAction action;
@@ -19,6 +18,16 @@ class TuioActionWrapper {
   }
 }
 
+class CursorActionWrapper {
+  TuioAction action;
+  TuioCursor tCursor;
+
+  CursorActionWrapper(TuioCursor tCurs, TuioAction act) {
+    action = act;
+    tCursor = tCurs;
+  }
+}
+
 
 // these callback methods are called whenever a TUIO event occurs
 
@@ -27,11 +36,6 @@ void addTuioObject(TuioObject tobj) {
   if (!isInitiated) return;
   actionQueue.offer(new TuioActionWrapper(tobj, TuioAction.ADD));
 
-  /*
-  Block newBlock = new Block(tobj);
-   */
-
-  //println("add object "+tobj.getSymbolID()+" ("+tobj.getSessionID()+") "+tobj.getX()+" "+tobj.getY()+" "+tobj.getAngle());
 }
 
 
@@ -41,12 +45,7 @@ void removeTuioObject(TuioObject tobj) {
 
   actionQueue.offer(new TuioActionWrapper(tobj, TuioAction.REMOVE));
 
-  /*
-  Block remBlock = blockMap.get(tobj.getSessionID());
-   if (remBlock != null)  killQueue.add(remBlock);
-   */
-
-  //println("remove object "+tobj.getSymbolID()+" ("+tobj.getSessionID()+")");
+  
 }
 
 
@@ -56,38 +55,27 @@ void updateTuioObject (TuioObject tobj) {
 
   actionQueue.offer(new TuioActionWrapper(tobj, TuioAction.UPDATE));
 
-  /*
-  Block b = blockMap.get(tobj.getSessionID());
-   
-   if (b!=null){
-   updateQueue.add(b);
-   }
-   */
-
-  //println("update object "+tobj.getSymbolID()+" ("+tobj.getSessionID()+") "+tobj.getX()+" "+tobj.getY()+" "+tobj.getAngle()
-  //        +" "+tobj.getMotionSpeed()+" "+tobj.getRotationSpeed()+" "+tobj.getMotionAccel()+" "+tobj.getRotationAccel());
 }
 
 // called when a cursor is added to the scene
 void addTuioCursor(TuioCursor tcur) {
   if (!isInitiated) return;
-  cursorQueue.add(tcur);
-  //println("add cursor "+tcur.getCursorID()+" ("+tcur.getSessionID()+ ") " +tcur.getX()+" "+tcur.getY());
+    cursorQueue.offer(new CursorActionWrapper(tcur, TuioAction.ADD));
+
 }
 
 // called when a cursor is moved
 void updateTuioCursor (TuioCursor tcur) {
   if (!isInitiated) return;
 
-  //println("update cursor "+tcur.getCursorID()+" ("+tcur.getSessionID()+ ") " +tcur.getX()+" "+tcur.getY()
-  //        +" "+tcur.getMotionSpeed()+" "+tcur.getMotionAccel());
+  cursorQueue.offer(new CursorActionWrapper(tcur, TuioAction.UPDATE));
 }
 
 // called when a cursor is removed from the scene
 void removeTuioCursor(TuioCursor tcur) {
   if (!isInitiated) return;
 
-  //println("remove cursor "+tcur.getCursorID()+" ("+tcur.getSessionID()+")");
+  cursorQueue.offer(new CursorActionWrapper(tcur, TuioAction.REMOVE));
 }
 
 
@@ -148,7 +136,6 @@ void TuioUpdate() {
           break;
         }
 
-        //Block newBlock = new Block(curBlock);
       }
       break;
 
@@ -173,12 +160,29 @@ void TuioUpdate() {
 
 
   while (cursorQueue.peek () != null) {
-    TuioCursor cur = cursorQueue.poll();
+    CursorActionWrapper wrap = cursorQueue.poll();
+    TuioCursor tCur = wrap.tCursor;
+    switch(wrap.action) {
+    case ADD :
+      cursors.add(new Cursor(tCur));
+      break;
 
-    //println(cur.getScreenX(width) + ", " + cur.getScreenY(height));
-    Click((int)cur.getScreenX(width), (int)cur.getScreenY(height));
+
+    case REMOVE :
+      Cursor remCursor = cursorMap.get(tCur.getSessionID());
+      if (remCursor != null) {
+        remCursor.OnRemove();
+      }
+      break;
+
+    case UPDATE :
+      Cursor upCursor = cursorMap.get(tCur.getSessionID());
+      if (upCursor!=null) {
+        upCursor.UpdatePosition();
+      }
+      break;
+    }
   }
-  //println("tuio stop");
 }
 
 boolean checkMissing(TuioObject tObj) {

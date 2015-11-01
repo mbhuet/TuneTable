@@ -56,7 +56,7 @@ class Lead {
     }
 
     translate(distance, 0);
-    stroke(0);
+    stroke(255);
     strokeWeight(3);
     dashedCircle(0, 0, block_diameter, 10);
     popMatrix();

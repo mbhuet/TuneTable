@@ -4,6 +4,12 @@ void SetupBlockMap() {
   blockMap = new HashMap<Long, Block>();
 }
 
+HashMap<Long, Cursor> cursorMap;
+
+void SetupCursorMap() {
+  cursorMap = new HashMap<Long, Cursor>();
+}
+
 HashMap<Integer, Block> funcMap;
 
 void SetupFuncMap() {

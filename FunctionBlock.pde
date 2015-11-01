@@ -1,12 +1,13 @@
 class FunctionBlock extends Block {
-  color funcColor;
   float dashedLineOffset = 0;
   ArrayList<PlayHead> spawnedPlayHeads;
+  ExecuteButton executeButt;
 
   FunctionBlock(TuioObject tObj) {
     Init(tObj, 1);
     leadsActive = true;
-    funcColor =     color(0, 102, 153);
+    executeButt = new ExecuteButton(this, -block_diameter, 0,0, block_diameter/4);
+    blockColor =     color(random(255), random(255), random(255));
   }
 
   void Setup() {
@@ -19,12 +20,14 @@ class FunctionBlock extends Block {
   void Update() {
     super.Update();
     dashedLineOffset = (millis() % (millisPerBeat * 4) / (float)(millisPerBeat * 4));
+    executeButt.Update((int)(x_pos - cos(rotation) * block_diameter), (int)(y_pos - sin(rotation) * block_diameter), rotation);
   }
-  
-  void startHighlightPath(){
-    ArrayList<Block> visited = new ArrayList<Block>();
-    visited.add(this);
-    updateLeads(dashedLineOffset, funcColor, true, visited);
+
+  void startUpdatePath() {
+    ArrayList<Block> activeVisited = new ArrayList<Block>();
+    ArrayList<Block> inactiveVisited = new ArrayList<Block>();
+    activeVisited.add(this);
+    updateLeads(dashedLineOffset, blockColor, true, activeVisited, inactiveVisited);
   }
 
   void OnRemove() {
@@ -35,6 +38,8 @@ class FunctionBlock extends Block {
     super.Die();
     allFunctionBlocks.remove(this);
     funcMap.remove(sym_id);
+    executeButt.Destroy();
+    executeButt = null;
   }
 
   public void Activate(PlayHead play, Block previous) {
@@ -52,12 +57,12 @@ class FunctionBlock extends Block {
 
   void execute() {
     //if (spawnedPlayHeads.size() == 0){
-      if (true){
-    PlayHead pHead = new PlayHead(this, this, color(0, 102, 153));
+    if (true) {
+      PlayHead pHead = new PlayHead(this, this, blockColor);
     }
   }
-  
-  void stop(){
+
+  void stop() {
   }
 }
 
