@@ -62,6 +62,7 @@ abstract class Block {
     }
     
     blockColor = color(invertColor ? 255 : 0);
+    println(hex(blockColor));
     isFake = true;
     x_pos = x; y_pos = y;
     

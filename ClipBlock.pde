@@ -10,14 +10,11 @@ class ClipBlock extends SoundBlock {
   void Update() {
     super.Update();
     leadsActive = inChain;
-    //println("---"+clip.position());
     if (isPlaying) {
-      //println(clip.isPlaying() + " at " + clip.position() + " / " + clip.length());
-      if(pie)drawArc();
-      else drawBeat();
+      if(pie)drawArc((int)(block_diameter * .25), (float)clip.position()/(float)clip.length());
+      else drawBeat((int)(block_diameter * .25));
       playTimer += millis() - startTime;
       if (clip.position() >= clip.length()) {
-        //println("reached end " + clip.length());
         Stop();
         }
       }
@@ -71,7 +68,6 @@ class ClipBlock extends SoundBlock {
     clip.cue(millis() % millisPerBeat);
     clip.play();
     startTime = millis();
-    //println(clip.isPlaying() +" play " + clip.length() + " at millis " + millis());
 
   }
 

@@ -49,15 +49,14 @@ public void dashedLine(int x1, int y1, int x2, int y2, float offset) {
   popMatrix();
 }
 
-void sinCircle(int x, int y, int radius, float rotation, int numLumps, float amplitude) {
-  
-  radius *= 2;
+PShape sinCircle(int x, int y, int radius, float rotation, int numLumps, float amplitude) {
+  PShape shape = createShape();
   float angle = 0;
-  float angleStep = PI/(2*numLumps);
+  float angleStep = PI/(4*numLumps);
   float freq = numLumps;
   float amp = amplitude;
   float dx, dy;  
-  beginShape();
+  shape.beginShape();
   
   while (angle <= 2*PI) {
     float localAmp = cos(angle * freq + PI) * amp;
@@ -66,12 +65,10 @@ void sinCircle(int x, int y, int radius, float rotation, int numLumps, float amp
 
     angle += angleStep;
 
-    curveVertex(dx, dy);
-    fill(color(255,0,0));
-    ellipse(dx,dy,10,10);
+    shape.curveVertex(dx, dy);
   }
-  fill(255);
-    endShape();
+    shape.endShape(CLOSE);
+    return shape;
 }
 
 //TAKES A LOT OF PROCESSING POWER

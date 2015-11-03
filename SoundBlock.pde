@@ -56,7 +56,7 @@ abstract class SoundBlock extends Block {
     finish();
   }
 
-  void drawArc() {
+  void drawArc(int radius, float percent) {
     pushMatrix();
     noStroke();
     fill(blockColor);
@@ -67,11 +67,16 @@ abstract class SoundBlock extends Block {
       (previous.x_pos - this.x_pos));
     }
     rotate(arcRot); //should rotate such that the start angle points to the parent
-    arc(0, 0, block_diameter * 1.25f, block_diameter * 1.25f, 0, (float)clip.position()/(float)clip.length() * 2*PI, PIE);
+    arc(0, 0, 
+    block_diameter + radius, 
+    block_diameter + radius, 
+    0, 
+    percent * 2 * PI, //(float)clip.position()/(float)clip.length() * 2*PI, 
+    PIE);
     popMatrix();
   }
 
-  void drawBeat() {
+  void drawBeat(int radius) {
     pushMatrix();
     fill(blockColor);
     noStroke();

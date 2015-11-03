@@ -1,14 +1,13 @@
 // we need to import the TUIO library
 // and declare a TuioProcessing client variable
-
-//set resolution to 1280x1024
-
 import ddf.minim.spi.*;
 import ddf.minim.signals.*;
 import ddf.minim.*;
 import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
+
+//set resolution to 1280x1024
 
 import java.util.Map.*;
 import java.util.Iterator.*;
@@ -70,8 +69,7 @@ boolean isInitiated = false;
 
 void setup()
 {
-  if (fullscreen)  size(displayWidth, displayHeight);
-  else    size(display_width, display_height, P2D);
+  size(displayWidth, displayHeight, P2D);
 
   noStroke();
   fill(0);
@@ -83,10 +81,7 @@ void setup()
   font = createFont("Arial", 18);
   scale_factor = height/table_size;
   
-    rectangle = createShape(RECT,0,0,100,50);
-
-  beatShadow = createShape();
-    sinCircle(0,0, block_diameter, 0, 8, block_diameter/5);
+  beatShadow = sinCircle(0,0, block_diameter/2, 0, 8, block_diameter/20);
   
 
   // we create an instance of the TuioProcessing client
@@ -148,8 +143,6 @@ void draw()
     text((int)frameRate, 10, 10);
   }
 
-  //println("millis " + millis() + " beat " + beatNo + " rem " + millis()%millisPerBeat);
-
   textFont(font, 18*scale_factor);
 
   killRemoved();
@@ -189,9 +182,6 @@ void draw()
   if (hoverDebug) {
     HoverDebug();
   }
-  
-      shape(rectangle);
-
 }
 
 
@@ -262,4 +252,3 @@ void cornerBeatGlow(){
     radialGradient(0, height, glowRadius, c1, c2);
     radialGradient(width, height, glowRadius, c1, c2);
 }
-
