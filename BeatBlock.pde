@@ -22,6 +22,7 @@ class BeatBlock extends SoundBlock {
   }
 
   void Setup() {
+    canBeChained = false;
     LoadClip();
     buttons = new BeatButton[numBeats];
     for(int i = 0; i<numBeats; i++){
@@ -33,6 +34,7 @@ class BeatBlock extends SoundBlock {
   }
   
   void Update() {
+    rotation++;
     super.Update();
     leadsActive = inChain;
     //println("---"+clip.position());
@@ -96,6 +98,16 @@ class BeatBlock extends SoundBlock {
     for(int i = 1; i<numBeats; i++){
       if(beatString.charAt(i) == '+') drawBridge(i-1);
     }
+  }
+  
+  void drawShadow(){
+    fill(blockColor);
+    noStroke();
+    pushMatrix();
+    translate(x_pos,y_pos);
+    rotate(rotation);
+    //shape(rectangle);
+    popMatrix();
   }
   
 

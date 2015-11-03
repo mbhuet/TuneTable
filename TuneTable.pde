@@ -21,14 +21,10 @@ AudioOutput out;
 FilePlayer filePlayer;
 Delay myDelay;
 
-//PlayButton playButt;
-
-
-
 
 boolean debug = true;
-boolean invertColor = false;
-boolean showFPS = false;
+boolean invertColor = true;
+boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = true;
@@ -41,6 +37,7 @@ float table_size = 760;
 float scale_factor = 1;
 float cur_size = cursor_size*scale_factor;
 int bpm = 60;
+int beatsPerMeasure = 4;
 int millisPerBeat;
 int beatNo = 0;
 PFont font;
@@ -50,6 +47,9 @@ static int display_height = 480;
 
 PImage lock;
 PImage unlock;
+PShape beatShadow;
+PShape rectangle;
+
 
 List<Block> allBlocks;
 List<Block> missingBlocks;
@@ -60,6 +60,8 @@ List<Cursor> cursors;
 List<FunctionBlock> allFunctionBlocks;
 List<Button> allButtons;
 List<PlayHead> allPlayHeads;
+List<PlayHead> killPlayHeads;
+
 
 Cursor mouse;
 
@@ -69,7 +71,7 @@ boolean isInitiated = false;
 void setup()
 {
   if (fullscreen)  size(displayWidth, displayHeight);
-  else    size(display_width, display_height);
+  else    size(display_width, display_height, P2D);
 
   noStroke();
   fill(0);
@@ -80,6 +82,12 @@ void setup()
   hint(ENABLE_NATIVE_FONTS);
   font = createFont("Arial", 18);
   scale_factor = height/table_size;
+  
+    rectangle = createShape(RECT,0,0,100,50);
+
+  beatShadow = createShape();
+    sinCircle(0,0, block_diameter, 0, 8, block_diameter/5);
+  
 
   // we create an instance of the TuioProcessing client
   // since we add "this" class as an argument the TuioProcessing class expects
@@ -93,28 +101,30 @@ void setup()
   SetupBlockMap();
   SetupCursorMap();
   SetupIdToEffect();
-  
+
   allBlocks = new ArrayList<Block>();
   missingBlocks = new ArrayList<Block>();
   killBlocks = new ArrayList<Block>();
   allFunctionBlocks = new ArrayList<FunctionBlock>();
   allButtons = new ArrayList<Button>();
   allPlayHeads = new ArrayList<PlayHead>();
-  
+  killPlayHeads = new ArrayList<PlayHead>();
+
   cursors = new ArrayList<Cursor>();
 
 
   float scaleFactor = 1;
   lock = loadImage("images/lock.png");
-    scaleFactor = ((float)block_diameter/3.0) / (float)lock.height;
-    lock.resize((int)(lock.width * scaleFactor), (int)(lock.height * scaleFactor));
+  scaleFactor = ((float)block_diameter/3.0) / (float)lock.height;
+  lock.resize((int)(lock.width * scaleFactor), (int)(lock.height * scaleFactor));
   unlock = loadImage("images/unlock.png");
-    scaleFactor = ((float)block_diameter/3.0) / (float)unlock.height;
-    unlock.resize((int)(unlock.width * scaleFactor), (int)(unlock.height * scaleFactor));
+  scaleFactor = ((float)block_diameter/3.0) / (float)unlock.height;
+  unlock.resize((int)(unlock.width * scaleFactor), (int)(unlock.height * scaleFactor));
+
   
 
   isInitiated = true;
-  millisPerBeat = 6000/bpm;
+  millisPerBeat = 60000/bpm;
   //playButt = new PlayButton(width - 50,height - 50,0,100);
 
   if (debug) {
@@ -125,7 +135,11 @@ void setup()
 
 void draw()
 {
+  beatNo = (millis() /millisPerBeat);
   background(invertColor ? 0 : 255);
+  if (debug) {
+    //cornerBeatGlow();
+  }
 
   if (showFPS) {
     textSize(32);
@@ -133,19 +147,18 @@ void draw()
     fill(255, 0, 0);
     text((int)frameRate, 10, 10);
   }
-  
-  beatNo = (millis() /millisPerBeat);
+
   //println("millis " + millis() + " beat " + beatNo + " rem " + millis()%millisPerBeat);
-  
+
   textFont(font, 18*scale_factor);
-  
+
   killRemoved();
   TuioUpdate();
 
   strokeWeight(5);
   stroke(0);
-  
-  
+
+
   for (Cursor c : cursors) {
     c.Update();
   }
@@ -157,26 +170,28 @@ void draw()
     b.drawShadow();
     b.inChain = false;
   }
-  
+
   for (Button b : allButtons) {
     if (b.isShowing)
       b.drawButton();
   }
-  
+
   for (PlayHead p : allPlayHeads) {
     p.Update();
     p.draw();
   }
-  for(FunctionBlock func : allFunctionBlocks){
-      func.startUpdatePath();
-    
-    }
+  for (FunctionBlock func : allFunctionBlocks) {
+    func.startUpdatePath();
+  }
 
 
 
   if (hoverDebug) {
     HoverDebug();
   }
+  
+      shape(rectangle);
+
 }
 
 
@@ -188,18 +203,16 @@ boolean sketchFullScreen() {
 void keyPressed() {
   if (key == ' ') {
     println("space " + millis());
-    for(FunctionBlock func : allFunctionBlocks){
+    for (FunctionBlock func : allFunctionBlocks) {
       func.execute();
-    
     }
   }
 }
 
-void Play(){
-  for(FunctionBlock func : allFunctionBlocks){
-      func.execute();
-    
-    }
+void Play() {
+  for (FunctionBlock func : allFunctionBlocks) {
+    func.execute();
+  }
 }
 
 void mousePressed() {
@@ -219,7 +232,7 @@ void HoverDebug() {
         "symbol id: " + b.sym_id, 
         "x: " + b.x_pos, 
         "y: " + b.y_pos, 
-        "rotation: " + b.rotation,
+        "rotation: " + b.rotation, 
         "children: " + Arrays.toString(b.children)
       }
       );
@@ -228,9 +241,25 @@ void HoverDebug() {
 }
 
 
-void killRemoved(){
-  for(Block b : killBlocks){
+void killRemoved() {
+  for (Block b : killBlocks) {
     b.Die();
   }
   killBlocks.clear();
+  for (PlayHead p : killPlayHeads) {
+    p.Die();
+  }
+  killPlayHeads.clear();
 }
+
+void cornerBeatGlow(){
+  float beatPercent = (1.0 - ((float)(millis() % (millisPerBeat)) / (float)(millisPerBeat)));
+    int glowRadius = (int)(beatPercent  * 100);
+    color c1 = color(invertColor ? 0 : 255);
+    color c2 = color(invertColor ? 255 : 200);
+    radialGradient(0, 0, glowRadius, c1, c2);
+    radialGradient(width, 0, glowRadius, c1, c2);
+    radialGradient(0, height, glowRadius, c1, c2);
+    radialGradient(width, height, glowRadius, c1, c2);
+}
+

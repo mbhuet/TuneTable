@@ -3,12 +3,12 @@ abstract class SoundBlock extends Block {
   int startTime = 0;
   int playTimer = 0;
   boolean pie = true;
-  
+
   Block previous;
-  
+
   AudioPlayer clip;
 
-  
+
 
   public void Activate(PlayHead play, Block previous) {
     super.Activate(play, previous);
@@ -16,11 +16,11 @@ abstract class SoundBlock extends Block {
     Play();
   }
 
-  
-  boolean isReadyToDie(){
-    return (!isPlaying);
+
+  boolean isReadyToDie() {
+    return (true);//!isPlaying); //new surface may have fixed problem of misidentification, if so, this is no longer necessary
   }
-  
+
 
   void LoadClip() {
     if (clipDict.containsKey(sym_id)) {
@@ -45,7 +45,6 @@ abstract class SoundBlock extends Block {
     clip.play();
     startTime = millis();
     //println(clip.isPlaying() +" play " + clip.length() + " at millis " + millis());
-
   }
 
   void Stop() {
@@ -56,32 +55,31 @@ abstract class SoundBlock extends Block {
     //println("rewind " + clip.position() + " at millis " + millis());
     finish();
   }
-  
-  void drawArc(){
+
+  void drawArc() {
     pushMatrix();
     noStroke();
     fill(blockColor);
     translate(x_pos, y_pos);
     float arcRot = 0;
-    if (previous != null){
-    arcRot = atan2((previous.y_pos - this.y_pos) ,
-                    (previous.x_pos - this.x_pos));
+    if (previous != null) {
+      arcRot = atan2((previous.y_pos - this.y_pos), 
+      (previous.x_pos - this.x_pos));
     }
     rotate(arcRot); //should rotate such that the start angle points to the parent
     arc(0, 0, block_diameter * 1.25f, block_diameter * 1.25f, 0, (float)clip.position()/(float)clip.length() * 2*PI, PIE);
     popMatrix();
-
   }
-  
-  void drawBeat(){
+
+  void drawBeat() {
     pushMatrix();
     fill(blockColor);
     noStroke();
     translate(x_pos, y_pos);
     rotate(0); //should rotate such that the start angle points to the parent
-    //arc(0, 0, block_diameter * 1.25f, block_diameter * 1.25f, 0, (float)clip.position()/(float)clip.length() * 2*PI, PIE);
     float beatSize = block_diameter * 1.25f * (1.0- .5f *(float)(clip.position()%255) / (float)255);
     ellipse(0, 0, beatSize, beatSize);
     popMatrix();
   }
 }
+

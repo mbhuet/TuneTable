@@ -2,7 +2,7 @@ abstract class Button{
   int x,y;
   float rotation;
   float size;
-  boolean isShowing;
+  public boolean isShowing;
   
   void InitButton(int x_pos, int y_pos, float rot, float rad){
     isShowing = true;
@@ -41,32 +41,7 @@ abstract class Button{
   abstract void drawButton();
 }
 
-class ExecuteButton extends Button{
-  FunctionBlock func;
-  
-  ExecuteButton(FunctionBlock funcBlock, int x_pos, int y_pos, float rot, float rad){
-    InitButton(x_pos,y_pos,rot,rad);
-    func = funcBlock;
-    println("exec button");
-  }
-  public void Trigger(Cursor cursor){
-    println("play button hit");
-    func.execute();
-  }
-  public void drawButton(){
-    fill(color(0,0,0));
-    ellipse(x,y,size*2,size*2);
-    pushMatrix();
-    translate(x,y);
-    scale(.8);
-    translate(size/6, 0);
-    fill(color(255,255,255));
-    triangle(-size/2,-size/2,
-             -size/2, size/2,
-             size/2, 0);
-    popMatrix();
-  }
-}
+
 
 class PlayAllButton extends Button{
 
@@ -88,28 +63,6 @@ class PlayAllButton extends Button{
     triangle(-size/2,-size/2,
              -size/2, size/2,
              size/2, 0);
-    popMatrix();
-  }
-}
-
-class StopButton extends Button{
-
-  StopButton(int x_pos, int y_pos, float rot, float rad){
-    InitButton(x_pos,y_pos,rot,rad);
-  }
-  public void Trigger(Cursor cursor){
-    println("stop button hit");
-    //Stop();
-  }
-  
-  public void drawButton(){
-    fill(color(0,0,0));
-    ellipse(x,y,size*2,size*2);
-    pushMatrix();
-    translate(x,y);
-    rectMode(CENTER);
-    fill(color(255,255,255));
-    rect(0,0,size*.75, size*.75);
     popMatrix();
   }
 }
@@ -189,5 +142,7 @@ class DownButton extends Button{
     
   }
 }
+
+
 
 

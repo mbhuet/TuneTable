@@ -31,8 +31,7 @@ class PlayHead {
     pathDist = pathDist * (1-pathDecayRate);// * ((float)(millis() - lastMillis)/1000.0));
     lastMillis = millis();
     if (dead && pathDist <= 0) {
-      origin.spawnedPlayHeads.remove(this);
-      //allPlayHeads.remove(this); //causes concurrent modification exception
+      killPlayHeads.add(this);
     }
   }
 
@@ -92,6 +91,15 @@ class PlayHead {
   void addLead(Lead lead) {
     path.offerFirst(lead);
     pathDist += lead.distance - block_diameter;
+  }
+  
+  void Die(){
+    if(activeBlock instanceof SoundBlock){
+      ((SoundBlock)activeBlock).Stop();
+      //TODO stop playing immediately
+    }
+        allPlayHeads.remove(this);
+        origin.removePlayHead(this);
   }
 }
 

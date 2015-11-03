@@ -45,7 +45,43 @@ public void dashedLine(int x1, int y1, int x2, int y2, float offset) {
     position+=gapLength;
     translate(gapLength, 0);
   }
-  
+
   popMatrix();
+}
+
+void sinCircle(int x, int y, int radius, float rotation, int numLumps, float amplitude) {
+  
+  radius *= 2;
+  float angle = 0;
+  float angleStep = PI/(2*numLumps);
+  float freq = numLumps;
+  float amp = amplitude;
+  float dx, dy;  
+  beginShape();
+  
+  while (angle <= 2*PI) {
+    float localAmp = cos(angle * freq + PI) * amp;
+    dx = x + (radius + localAmp) * cos(angle);
+    dy = y + (radius + localAmp) * sin(angle);
+
+    angle += angleStep;
+
+    curveVertex(dx, dy);
+    fill(color(255,0,0));
+    ellipse(dx,dy,10,10);
+  }
+  fill(255);
+    endShape();
+}
+
+//TAKES A LOT OF PROCESSING POWER
+void radialGradient(float x, float y, int radius, color innerColor, color outerColor) {
+  float inter = 1;
+  for (int r = radius; r > 0; --r) {
+    inter = (float)r/(float)radius;
+    noStroke();
+    fill(lerpColor(outerColor, innerColor, inter));
+    ellipse(x, y, r*2, r*2);
+  }
 }
 
