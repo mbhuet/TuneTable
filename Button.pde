@@ -24,7 +24,6 @@ abstract class Button{
   }
   
   public boolean IsUnder(int hit_x, int hit_y){
-    //println(hit_x + ", " + x + ", " + hit_y + ", " + y);
     
     return (dist(hit_x, hit_y, x, y) < size);
   }
@@ -49,7 +48,6 @@ class PlayAllButton extends Button{
     InitButton(x_pos,y_pos,rot,rad);
   }
   public void Trigger(Cursor cursor){
-    println("play button hit");
     Play();
   }
   public void drawButton(){
@@ -75,7 +73,6 @@ class UpButton extends Button{
     block = b;
   }
   public void Trigger(Cursor cursor){
-        //println("up");
 
     block.IncrementArgument();
   }
@@ -112,7 +109,6 @@ class DownButton extends Button{
     block = b;
   }
   public void Trigger(Cursor cursor){
-    //println("down");
     block.DecrementArgument();
   }
   public void drawButton(){

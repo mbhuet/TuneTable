@@ -1,17 +1,16 @@
 class BeatBlock extends SoundBlock {
-  AudioPlayer clip;
-  int playTimer = 0;
-  int startTime = 0;
-  boolean isPlaying = false;
   int buttonSize = block_diameter/6;
   int buttonDist;
   String beatString = "";
   
-  int totalLength = millisPerBeat * beatsPerMeasure * 4;
-
+  int clipStartTime = 0;
+  int beatCount = 0;
+  int beatTimer = 0; //used to time the current beat sound
+  int totalLength = millisPerBeat * beatsPerMeasure; //this block will be one measures
+  int beatLength;
+  
   boolean pie = true;
 
-  Block previous;
   BeatButton[] buttons;
   int numBeats = 8;
 
@@ -20,7 +19,7 @@ class BeatBlock extends SoundBlock {
   }
 
   BeatBlock(int x, int y) {
-    Init(0, x, y);
+    Init(0, x, y, 25);
   }
 
   void Setup() {
@@ -32,18 +31,28 @@ class BeatBlock extends SoundBlock {
       beatString += "-";
     }
     buttonDist = block_diameter/2 + buttonSize;
+    beatLength = millisPerBeat * beatsPerMeasure / numBeats;// millisPerBeat * 4 / 8,
     arrangeButtons(rotation);
+
+    BeginPlaying();
   }
 
   void Update() {
-   
+
     super.Update();
     if (isPlaying) {
+      beatCount = millis()/(beatLength)%numBeats;
+      playTimer = millis()%(totalLength);
+      
+
       if (pie)drawArc((int)(block_diameter * .5), (float)playTimer/(float)totalLength);
       else drawBeat((int)(block_diameter * .5));
-      playTimer += millis() - startTime;
-      if (clip.position() >= clip.length()) {
-        Stop();
+      
+      if (millis() - clipStartTime >= beatLength) {
+          if(beatString.charAt(beatCount) == '0' ||
+              beatString.charAt(beatCount) == '+')
+          PlayBeat();
+        
       }
     }
     arrangeButtons(rotation);
@@ -108,12 +117,16 @@ class BeatBlock extends SoundBlock {
   }
 
 
-  void Play() {
-    playTimer = 0;
-    isPlaying = true;
-    clip.cue(millis() % millisPerBeat);
+  void PlayBeat() {
+    clip.cue(millis() % (beatLength));
     clip.play();
-    startTime = millis();
+    clipStartTime = millis() - (millis() % (beatLength));
+  }
+  
+  void BeginPlaying(){
+    beatCount = 0;
+    isPlaying = true;
+    PlayBeat();
   }
 
   void flipBeat(int i, Cursor cursor) {
@@ -157,7 +170,6 @@ class BeatButton extends Button {
         }
       }
     }
-   
   }
   public void drawButton() {
     strokeWeight(3);

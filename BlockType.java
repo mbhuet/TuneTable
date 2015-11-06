@@ -7,7 +7,8 @@ enum BlockType
     EFFECT,
     BOOLEAN,
     CALL,
-    SPLIT
+    SPLIT,
+    BEAT
     
 };
 

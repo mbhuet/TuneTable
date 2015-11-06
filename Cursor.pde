@@ -64,8 +64,9 @@ public class Cursor {
   }
 
   void OnRemove() {
+        cursors.remove(this);
+
     if(!isMouse)cursorMap.remove(tuioCursor.getSessionID());
-    cursors.remove(this);
   }
 
   void setTuioCursor(TuioCursor tCur) {

@@ -49,8 +49,9 @@ abstract class Block {
     Setup();
   }
   
-  void Init(int numLeads, int x, int y){
+  void Init(int numLeads, int x, int y, int id){
     this.numLeads = numLeads;
+    this.sym_id = id;
     allBlocks.add(this);
 
     parents = new ArrayList<Block>();
@@ -62,7 +63,6 @@ abstract class Block {
     }
     
     blockColor = color(invertColor ? 255 : 0);
-    println(hex(blockColor));
     isFake = true;
     x_pos = x; y_pos = y;
     
@@ -100,14 +100,12 @@ abstract class Block {
     isMissing = true;
     missingSince = millis();
     if(!isFake)blockMap.remove(tuioObj.getSessionID());
-    //println("block missing " + this);
   }
 
   void find(TuioObject newObj) {
     isMissing = false;
     missingBlocks.remove(this);
     if(!isFake)setTuioObject(newObj);
-    //println("block found " + this);
   }
 
   void Die() {
@@ -124,7 +122,6 @@ abstract class Block {
   //previous is the block that has lead the PlayHead to this block
   public void Activate(PlayHead play, Block previous) {
     playHeadList.add(play);
-    //println("block activated " + this);
   } 
 
   public void finish() {

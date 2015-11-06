@@ -22,11 +22,11 @@ Delay myDelay;
 
 
 boolean debug = true;
-boolean invertColor = true;
+boolean invertColor = false;
 boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
-boolean analyticsOn = true;
+boolean analyticsOn = false;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
@@ -140,16 +140,14 @@ void draw()
     textSize(32);
     textAlign(LEFT, TOP);
     fill(255, 0, 0);
-    text((int)frameRate, 10, 10);
+    text((int)frameRate, 40, 40);
   }
+
 
   textFont(font, 18*scale_factor);
 
   killRemoved();
   TuioUpdate();
-
-  strokeWeight(5);
-  stroke(0);
 
 
   for (Cursor c : cursors) {
@@ -176,6 +174,7 @@ void draw()
   for (FunctionBlock func : allFunctionBlocks) {
     func.startUpdatePath();
   }
+  
 
 
 

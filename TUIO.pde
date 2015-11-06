@@ -2,7 +2,6 @@ import TUIO.*;
 import java.util.*; 
 import java.util.concurrent.*;
 
-
 TuioProcessing tuioClient;
 
 AbstractQueue<TuioActionWrapper> actionQueue = new ConcurrentLinkedQueue<TuioActionWrapper>();
@@ -61,7 +60,6 @@ void updateTuioObject (TuioObject tobj) {
 void addTuioCursor(TuioCursor tcur) {
   if (!isInitiated) return;
     cursorQueue.offer(new CursorActionWrapper(tcur, TuioAction.ADD));
-
 }
 
 // called when a cursor is moved
@@ -130,6 +128,10 @@ void TuioUpdate() {
         case SPLIT:
           newBlock = new SplitBlock(curObj);
           break;
+          
+        case BEAT:
+          newBlock = new BeatBlock(curObj);
+          break;
 
         default:
           newBlock = new FunctionBlock(curObj);
@@ -141,6 +143,7 @@ void TuioUpdate() {
 
 
     case REMOVE :
+
       Block remBlock = blockMap.get(curObj.getSessionID());
       if (remBlock != null) {
         remBlock.OnRemove();
@@ -164,15 +167,18 @@ void TuioUpdate() {
     TuioCursor tCur = wrap.tCursor;
     switch(wrap.action) {
     case ADD :
-      cursors.add(new Cursor(tCur));
+      Cursor newCur = new Cursor(tCur);
       break;
 
 
     case REMOVE :
+    //println(cursorMap.containsKey(tCur.getSessionID()));
       Cursor remCursor = cursorMap.get(tCur.getSessionID());
       if (remCursor != null) {
+
         remCursor.OnRemove();
       }
+      else println("here");
       break;
 
     case UPDATE :

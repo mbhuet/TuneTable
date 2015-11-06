@@ -39,7 +39,6 @@ class CountdownBlock extends Block {
 
 
   public void IncrementArgument() {
-    //println("arg inc");
 
     count++;
     if (count > max_count)
@@ -47,7 +46,6 @@ class CountdownBlock extends Block {
   }
 
   public void DecrementArgument() {
-    //println("arg dec");
     count--;
     if (count < 0)
       count = max_count;
