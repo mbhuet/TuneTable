@@ -47,19 +47,19 @@ static int display_height = 480;
 PImage lock;
 PImage unlock;
 PShape beatShadow;
-PShape rectangle;
+PShape dashCircle;
 
 
 List<Block> allBlocks;
 List<Block> missingBlocks;
-List<Block> killBlocks;
+LinkedList<Block> killBlocks;
 
 List<Cursor> cursors;
 
 List<FunctionBlock> allFunctionBlocks;
 List<Button> allButtons;
 List<PlayHead> allPlayHeads;
-List<PlayHead> killPlayHeads;
+LinkedList<PlayHead> killPlayHeads;
 
 
 Cursor mouse;
@@ -81,8 +81,11 @@ void setup()
   font = createFont("Arial", 18);
   scale_factor = height/table_size;
   
-  beatShadow = sinCircle(0,0, block_diameter/2, 0, 8, block_diameter/20);
-  
+  //SHAPE Setup
+  shapeMode(CENTER);
+  beatShadow = sinCircle(0, 0, block_diameter/2, 0, 8, block_diameter/20);
+  dashCircle = dashedCircle(0, 0, block_diameter, 10);
+
 
   // we create an instance of the TuioProcessing client
   // since we add "this" class as an argument the TuioProcessing class expects
@@ -99,14 +102,13 @@ void setup()
 
   allBlocks = new ArrayList<Block>();
   missingBlocks = new ArrayList<Block>();
-  killBlocks = new ArrayList<Block>();
+  killBlocks = new LinkedList<Block>();
   allFunctionBlocks = new ArrayList<FunctionBlock>();
   allButtons = new ArrayList<Button>();
   allPlayHeads = new ArrayList<PlayHead>();
-  killPlayHeads = new ArrayList<PlayHead>();
+  killPlayHeads = new LinkedList<PlayHead>();
 
   cursors = new ArrayList<Cursor>();
-
 
   float scaleFactor = 1;
   lock = loadImage("images/lock.png");
@@ -116,36 +118,40 @@ void setup()
   scaleFactor = ((float)block_diameter/3.0) / (float)unlock.height;
   unlock.resize((int)(unlock.width * scaleFactor), (int)(unlock.height * scaleFactor));
 
-  
+
 
   isInitiated = true;
   millisPerBeat = 60000/bpm;
   //playButt = new PlayButton(width - 50,height - 50,0,100);
 
   if (debug) {
-    BeatBlock testBeat = new BeatBlock(400,400);
+    //BeatBlock testBeat = new BeatBlock(400, 400);
+    //ConditionalBlock testCond = new ConditionalBlock(700, 700);
+    //BooleanBlock testBool = new BooleanBlock(1000, 500);
   }
 }
 
 
 void draw()
 {
+      //int timeProbe = millis();
+
   beatNo = (millis() /millisPerBeat);
   background(invertColor ? 0 : 255);
   if (debug) {
-    //cornerBeatGlow();
+    cornerBeatGlow();
   }
 
   if (showFPS) {
     textSize(32);
     textAlign(LEFT, TOP);
     fill(255, 0, 0);
-    text((int)frameRate, 40, 40);
+    text((int)frameRate, 80, 80);
   }
 
 
   textFont(font, 18*scale_factor);
-
+  
   killRemoved();
   TuioUpdate();
 
@@ -155,32 +161,42 @@ void draw()
   }
 
   for (Block b : allBlocks) {
-    b.Update();
-    if (b.leadsActive)
-      b.drawLeads();
+    b.Update(); //UPDATE IS CAUSING FRAMERATE DIPS
+    if (b.leadsActive){
+      b.drawLeads(); //DRAW LEADS IS CAUSING FRAMERATE DIPS
+    }
     b.drawShadow();
     b.inChain = false;
   }
+
+
+  
 
   for (Button b : allButtons) {
     if (b.isShowing)
       b.drawButton();
   }
+  
 
   for (PlayHead p : allPlayHeads) {
     p.Update();
     p.draw();
+    
   }
+
   for (FunctionBlock func : allFunctionBlocks) {
     func.startUpdatePath();
   }
-  
+
 
 
 
   if (hoverDebug) {
     HoverDebug();
   }
+  
+      //println(millis() - timeProbe);
+
 }
 
 
@@ -231,23 +247,30 @@ void HoverDebug() {
 
 
 void killRemoved() {
-  for (Block b : killBlocks) {
-    b.Die();
+  while (killBlocks.peek() != null) {
+    killBlocks.pop().Die();
   }
-  killBlocks.clear();
-  for (PlayHead p : killPlayHeads) {
-    p.Die();
+  while (killPlayHeads.peek() != null) {
+    killPlayHeads.pop().Die();
   }
-  killPlayHeads.clear();
 }
 
-void cornerBeatGlow(){
+void cornerBeatGlow() {
   float beatPercent = (1.0 - ((float)(millis() % (millisPerBeat)) / (float)(millisPerBeat)));
-    int glowRadius = (int)(beatPercent  * 100);
-    color c1 = color(invertColor ? 0 : 255);
-    color c2 = color(invertColor ? 255 : 200);
-    radialGradient(0, 0, glowRadius, c1, c2);
-    radialGradient(width, 0, glowRadius, c1, c2);
-    radialGradient(0, height, glowRadius, c1, c2);
-    radialGradient(width, height, glowRadius, c1, c2);
+  int glowRadius = (int)(beatPercent  * 100);
+  color innerCol = color(invertColor ? 0 : 255);
+  color outerCol = color(invertColor ? 255 : 200);
+  
+  fill(outerCol);
+  ellipse(0, 0, glowRadius, glowRadius);
+  ellipse(width, 0, glowRadius, glowRadius);
+  ellipse(0, height, glowRadius, glowRadius);
+  ellipse(width, height, glowRadius, glowRadius);
+  /*
+  radialGradient(0, 0, glowRadius, c1, c2);
+  radialGradient(width, 0, glowRadius, c1, c2);
+  radialGradient(0, height, glowRadius, c1, c2);
+  radialGradient(width, height, glowRadius, c1, c2);
+  */
 }
+

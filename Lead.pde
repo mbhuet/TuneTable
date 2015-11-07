@@ -27,39 +27,42 @@ class Lead {
   }
 
   public void draw() {
+
+    if (!options.visible) return;
     stroke(options.col);
     strokeWeight(options.weight);
 
-
     pushMatrix();
-
     translate(owner.x_pos, owner.y_pos);
     rotate(rotation);
-  
+
     if (options.dashed) {
       dashedLine(0, 0, (int)distance, 0, options.offset);
-      } else {
+    } else {
       line(0, 0, distance - block_diameter/2, 0);
     }
-    
-    if(options.image != null){
-      pushMatrix();
-      translate(distance/2,0);
-            rotate(PI/2.0);
-    translate(-options.image.width/2, -options.image.height/2);
-        fill(255);
-        noStroke();
-        rect(0,0,options.image.width, options.image.height);
 
-    image(options.image, 0, 0);
-    popMatrix();
+    if (options.image != null) {
+      pushMatrix();
+      translate(distance/2, 0);
+      rotate(PI/2.0);
+      translate(-options.image.width/2, -options.image.height/2);
+      fill(255);
+      noStroke();
+      rect(0, 0, options.image.width, options.image.height);
+
+      image(options.image, 0, 0);
+      popMatrix();
     }
 
     translate(distance, 0);
-    stroke(255);
-    strokeWeight(3);
-    dashedCircle(0, 0, block_diameter, 10);
+    dashCircle.setStroke(options.col);
+    dashCircle.setStrokeWeight(5);
+    shape(dashCircle);
+
     popMatrix();
+    
+
   }
 
   public void highlightTravelled(float percent, color col) {
@@ -118,10 +121,11 @@ class Lead {
 }
 
 class LeadOptions {
+  public boolean visible = true;
   public PImage image;
   public boolean dashed = false;
   public float offset = 0;
-  public color col = color(0);
+  public color col = color(invertColor ? 255 : 0);
   public int weight = 3;
 }
 

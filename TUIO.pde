@@ -178,7 +178,6 @@ void TuioUpdate() {
 
         remCursor.OnRemove();
       }
-      else println("here");
       break;
 
     case UPDATE :

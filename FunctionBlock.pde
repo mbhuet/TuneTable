@@ -24,7 +24,7 @@ class FunctionBlock extends Block {
 
   void Update() {
     super.Update();
-    dashedLineOffset = (millis() % (millisPerBeat * 4) / (float)(millisPerBeat * 4));
+    dashedLineOffset = (millis() % (millisPerBeat * .5) / (float)(millisPerBeat * .5));
     executeButt.Update((int)(x_pos - cos(rotation) * block_diameter), (int)(y_pos - sin(rotation) * block_diameter), rotation);
     stopButt.Update((int)(x_pos - cos(rotation) * block_diameter), (int)(y_pos - sin(rotation) * block_diameter), rotation);
 
@@ -46,16 +46,19 @@ class FunctionBlock extends Block {
 
   void Die() {
     super.Die();
+        Stop();
+
     allFunctionBlocks.remove(this);
     funcMap.remove(sym_id);
     executeButt.Destroy();
     executeButt = null;
-    Stop();
+    stopButt.Destroy();
+    stopButt = null;
   }
 
   public void Activate(PlayHead play, Block previous) {
     super.Activate(play, previous);
-    println("func activated");
+    println("func activated " + millis());
     finish();
   }
 
@@ -90,9 +93,10 @@ class FunctionBlock extends Block {
       killPlayHeads.add(head);
     }
     spawnedPlayHeads.clear();
+
     stopButt.isShowing = false;
     executeButt.isShowing = true;
-    
+
   }
 }
 

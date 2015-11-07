@@ -284,7 +284,7 @@ abstract class Block {
   void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
     this.inChain = true;
     blockColor = col;
-
+    //println(sym_id + " " + millis());
     for (int i = 0; i< numLeads; i++) {     
       if (isActive && childIsSuccessor(i)) {
         leads[i].options.dashed = true;

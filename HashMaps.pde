@@ -64,10 +64,11 @@ void SetupIdToEffect() {
 
 
 
-HashMap<Integer, Boolean> boolMap;
+HashMap<Integer, BooleanBlock> boolMap;
 
 void SetupBoolMap() {
-  boolMap = new HashMap<Integer, Boolean>();
+  boolMap = new HashMap<Integer, BooleanBlock>();
+  /*
   boolMap.put(100, false);
   boolMap.put(101, false);
   boolMap.put(102, false);
@@ -78,6 +79,7 @@ void SetupBoolMap() {
   boolMap.put(107, false);
   boolMap.put(108, false);
   boolMap.put(109, false);
+  */
 }
 
 HashMap<Integer, BlockType> idToType;
@@ -97,13 +99,13 @@ void SetupIdToType() {
 
   //CLIPS 20-99
   //TODO change 1 back to 20 when ready       
-  for (int i = 1; i < 25; i++) {
+  for (int i = 1; i < 100; i++) {
     idToType.put(i, BlockType.CLIP);
   }
   
   //CLIPS 20-99
   //TODO change 1 back to 20 when ready       
-  for (int i = 25; i < 100; i++) {
+  for (int i = 25; i < 26; i++) {
     idToType.put(i, BlockType.BEAT);
   }
   

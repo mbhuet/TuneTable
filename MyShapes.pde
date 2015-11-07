@@ -1,8 +1,12 @@
-public void dashedCircle(int x, int y, int radius, int numDashes) {
+PShape dashedCircle(int x, int y, int radius, int numDashes) {
+  PShape shape = createShape(GROUP);
   noFill();
+  stroke(0);
   for (int i = 0; i < numDashes; i++) {
-    arc(x, y, radius, radius, (i + .3) * (2*PI)/numDashes, (i + 1 - .3) * (2*PI) / numDashes);
+    PShape arc = createShape(ARC, x, y, radius, radius, (i + .3) * (2*PI)/numDashes, (i + 1 - .3) * (2*PI) / numDashes);
+    shape.addChild(arc);
   }
+  return shape;
 }
 
 public void dashedLine(int x1, int y1, int x2, int y2, float offset) {

@@ -4,8 +4,12 @@ class BooleanBlock extends Block{
     Init(tObj, 0);
   }
   
+  BooleanBlock(int x, int y){
+    Init(0, x, y, 100);
+  }
+  
   void Setup(){
-    boolMap.put(sym_id, true);
+    boolMap.put(sym_id, this);
     canBeChained = false;
   }
   
@@ -19,7 +23,7 @@ class BooleanBlock extends Block{
   
   void Die(){
     super.Die();
-        boolMap.put(sym_id, false);  
+        boolMap.remove(sym_id);  
 
   }
   

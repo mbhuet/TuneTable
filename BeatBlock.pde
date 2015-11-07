@@ -46,7 +46,7 @@ class BeatBlock extends SoundBlock {
       
 
       if (pie)drawArc((int)(block_diameter * .5), (float)playTimer/(float)totalLength);
-      else drawBeat((int)(block_diameter * .5));
+      //else drawBeat((int)(block_diameter * .5));
       
       if (millis() - clipStartTime >= beatLength) {
           if(beatString.charAt(beatCount) == '0' ||
@@ -55,9 +55,14 @@ class BeatBlock extends SoundBlock {
         
       }
     }
+
+   drawBridges();
+  }
+  
+  public void UpdatePosition() {
+    super.UpdatePosition();
     arrangeButtons(rotation);
 
-    drawBridges();
   }
 
 
