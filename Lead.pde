@@ -58,6 +58,8 @@ class Lead {
     translate(distance, 0);
     dashCircle.setStroke(options.col);
     dashCircle.setStrokeWeight(5);
+      shapeMode(CENTER);
+
     shape(dashCircle);
 
     popMatrix();

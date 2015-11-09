@@ -75,6 +75,21 @@ PShape sinCircle(int x, int y, int radius, float rotation, int numLumps, float a
     return shape;
 }
 
+PShape circle(){
+  PShape shape = createShape();
+  shape.beginShape();
+  float angle = 0;
+  
+  while (angle <= 2*PI) {
+    float dx = cos(angle) * 100;
+    float dy = sin(angle) * 100;
+    angle += PI/8;
+    shape.curveVertex(dx, dy);
+  }
+    shape.endShape(CLOSE);
+    return shape;
+}
+
 //TAKES A LOT OF PROCESSING POWER
 void radialGradient(float x, float y, int radius, color innerColor, color outerColor) {
   float inter = 1;

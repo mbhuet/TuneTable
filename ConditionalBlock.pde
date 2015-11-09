@@ -35,6 +35,7 @@ class ConditionalBlock extends Block {
     leadsActive = inChain;
 
     checkBooleanBlock();
+    boolLead.Update();
     boolLead.draw();
   }
 

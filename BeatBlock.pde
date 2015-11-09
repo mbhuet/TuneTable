@@ -19,7 +19,7 @@ class BeatBlock extends SoundBlock {
   }
 
   BeatBlock(int x, int y) {
-    Init(0, x, y, 25);
+    Init(0, x, y, 62);
   }
 
   void Setup() {
@@ -85,10 +85,14 @@ class BeatBlock extends SoundBlock {
   void Die() {
     super.Die();
     clip.close();
+    for(int i = 0; i<numBeats; i++){
+      buttons[i].Destroy();
+      buttons[i] = null;
+    }
   }
 
   boolean isReadyToDie() {
-    return (!isPlaying);
+    return (true);
   }
 
   void arrangeButtons(float startAngle) {
@@ -113,10 +117,14 @@ class BeatBlock extends SoundBlock {
   }
 
   void drawShadow() {
+      shapeMode(CORNER);
+
     beatShadow.setFill(blockColor);
     pushMatrix();
     translate(x_pos, y_pos);
     rotate(rotation);
+    fill(color(255,0,0));
+    ellipse(0,0,10,10);
     shape(beatShadow);
     popMatrix();
   }

@@ -51,7 +51,7 @@ clipDict.put(21, new ClipInfo("trad/guitar-pop-rock", 1));
 clipDict.put(22, new ClipInfo("trad/guitar-pop-rock-rhythm", 1));
 clipDict.put(23, new ClipInfo("trad/guitar-rock", 2));
 clipDict.put(24, new ClipInfo("trad/guitar-synth", 3));
-clipDict.put(25, new ClipInfo("kick_export", 0));
+clipDict.put(62, new ClipInfo("kick_export", 0));
 
 }
 
@@ -103,11 +103,9 @@ void SetupIdToType() {
     idToType.put(i, BlockType.CLIP);
   }
   
-  //CLIPS 20-99
-  //TODO change 1 back to 20 when ready       
-  for (int i = 25; i < 26; i++) {
-    idToType.put(i, BlockType.BEAT);
-  }
+  //BEATS ?
+  //TODO change to whatever       
+    idToType.put(62, BlockType.BEAT);
   
 
   //BOOLEANS 100-109

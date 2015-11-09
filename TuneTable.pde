@@ -82,7 +82,6 @@ void setup()
   scale_factor = height/table_size;
   
   //SHAPE Setup
-  shapeMode(CENTER);
   beatShadow = sinCircle(0, 0, block_diameter/2, 0, 8, block_diameter/20);
   dashCircle = dashedCircle(0, 0, block_diameter, 10);
 
@@ -125,7 +124,7 @@ void setup()
   //playButt = new PlayButton(width - 50,height - 50,0,100);
 
   if (debug) {
-    //BeatBlock testBeat = new BeatBlock(400, 400);
+    BeatBlock testBeat = new BeatBlock(400, 400);
     //ConditionalBlock testCond = new ConditionalBlock(700, 700);
     //BooleanBlock testBool = new BooleanBlock(1000, 500);
   }
@@ -257,11 +256,12 @@ void killRemoved() {
 
 void cornerBeatGlow() {
   float beatPercent = (1.0 - ((float)(millis() % (millisPerBeat)) / (float)(millisPerBeat)));
-  int glowRadius = (int)(beatPercent  * 100);
+  int glowRadius = (int)(beatPercent  * 300);
   color innerCol = color(invertColor ? 0 : 255);
-  color outerCol = color(invertColor ? 255 : 200);
+  color outerCol = color(invertColor ? 255 : 150);
   
   fill(outerCol);
+  noStroke();
   ellipse(0, 0, glowRadius, glowRadius);
   ellipse(width, 0, glowRadius, glowRadius);
   ellipse(0, height, glowRadius, glowRadius);
