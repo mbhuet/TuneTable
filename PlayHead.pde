@@ -34,7 +34,7 @@ class PlayHead {
     lastMillis = millis();
     if (dead && pathDist <= 1) {
       killPlayHeads.add(this);
-      println("add playhead to kill list");
+      //println("add playhead to kill list");
     }
   }
 
@@ -43,29 +43,54 @@ class PlayHead {
   }
 
   void travel() {
+    Block currentBlock = activeBlock; //activeBlock may change, so we need to keep a reference to it
     boolean hasTravelled = false; //if there are more than 1 valid successors, 
-    int[] nextBlockIndices = activeBlock.getSuccessors();
+    int[] nextBlockIndices = currentBlock.getSuccessors();
+    //println("playhead " + this + " travelling to " + Arrays.toString(nextBlockIndices));
     for (int i = 0; i< nextBlockIndices.length; i++) {
       int indexOfSuccessor = nextBlockIndices[i];
-      Block nextBlock = activeBlock.children[indexOfSuccessor];
-      if (nextBlock != null) { //if there is a block 
+      Block nextBlock = currentBlock.children[indexOfSuccessor];
+      if (nextBlock != null && nextBlock.inChain) { //if there is a block
         if (!hasTravelled) {
-          addLead(activeBlock.leads[nextBlockIndices[i]]);
-          Block lastBlock = activeBlock;
+          addLead(currentBlock.leads[indexOfSuccessor]);
           activeBlock = nextBlock;
-          nextBlock.Activate(this, lastBlock);
+          nextBlock.Activate(this, currentBlock);
           hasTravelled = true;
+        } else {  
+          PlayHead newPlay = new PlayHead(origin, nextBlock, currentBlock, playColor);
+          newPlay.addLead(currentBlock.leads[indexOfSuccessor]);
         }
-        else{
-          PlayHead newPlay = new PlayHead(origin, nextBlock, activeBlock, playColor);
-          newPlay.addLead(activeBlock.leads[nextBlockIndices[i]]);
-        } 
+      } else {//there is no block ahead
       }
+
+
+
+
+
+      /*
+      int indexOfSuccessor = nextBlockIndices[i];
+       println(activeBlock.children.length);
+       Block nextBlock = activeBlock.children[indexOfSuccessor];
+       println("looking at successor " + nextBlock );
+       if (nextBlock != null && nextBlock.inChain) { //if there is a block 
+       println("  this block is a valid successor");
+       if (!hasTravelled) {
+       addLead(activeBlock.leads[indexOfSuccessor]);
+       Block lastBlock = activeBlock;    
+       activeBlock = nextBlock;
+       nextBlock.Activate(this, lastBlock);
+       hasTravelled = true;
+       } else {  
+       PlayHead newPlay = new PlayHead(origin, nextBlock, activeBlock, playColor);
+       newPlay.addLead(activeBlock.leads[indexOfSuccessor]);
+       }
+       }
+       */
     }
-    
-    if (!hasTravelled){
+
+    if (!hasTravelled) {
       dead = true;
-        println("playhead " + this + " dead");
+      println("playhead " + this + " dead");
     }
   }
 
@@ -105,12 +130,10 @@ class PlayHead {
   void Die() {
     if (activeBlock instanceof SoundBlock) {
       ((SoundBlock)activeBlock).Stop();
-      println("stop playing " + activeBlock);
       //TODO stop playing immediately
     }
     allPlayHeads.remove(this);
     origin.removePlayHead(this);
-    println(this);
   }
 }
 

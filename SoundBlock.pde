@@ -53,6 +53,7 @@ abstract class SoundBlock extends Block {
     clip.rewind();
     clip.pause();
     //println("rewind " + clip.position() + " at millis " + millis());
+    
   }
 
   

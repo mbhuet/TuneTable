@@ -12,7 +12,7 @@ class BeatBlock extends SoundBlock {
   boolean pie = true;
 
   BeatButton[] buttons;
-  int numBeats = 16;
+  int numBeats = 8;
 
   BeatBlock(TuioObject tObj) {
     Init(tObj, 0);

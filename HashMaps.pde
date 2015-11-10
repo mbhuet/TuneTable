@@ -96,23 +96,23 @@ HashMap<Integer, BlockType> idToType;
 void SetupIdToType() {
   idToType = new HashMap<Integer, BlockType>();
 
-  //FUNCTION 0-9
+  //FUNCTION 0-4
   for (int i = 0; i < 10; i++) {
     idToType.put(i, BlockType.FUNCTION);
   }
 
-  //CALL 10-19
-  for (int i = 10; i < 20; i++) {
+  //CALL 5-9
+  for (int i = 1; i < 20; i++) {
     idToType.put(i, BlockType.CALL);
   }
 
-  //CLIPS 20-99
+  //CLIPS 10-39
   //TODO change 1 back to 20 when ready       
-  for (int i = 1; i < 100; i++) {
+  for (int i = 1; i < 30; i++) {
     idToType.put(i, BlockType.CLIP);
   }
 
-  //BEATS ?
+  //BEATS 40
   //TODO change to whatever       
   idToType.put(62, BlockType.BEAT);
 

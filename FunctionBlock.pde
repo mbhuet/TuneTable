@@ -14,16 +14,17 @@ class FunctionBlock extends Block {
     Init(1, x, y, id);
   }
 
-  void Setup() {
+  void Setup() { //ARRAY INDEX OUT OF BOUNDS
     allFunctionBlocks.add(this);
     funcMap.put(sym_id, this);
     spawnedPlayHeads = new ArrayList<PlayHead>();
     canBeChained = false;
-    
+
     leadsActive = true;
     executeButt = new ExecuteButton(this, -block_diameter, 0, 0, block_diameter/4);
     stopButt = new StopButton(this, -block_diameter, 0, 0, block_diameter/4);
     stopButt.isShowing = false;
+println(sym_id);
     blockColor = colorSet[sym_id];
   }
 
@@ -31,9 +32,7 @@ class FunctionBlock extends Block {
     super.Update();
     dashedLineOffset = (millis() % (millisPerBeat * .5) / (float)(millisPerBeat * .5));
     
-    executeButt.Update((int)(x_pos - cos(rotation) * block_diameter), (int)(y_pos - sin(rotation) * block_diameter), rotation);
-    stopButt.Update((int)(x_pos - cos(rotation) * block_diameter), (int)(y_pos - sin(rotation) * block_diameter), rotation);
-
+    arrangeButtons();
 
     if (waitingForBeat || spawnedPlayHeads.size() > 0) {
       float beatRadius = block_diameter * 1.25f * (1.0- ( (float)(millis() %millisPerBeat)) / (float)millisPerBeat);
@@ -80,6 +79,15 @@ class FunctionBlock extends Block {
       0
     };
   }
+  
+  void arrangeButtons(){
+   int butt_x = (int)(x_pos - cos(rotation) * block_diameter * .75);
+    int butt_y = (int)(y_pos - sin(rotation) * block_diameter * .75);
+    
+    executeButt.Update(butt_x, butt_y, rotation);
+    stopButt.Update(butt_x, butt_y, rotation);
+
+  }
 
 
   void execute() {
@@ -120,13 +128,13 @@ class ExecuteButton extends Button {
   ExecuteButton(FunctionBlock funcBlock, int x_pos, int y_pos, float rot, float rad) {
     InitButton(x_pos, y_pos, rot, rad);
     func = funcBlock;
-    println("exec button");
   }
   public void Trigger(Cursor cursor) {
     println("play button hit");
     func.execute();
   }
   public void drawButton() {
+    noStroke();
     fill(invertColor ? 255 : 0);
     ellipse(x, y, size*2, size*2);
     pushMatrix();
@@ -152,6 +160,7 @@ class StopButton extends Button {
     func.Stop();
   }
   public void drawButton() {
+    noStroke();
     fill(invertColor ? 255 : 0);
     ellipse(x, y, size*2, size*2);
     pushMatrix();

@@ -25,7 +25,7 @@ boolean debug = true;
 boolean invertColor = false;
 boolean showFPS = true;
 boolean hoverDebug = true;
-boolean fullscreen = false;
+boolean fullscreen = true;
 boolean analyticsOn = false;
 
 // these are some helper variables which are used
@@ -80,7 +80,7 @@ void setup()
   hint(ENABLE_NATIVE_FONTS);
   font = createFont("Arial", 18);
   scale_factor = height/table_size;
-  
+
   //SHAPE Setup
   beatShadow = sinCircle(0, 0, block_diameter/2, 0, 8, block_diameter/20);
   dashCircle = dashedCircle(0, 0, block_diameter, 10);
@@ -91,7 +91,7 @@ void setup()
   // an implementation of the TUIO callback methods (see below)
   tuioClient  = new TuioProcessing(this);
   minim = new Minim(this);
-  
+
   SetupClipDict();
   SetupFuncMap();
   SetupBoolMap();
@@ -125,17 +125,17 @@ void setup()
   //playButt = new PlayButton(width - 50,height - 50,0,100);
 
   if (debug) {
-    FunctionBlock funcTest = new FunctionBlock(500,500, 0);
-    ClipBlock testCLip = new ClipBlock(700,500, 1);
-    ConditionalBlock testCond = new ConditionalBlock(900,500);
-    BooleanBlock testBool = new BooleanBlock(900, 200);
+    //FunctionBlock funcTest = new FunctionBlock(500,500, 0);
+    //ClipBlock testCLip = new ClipBlock(700,500, 1);
+    //ConditionalBlock testCond = new ConditionalBlock(900,500);
+    //BooleanBlock testBool = new BooleanBlock(900, 200);
   }
 }
 
 
 void draw()
 {
-      //int timeProbe = millis();
+  //int timeProbe = millis();
 
   beatNo = (millis() /millisPerBeat);
   background(invertColor ? 0 : 255);
@@ -152,7 +152,7 @@ void draw()
 
 
   textFont(font, 18*scale_factor);
-  
+
   killRemoved();
   TuioUpdate();
 
@@ -162,32 +162,38 @@ void draw()
   }
 
   for (Block b : allBlocks) {
-    b.Update();
-    if (b.leadsActive){
-      b.drawLeads(); 
-    }
-    b.drawShadow();
     b.inChain = false;
-  }
-
-
-  
-
-  for (Button b : allButtons) {
-    if (b.isShowing)
-      b.drawButton();
-  }
-  
-
-  for (PlayHead p : allPlayHeads) {
-    p.Update();
-    p.draw();
-    
   }
 
   for (FunctionBlock func : allFunctionBlocks) {
     func.startUpdatePath();
   }
+
+  for (Block b : allBlocks) {
+    b.Update();
+    if (b.leadsActive) {
+      b.drawLeads();
+    }
+    b.drawShadow();
+  }
+
+
+
+
+
+
+  for (Button b : allButtons) {
+    if (b.isShowing)
+      b.drawButton();
+  }
+
+
+  for (PlayHead p : allPlayHeads) {
+    p.Update();
+    p.draw();
+  }
+
+
 
 
 
@@ -195,9 +201,8 @@ void draw()
   if (hoverDebug) {
     HoverDebug();
   }
-  
-      //println(millis() - timeProbe);
 
+  //println(millis() - timeProbe);
 }
 
 
@@ -213,7 +218,7 @@ void keyPressed() {
       func.execute();
     }
   }
-  if (key == 'i'){
+  if (key == 'i') {
     invertColor = !invertColor;
   }
 }
@@ -242,6 +247,7 @@ void HoverDebug() {
         "x: " + b.x_pos, 
         "y: " + b.y_pos, 
         "rotation: " + b.rotation, 
+        "in chain? " + b.inChain, 
         "children: " + Arrays.toString(b.children)
       }
       );
@@ -251,10 +257,10 @@ void HoverDebug() {
 
 
 void killRemoved() {
-  while (killBlocks.peek() != null) {
+  while (killBlocks.peek () != null) {
     killBlocks.pop().Die();
   }
-  while (killPlayHeads.peek() != null) {
+  while (killPlayHeads.peek () != null) {
     killPlayHeads.pop().Die();
   }
 }
@@ -264,7 +270,7 @@ void cornerBeatGlow() {
   int glowRadius = (int)(beatPercent  * 300);
   color innerCol = color(invertColor ? 0 : 255);
   color outerCol = color(invertColor ? 255 : 150);
-  
+
   fill(outerCol);
   noStroke();
   ellipse(0, 0, glowRadius, glowRadius);
@@ -273,9 +279,9 @@ void cornerBeatGlow() {
   ellipse(width, height, glowRadius, glowRadius);
   /*
   radialGradient(0, 0, glowRadius, c1, c2);
-  radialGradient(width, 0, glowRadius, c1, c2);
-  radialGradient(0, height, glowRadius, c1, c2);
-  radialGradient(width, height, glowRadius, c1, c2);
-  */
+   radialGradient(width, 0, glowRadius, c1, c2);
+   radialGradient(0, height, glowRadius, c1, c2);
+   radialGradient(width, height, glowRadius, c1, c2);
+   */
 }
 

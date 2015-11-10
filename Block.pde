@@ -118,6 +118,8 @@ abstract class Block {
     allBlocks.remove(this);
     missingBlocks.remove(this);
     if (!isFake)blockMap.remove(tuioObj.getSessionID());
+   
+
   }
 
   boolean isReadyToDie() {
@@ -128,12 +130,12 @@ abstract class Block {
   public void Activate(PlayHead play, Block previous) {
     //playHeadList.add(play);
     playHead = play;
-    println("activate " + this + " " +playHead);
+    //println("activate " + this + " " +playHead);
   } 
 
   public void finish() {
     //PlayHead play = playHeadList.pop();
-    println("finish " + this + " " +playHead);
+    //println("finish " + this + " " +playHead);
     playHead.travel();
     if (playHead != null)playHead = null;
   }

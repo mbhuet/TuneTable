@@ -99,7 +99,6 @@ class Lead {
   }
 
   public boolean isUnderBlock(Block b) {
-    println("is lead for " + owner + " under " + b);
     float look_x = owner.x_pos + cos(rotation) * distance;
     float look_y = owner.y_pos + sin(rotation) * distance;
 

@@ -94,7 +94,7 @@ void TuioUpdate() {
       if (!checkMissing(curObj)) {
         Block newBlock;
         BlockType type = idToType.get(curObj.getSymbolID());
-        if (type == null) type = BlockType.FUNCTION; //why is it null sometimes?
+        if (type == null) break; //why is it null sometimes?
 
         switch (type) {
         case FUNCTION:
@@ -134,7 +134,7 @@ void TuioUpdate() {
           break;
 
         default:
-          newBlock = new FunctionBlock(curObj);
+          //newBlock = new FunctionBlock(curObj);
           break;
         }
 
