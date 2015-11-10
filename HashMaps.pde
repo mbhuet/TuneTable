@@ -35,22 +35,22 @@ void SetupClipDict() {
   clipDict.put(10, new ClipInfo("abstract/marimba-3", 1));
   clipDict.put(11, new ClipInfo("abstract/trill-1", 1));
   
-   clipDict.put(12, new ClipInfo("trad/bass-asc-progression", 1));
- clipDict.put(13, new ClipInfo("trad/bass-fx-slap", 1));
- clipDict.put(14, new ClipInfo("trad/bass-groovy", 1));
- clipDict.put(15, new ClipInfo("trad/bass-pop-rock", 1));
+   clipDict.put(1, new ClipInfo("trad/bass-asc-progression", 1));
+ clipDict.put(2, new ClipInfo("trad/bass-fx-slap", 1));
+ clipDict.put(3, new ClipInfo("trad/bass-groovy", 1));
+ clipDict.put(4, new ClipInfo("trad/bass-pop-rock", 1));
 
- clipDict.put(16, new ClipInfo("trad/bass-slappy", 1));
- clipDict.put(17, new ClipInfo("trad/bass-synthetic", 1));
+ clipDict.put(5, new ClipInfo("trad/bass-slappy", 1));
+ clipDict.put(6, new ClipInfo("trad/bass-synthetic", 1));
 
-clipDict.put(18, new ClipInfo("trad/guitar-country", 1));
-clipDict.put(19, new ClipInfo("trad/guitar-country-slow", 4));
-clipDict.put(20, new ClipInfo("trad/guitar-minor", 4));
-clipDict.put(21, new ClipInfo("trad/guitar-pop-rock", 1));
+clipDict.put(7, new ClipInfo("trad/guitar-country", 1));
+clipDict.put(8, new ClipInfo("trad/guitar-country-slow", 4));
+clipDict.put(9, new ClipInfo("trad/guitar-minor", 4));
+clipDict.put(10, new ClipInfo("trad/guitar-pop-rock", 1));
 
-clipDict.put(22, new ClipInfo("trad/guitar-pop-rock-rhythm", 1));
-clipDict.put(23, new ClipInfo("trad/guitar-rock", 2));
-clipDict.put(24, new ClipInfo("trad/guitar-synth", 3));
+clipDict.put(11, new ClipInfo("trad/guitar-pop-rock-rhythm", 1));
+clipDict.put(12, new ClipInfo("trad/guitar-rock", 2));
+clipDict.put(13, new ClipInfo("trad/guitar-synth", 3));
 clipDict.put(62, new ClipInfo("kick_export", 0));
 
 }

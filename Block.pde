@@ -21,6 +21,7 @@ abstract class Block {
   public Lead[] leads;
 
   LinkedList<PlayHead> playHeadList = new LinkedList<PlayHead>();
+  PlayHead playHead;
 
   ArrayList<PVector> posHistory = new ArrayList<PVector>();
   ArrayList<Float> rotHistory = new ArrayList<Float>();
@@ -91,6 +92,14 @@ abstract class Block {
         }
       }
     }
+    if (isFake){
+      if (this.canBeChained){
+    findParents();
+    }
+    if (leadsActive) {
+      findChildren();
+    }
+    }
   }
 
 
@@ -121,12 +130,17 @@ abstract class Block {
 
   //previous is the block that has lead the PlayHead to this block
   public void Activate(PlayHead play, Block previous) {
-    playHeadList.add(play);
+    //playHeadList.add(play);
+    playHead = play;
+        println("activate " + this + " " +playHead);
+      
   } 
 
   public void finish() {
-    PlayHead play = playHeadList.pop();
-    play.travel();
+    //PlayHead play = playHeadList.pop();
+    println("finish " + this + " " +playHead);
+    playHead.travel();
+    if (playHead != null)playHead = null;
   }
 
 
@@ -311,7 +325,30 @@ abstract class Block {
   }
 
 
+void drawArc(int radius, float percent, float startRotation) {
+    pushMatrix();
+    noStroke();
+    fill(blockColor);
+    translate(x_pos, y_pos);
+    rotate(startRotation);
+    arc(0, 0, 
+    block_diameter + radius, 
+    block_diameter + radius, 
+    0, 
+    percent * 2 * PI, //(float)clip.position()/(float)clip.length() * 2*PI, 
+    PIE);
+    popMatrix();
+  }
 
+  void drawBeat(int radius) {
+    pushMatrix();
+    fill(blockColor);
+    noStroke();
+    translate(x_pos, y_pos);
+    rotate(0); //should rotate such that the start angle points to the parent
+    ellipse(0, 0, radius, radius);
+    popMatrix();
+  }
 
   void drawLeads() {
 

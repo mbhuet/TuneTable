@@ -15,6 +15,15 @@ class FunctionBlock extends Block {
     blockColor =     color(random(255), random(255), random(255));
   }
 
+  FunctionBlock(int x, int y) {
+    Init(1, x, y, 0);
+    leadsActive = true;
+    executeButt = new ExecuteButton(this, -block_diameter, 0, 0, block_diameter/4);
+    stopButt = new StopButton(this, -block_diameter, 0, 0, block_diameter/4);
+    stopButt.isShowing = false;
+    blockColor =     color(random(255), random(255), random(255));
+  }
+
   void Setup() {
     allFunctionBlocks.add(this);
     funcMap.put(sym_id, this);
@@ -28,8 +37,15 @@ class FunctionBlock extends Block {
     executeButt.Update((int)(x_pos - cos(rotation) * block_diameter), (int)(y_pos - sin(rotation) * block_diameter), rotation);
     stopButt.Update((int)(x_pos - cos(rotation) * block_diameter), (int)(y_pos - sin(rotation) * block_diameter), rotation);
 
+
+    if (waitingForBeat || spawnedPlayHeads.size() > 0) {
+      float beatRadius = block_diameter * 1.25f * (1.0- ( (float)(millis() %millisPerBeat)) / (float)millisPerBeat);
+
+      drawBeat((int  )beatRadius);
+    }
     if (waitingForBeat && millis() >= waitUntil) {
       createPlayHead();
+      waitingForBeat = false;
     }
   }
 
@@ -46,7 +62,7 @@ class FunctionBlock extends Block {
 
   void Die() {
     super.Die();
-        Stop();
+    Stop();
 
     allFunctionBlocks.remove(this);
     funcMap.remove(sym_id);
@@ -74,17 +90,18 @@ class FunctionBlock extends Block {
     waitUntil = millis() + (millisPerBeat * beatsPerMeasure - millis() % (millisPerBeat * beatsPerMeasure));
     executeButt.isShowing = false;
     stopButt.isShowing = true;
+
   }
 
   void createPlayHead() {
     PlayHead pHead = new PlayHead(this, this, blockColor);
   }
-  
-  void removePlayHead(PlayHead pHead){
+
+  void removePlayHead(PlayHead pHead) {
     spawnedPlayHeads.remove(pHead);
-    if(spawnedPlayHeads.size() == 0){
+    if (spawnedPlayHeads.size() == 0) {
       stopButt.isShowing = false;
-    executeButt.isShowing = true;
+      executeButt.isShowing = true;
     }
   }
 
@@ -96,7 +113,6 @@ class FunctionBlock extends Block {
 
     stopButt.isShowing = false;
     executeButt.isShowing = true;
-
   }
 }
 

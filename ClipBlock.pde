@@ -3,6 +3,10 @@ class ClipBlock extends SoundBlock {
   ClipBlock(TuioObject tObj) {
     Init(tObj, 1);
   }
+  
+  ClipBlock(int x, int y, int id) {
+    Init(1, x, y, id);
+  }
 
   void Setup() {
     LoadClip();
@@ -11,11 +15,23 @@ class ClipBlock extends SoundBlock {
     super.Update();
     leadsActive = inChain;
     if (isPlaying) {
-      if(pie)drawArc((int)(block_diameter * .25), (float)clip.position()/(float)clip.length());
-      else drawBeat((int)(block_diameter * .25));
+      if(pie){
+            float arcRot = 0;
+            if (previous != null) {
+              arcRot = atan2((previous.y_pos - this.y_pos), 
+              (previous.x_pos - this.x_pos));
+            }
+        drawArc((int)(block_diameter * .25), (float)clip.position()/(float)clip.length(), arcRot);
+      }
+      else{ 
+            float beatRadius = block_diameter * 1.25f * (1.0- .5f *(float)(clip.position()%255) / (float)255);
+
+        drawBeat((int)(beatRadius));
+      }
       playTimer += millis() - startTime;
       if (clip.position() >= clip.length()) {
         Stop();
+        finish();
         }
       }
     }
@@ -40,34 +56,4 @@ class ClipBlock extends SoundBlock {
         clip.close();
 
   }
-  
-  boolean isReadyToDie(){
-    return (!isPlaying);
-  }
-  
-
-  void LoadClip() {
-    if (clipDict.containsKey(sym_id)) {
-      ClipInfo info =  clipDict.get(sym_id);
-      String clip_name = info.name;
-      clip = minim.loadFile("clips/"+clip_name+".wav");
-      clip.rewind();
-    } else {
-      println("No clip found for " + sym_id + ": Possible typo");
-      ClipInfo info =  clipDict.get(1);
-      String clip_name = info.name;
-      clip = minim.loadFile("clips/"+clip_name+".wav");
-      clip.rewind();
-    }
-  }
-
-  void Play() {
-    playTimer = 0;
-    isPlaying = true;
-    clip.cue(millis() % millisPerBeat);
-    clip.play();
-    startTime = millis();
-
-  }
-
 }

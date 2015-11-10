@@ -51,39 +51,10 @@ abstract class SoundBlock extends Block {
     playTimer = 0;
     isPlaying = false;
     clip.rewind();
+    clip.pause();
     //println("rewind " + clip.position() + " at millis " + millis());
-    finish();
   }
 
-  void drawArc(int radius, float percent) {
-    pushMatrix();
-    noStroke();
-    fill(blockColor);
-    translate(x_pos, y_pos);
-    float arcRot = 0;
-    if (previous != null) {
-      arcRot = atan2((previous.y_pos - this.y_pos), 
-      (previous.x_pos - this.x_pos));
-    }
-    rotate(arcRot); //should rotate such that the start angle points to the parent
-    arc(0, 0, 
-    block_diameter + radius, 
-    block_diameter + radius, 
-    0, 
-    percent * 2 * PI, //(float)clip.position()/(float)clip.length() * 2*PI, 
-    PIE);
-    popMatrix();
-  }
-
-  void drawBeat(int radius) {
-    pushMatrix();
-    fill(blockColor);
-    noStroke();
-    translate(x_pos, y_pos);
-    rotate(0); //should rotate such that the start angle points to the parent
-    float beatSize = block_diameter * 1.25f * (1.0- .5f *(float)(clip.position()%255) / (float)255);
-    ellipse(0, 0, beatSize, beatSize);
-    popMatrix();
-  }
+  
 }
 

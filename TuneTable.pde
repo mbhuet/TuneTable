@@ -25,7 +25,7 @@ boolean debug = true;
 boolean invertColor = false;
 boolean showFPS = true;
 boolean hoverDebug = true;
-boolean fullscreen = true;
+boolean fullscreen = false;
 boolean analyticsOn = false;
 
 // these are some helper variables which are used
@@ -124,7 +124,10 @@ void setup()
   //playButt = new PlayButton(width - 50,height - 50,0,100);
 
   if (debug) {
-    BeatBlock testBeat = new BeatBlock(400, 400);
+    FunctionBlock funcTest = new FunctionBlock(500,500);
+    ClipBlock testCLip = new ClipBlock(700,500, 1);
+
+    //BeatBlock testBeat = new BeatBlock(400, 400);
     //ConditionalBlock testCond = new ConditionalBlock(700, 700);
     //BooleanBlock testBool = new BooleanBlock(1000, 500);
   }
@@ -160,9 +163,9 @@ void draw()
   }
 
   for (Block b : allBlocks) {
-    b.Update(); //UPDATE IS CAUSING FRAMERATE DIPS
+    b.Update();
     if (b.leadsActive){
-      b.drawLeads(); //DRAW LEADS IS CAUSING FRAMERATE DIPS
+      b.drawLeads(); 
     }
     b.drawShadow();
     b.inChain = false;
@@ -210,6 +213,9 @@ void keyPressed() {
     for (FunctionBlock func : allFunctionBlocks) {
       func.execute();
     }
+  }
+  if (key == 'i'){
+    invertColor = !invertColor;
   }
 }
 

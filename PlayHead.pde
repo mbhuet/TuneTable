@@ -15,6 +15,7 @@ class PlayHead {
     allPlayHeads.add(this);
     this.origin = origin;
     origin.spawnedPlayHeads.add(this);
+    //println("init activeBlock " + activeBlock);
   }
 
   PlayHead(FunctionBlock origin, Block start, color c) {
@@ -28,10 +29,12 @@ class PlayHead {
   }
 
   public void Update() {
+    //println("activeBlock " + activeBlock);
     pathDist = pathDist * (1-pathDecayRate);// * ((float)(millis() - lastMillis)/1000.0));
     lastMillis = millis();
-    if (dead && pathDist <= 0) {
+    if (dead && pathDist <= 1) {
       killPlayHeads.add(this);
+      println("add playhead to kill list");
     }
   }
 
@@ -40,23 +43,29 @@ class PlayHead {
   }
 
   void travel() {
+    boolean hasTravelled = false; //if there are more than 1 valid successors, 
     int[] nextBlockIndices = activeBlock.getSuccessors();
-    for (int i = nextBlockIndices.length -1; i>=0; i--) {
-      Block nextBlock = activeBlock.children[nextBlockIndices[i]];
-      if (nextBlock != null) {
-        if (i > 0) {
-          PlayHead newPlay = new PlayHead(origin, nextBlock, activeBlock, playColor);
-          newPlay.addLead(activeBlock.leads[nextBlockIndices[i]]);
-        } else {
+    for (int i = 0; i< nextBlockIndices.length; i++) {
+      int indexOfSuccessor = nextBlockIndices[i];
+      Block nextBlock = activeBlock.children[indexOfSuccessor];
+      if (nextBlock != null) { //if there is a block 
+        if (!hasTravelled) {
           addLead(activeBlock.leads[nextBlockIndices[i]]);
           Block lastBlock = activeBlock;
           activeBlock = nextBlock;
           nextBlock.Activate(this, lastBlock);
+          hasTravelled = true;
         }
-      } else if (i == 0) {
-        dead = true;
-        println("playhead dead");
+        else{
+          PlayHead newPlay = new PlayHead(origin, nextBlock, activeBlock, playColor);
+          newPlay.addLead(activeBlock.leads[nextBlockIndices[i]]);
+        } 
       }
+    }
+    
+    if (!hasTravelled){
+      dead = true;
+        println("playhead " + this + " dead");
     }
   }
 
@@ -92,14 +101,16 @@ class PlayHead {
     path.offerFirst(lead);
     pathDist += lead.distance - block_diameter;
   }
-  
-  void Die(){
-    if(activeBlock instanceof SoundBlock){
+
+  void Die() {
+    if (activeBlock instanceof SoundBlock) {
       ((SoundBlock)activeBlock).Stop();
+      println("stop playing " + activeBlock);
       //TODO stop playing immediately
     }
-        allPlayHeads.remove(this);
-        origin.removePlayHead(this);
+    allPlayHeads.remove(this);
+    origin.removePlayHead(this);
+    println(this);
   }
 }
 
