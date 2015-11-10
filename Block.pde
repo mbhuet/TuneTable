@@ -44,13 +44,13 @@ abstract class Block {
     for (int i = 0; i<numLeads; i++) {
       leads[i] = new Lead(this, rotation + i * 2*PI / numLeads);
     }
-    
+
     blockColor = color(invertColor ? 255 : 0);
-    
+
     Setup();
   }
-  
-  void Init(int numLeads, int x, int y, int id){
+
+  void Init(int numLeads, int x, int y, int id) {
     this.numLeads = numLeads;
     this.sym_id = id;
     allBlocks.add(this);
@@ -62,11 +62,12 @@ abstract class Block {
     for (int i = 0; i<numLeads; i++) {
       leads[i] = new Lead(this, rotation + i * 2*PI / numLeads);
     }
-    
+
     blockColor = color(invertColor ? 255 : 0);
     isFake = true;
-    x_pos = x; y_pos = y;
-    
+    x_pos = x; 
+    y_pos = y;
+
     Setup();
   }
 
@@ -92,13 +93,8 @@ abstract class Block {
         }
       }
     }
-    if (isFake){
-      if (this.canBeChained){
-    findParents();
-    }
-    if (leadsActive) {
-      findChildren();
-    }
+    if (isFake) {
+      updateNeighbors();
     }
   }
 
@@ -108,20 +104,20 @@ abstract class Block {
     missingBlocks.add(this);
     isMissing = true;
     missingSince = millis();
-    if(!isFake)blockMap.remove(tuioObj.getSessionID());
+    if (!isFake)blockMap.remove(tuioObj.getSessionID());
   }
 
   void find(TuioObject newObj) {
     isMissing = false;
     missingBlocks.remove(this);
-    if(!isFake)setTuioObject(newObj);
+    if (!isFake)setTuioObject(newObj);
   }
 
   void Die() {
     breakAllConnections();
     allBlocks.remove(this);
     missingBlocks.remove(this);
-    if(!isFake)blockMap.remove(tuioObj.getSessionID());
+    if (!isFake)blockMap.remove(tuioObj.getSessionID());
   }
 
   boolean isReadyToDie() {
@@ -132,8 +128,7 @@ abstract class Block {
   public void Activate(PlayHead play, Block previous) {
     //playHeadList.add(play);
     playHead = play;
-        println("activate " + this + " " +playHead);
-      
+    println("activate " + this + " " +playHead);
   } 
 
   public void finish() {
@@ -198,28 +193,32 @@ abstract class Block {
       rotation = avg_rot;
     }
 
-    //these two methods could be combined for efficiency, if necessary
-    if (this.canBeChained){
-    findParents();
-    }
-    if (leadsActive) {
-      findChildren();
-    }
+    updateNeighbors();
   }
 
   public boolean childIsSuccessor(int i) {
     return (i < numLeads);
   }
 
+  public void updateNeighbors(){
+  if (this.canBeChained) {
+        findParents();
+        
+      }
+      if (leadsActive) {
+        findChildren();
 
+      }
+  }
 
 
   public void findChildren() {
     for (int i = 0; i<numLeads; i++) {
       if (children[i] == null) {
         for (Block block : allBlocks) {
-          if (!(block.parents.contains(this) || this.parents.contains(block)) && leads[i].isUnderBlock(block) && block.canBeChained) {
+          if (!( block==this || block.parents.contains(this) || this.parents.contains(block)) && leads[i].isUnderBlock(block) && block.canBeChained) {
             makeConnection(block, i);
+            break;
           }
         }
       }
@@ -230,8 +229,9 @@ abstract class Block {
     for (Block block : allBlocks) {
       for (int i = 0; i< block.numLeads; i++) {
         if (block.children[i] == null) {
-          if (!(block.parents.contains(this) || this.parents.contains(block)) && block.leads[i].isUnderBlock(this)) {
+          if (!( block==this || block.parents.contains(this) || this.parents.contains(block)) && block.leadsActive && block.leads[i].isUnderBlock(this)) {
             block.makeConnection(this, i);
+
           }
         }
       }
@@ -242,15 +242,15 @@ abstract class Block {
     breakChildConnections();
     breakParentConnections();
   }
-  
-  public void breakChildConnections(){
+
+  public void breakChildConnections() {
     for (int i = 0; i< numLeads; i++) {
       breakConnection(i);
     }
   }
-  
-  public void breakParentConnections(){
-     Block[] parentsArray = new Block[parents.size()];
+
+  public void breakParentConnections() {
+    Block[] parentsArray = new Block[parents.size()];
     parents.toArray(parentsArray);
     for (Block p : parentsArray) {
       p.breakConnection(this);
@@ -305,17 +305,16 @@ abstract class Block {
         leads[i].options.offset = offset;
         leads[i].options.col = col;
         leads[i].options.weight = 10;
-        
+
         if (children[i] != null && !activeVisited.contains(children[i])) {
           activeVisited.add(children[i]);
           children[i].updateLeads(offset, col, true, activeVisited, inactiveVisited);
         }
-        
       } else {
         leads[i].options.dashed = false;
         leads[i].options.col = color(0);
         leads[i].options.weight = 3;
-      
+
         if (children[i] != null && !activeVisited.contains(children[i]) && !inactiveVisited.contains(children[i])) {
           inactiveVisited.add(children[i]);
           children[i].updateLeads(offset, col, false, activeVisited, inactiveVisited);
@@ -325,7 +324,7 @@ abstract class Block {
   }
 
 
-void drawArc(int radius, float percent, float startRotation) {
+  void drawArc(int radius, float percent, float startRotation) {
     pushMatrix();
     noStroke();
     fill(blockColor);

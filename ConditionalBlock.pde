@@ -24,8 +24,8 @@ class ConditionalBlock extends Block {
     boolLead.options.dashed = false;
     boolLead.options.weight = 5;
     
-    leads[0].options.image = unlock;
-    leads[1].options.image = lock;
+    //leads[0].options.image = unlock;
+    leads[0].options.image = (isTrue ? unlock : lock);
 
     checkBooleanBlock();
   }
@@ -46,11 +46,14 @@ class ConditionalBlock extends Block {
       boolBlock = boolMap.get(boolId);
       boolLead.connect(boolBlock);
       boolLead.options.visible = true;
+      leads[0].options.image = unlock;
+
     } else if (!inMap && isTrue) { //the booleanBlock has just been removed from the dictionary
       isTrue = false;
       boolBlock = null;
       boolLead.disconnect();
       boolLead.options.visible = false;
+      leads[0].options.image = lock;
     }
   }
 

@@ -55,12 +55,14 @@ class Lead {
       popMatrix();
     }
 
+    if(!occupied){
     translate(distance, 0);
     dashCircle.setStroke(options.col);
     dashCircle.setStrokeWeight(5);
-      shapeMode(CENTER);
+    shapeMode(CENTER);
 
     shape(dashCircle);
+    }
 
     popMatrix();
     
@@ -97,6 +99,7 @@ class Lead {
   }
 
   public boolean isUnderBlock(Block b) {
+    println("is lead for " + owner + " under " + b);
     float look_x = owner.x_pos + cos(rotation) * distance;
     float look_y = owner.y_pos + sin(rotation) * distance;
 

@@ -91,6 +91,7 @@ void setup()
   // an implementation of the TUIO callback methods (see below)
   tuioClient  = new TuioProcessing(this);
   minim = new Minim(this);
+  
   SetupClipDict();
   SetupFuncMap();
   SetupBoolMap();
@@ -109,6 +110,7 @@ void setup()
 
   cursors = new ArrayList<Cursor>();
 
+  //ICONS
   float scaleFactor = 1;
   lock = loadImage("images/lock.png");
   scaleFactor = ((float)block_diameter/3.0) / (float)lock.height;
@@ -118,18 +120,15 @@ void setup()
   unlock.resize((int)(unlock.width * scaleFactor), (int)(unlock.height * scaleFactor));
 
 
-
   isInitiated = true;
   millisPerBeat = 60000/bpm;
   //playButt = new PlayButton(width - 50,height - 50,0,100);
 
   if (debug) {
-    FunctionBlock funcTest = new FunctionBlock(500,500);
+    FunctionBlock funcTest = new FunctionBlock(500,500, 0);
     ClipBlock testCLip = new ClipBlock(700,500, 1);
-
-    //BeatBlock testBeat = new BeatBlock(400, 400);
-    //ConditionalBlock testCond = new ConditionalBlock(700, 700);
-    //BooleanBlock testBool = new BooleanBlock(1000, 500);
+    ConditionalBlock testCond = new ConditionalBlock(900,500);
+    BooleanBlock testBool = new BooleanBlock(900, 200);
   }
 }
 

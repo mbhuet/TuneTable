@@ -8,20 +8,10 @@ class FunctionBlock extends Block {
 
   FunctionBlock(TuioObject tObj) {
     Init(tObj, 1);
-    leadsActive = true;
-    executeButt = new ExecuteButton(this, -block_diameter, 0, 0, block_diameter/4);
-    stopButt = new StopButton(this, -block_diameter, 0, 0, block_diameter/4);
-    stopButt.isShowing = false;
-    blockColor =     color(random(255), random(255), random(255));
   }
 
-  FunctionBlock(int x, int y) {
-    Init(1, x, y, 0);
-    leadsActive = true;
-    executeButt = new ExecuteButton(this, -block_diameter, 0, 0, block_diameter/4);
-    stopButt = new StopButton(this, -block_diameter, 0, 0, block_diameter/4);
-    stopButt.isShowing = false;
-    blockColor =     color(random(255), random(255), random(255));
+  FunctionBlock(int x, int y, int id) {
+    Init(1, x, y, id);
   }
 
   void Setup() {
@@ -29,11 +19,18 @@ class FunctionBlock extends Block {
     funcMap.put(sym_id, this);
     spawnedPlayHeads = new ArrayList<PlayHead>();
     canBeChained = false;
+    
+    leadsActive = true;
+    executeButt = new ExecuteButton(this, -block_diameter, 0, 0, block_diameter/4);
+    stopButt = new StopButton(this, -block_diameter, 0, 0, block_diameter/4);
+    stopButt.isShowing = false;
+    blockColor = colorSet[sym_id];
   }
 
   void Update() {
     super.Update();
     dashedLineOffset = (millis() % (millisPerBeat * .5) / (float)(millisPerBeat * .5));
+    
     executeButt.Update((int)(x_pos - cos(rotation) * block_diameter), (int)(y_pos - sin(rotation) * block_diameter), rotation);
     stopButt.Update((int)(x_pos - cos(rotation) * block_diameter), (int)(y_pos - sin(rotation) * block_diameter), rotation);
 
@@ -130,13 +127,13 @@ class ExecuteButton extends Button {
     func.execute();
   }
   public void drawButton() {
-    fill(color(0, 0, 0));
+    fill(invertColor ? 255 : 0);
     ellipse(x, y, size*2, size*2);
     pushMatrix();
     translate(x, y);
     scale(.8);
     translate(size/6, 0);
-    fill(color(255, 255, 255));
+    fill(invertColor ? 0 : 255);
     triangle(-size/2, -size/2, 
     -size/2, size/2, 
     size/2, 0);
@@ -155,11 +152,11 @@ class StopButton extends Button {
     func.Stop();
   }
   public void drawButton() {
-    fill(color(0, 0, 0));
+    fill(invertColor ? 255 : 0);
     ellipse(x, y, size*2, size*2);
     pushMatrix();
     translate(x, y);
-    fill(color(255, 255, 255));
+    fill(invertColor ? 0 : 255);
     rectMode(CENTER);
     rect(0, 0, size, size);
     popMatrix();
