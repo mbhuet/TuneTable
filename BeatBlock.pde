@@ -118,13 +118,11 @@ class BeatBlock extends SoundBlock {
 
   void drawShadow() {
       shapeMode(CORNER);
-
+    
     beatShadow.setFill(blockColor);
     pushMatrix();
     translate(x_pos, y_pos);
     rotate(rotation);
-    fill(color(255,0,0));
-    ellipse(0,0,10,10);
     shape(beatShadow);
     popMatrix();
   }

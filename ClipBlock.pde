@@ -21,7 +21,7 @@ class ClipBlock extends SoundBlock {
           arcRot = atan2((previous.y_pos - this.y_pos), 
           (previous.x_pos - this.x_pos));
         }
-        drawArc((int)(block_diameter * .25), (float)clip.position()/(float)clip.length(), arcRot);
+        drawArc((int)(block_diameter * .4), (float)clip.position()/(float)clip.length(), arcRot);
       } else { 
         float beatRadius = block_diameter * 1.25f * (1.0- .5f *(float)(clip.position()%255) / (float)255);
 

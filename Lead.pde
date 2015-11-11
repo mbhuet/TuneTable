@@ -47,8 +47,9 @@ class Lead {
       translate(distance/2, 0);
       rotate(PI/2.0);
       translate(-options.image.width/2, -options.image.height/2);
-      fill(255);
+      fill((invertColor? 0 : 255));
       noStroke();
+      rectMode(CORNER);
       rect(0, 0, options.image.width, options.image.height);
 
       image(options.image, 0, 0);

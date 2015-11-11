@@ -137,6 +137,7 @@ abstract class Block {
     //PlayHead play = playHeadList.pop();
     //println("finish " + this + " " +playHead);
     playHead.travel();
+    playHead.playColor = this.blockColor;
     if (playHead != null)playHead = null;
   }
 
@@ -291,10 +292,18 @@ abstract class Block {
   }
 
   void drawShadow() {
-    strokeWeight(0);
-    ellipseMode(CENTER);  // Set ellipseMode to CENTER
-    fill(blockColor);  // Set fill to black
-    ellipse(x_pos, y_pos, block_diameter, block_diameter);
+                      int timeProbe = millis();
+
+    shapeMode(CENTER);
+    fill(blockColor);
+    stroke(blockColor);
+    strokeWeight(10);
+    pushMatrix();
+    translate(x_pos, y_pos);
+    shape(circleShadow);
+    popMatrix();
+                      println(millis() - timeProbe);
+
   }
 
   void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
@@ -314,7 +323,7 @@ abstract class Block {
         }
       } else {
         leads[i].options.dashed = false;
-        leads[i].options.col = color(0);
+        leads[i].options.col = color((invertColor? 255 : 0));
         leads[i].options.weight = 3;
 
         if (children[i] != null && !activeVisited.contains(children[i]) && !inactiveVisited.contains(children[i])) {

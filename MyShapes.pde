@@ -1,3 +1,17 @@
+PShape polygon(float radius, int npoints) {
+  PShape shape = createShape();
+  float angle = TWO_PI / npoints;
+  shape.beginShape();
+  for (float a = 0; a < TWO_PI; a += angle) {
+    float sx = cos(a) * radius;
+    float sy = sin(a) * radius;
+    shape.vertex(sx, sy);
+  }
+  shape.endShape(CLOSE);
+  return shape;
+}
+
+
 PShape dashedCircle(int x, int y, int radius, int numDashes) {
   PShape shape = createShape(GROUP);
   noFill();
@@ -75,7 +89,7 @@ PShape sinCircle(int x, int y, int radius, float rotation, int numLumps, float a
     return shape;
 }
 
-PShape circle(){
+PShape circle(int radius){
   PShape shape = createShape();
   shape.beginShape();
   float angle = 0;

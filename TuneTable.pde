@@ -46,8 +46,14 @@ static int display_height = 480;
 
 PImage lock;
 PImage unlock;
+PImage lock_reg;
+PImage unlock_reg;
+PImage lock_inv;
+PImage unlock_inv;
 PShape beatShadow;
 PShape dashCircle;
+PShape playShadow;
+PShape circleShadow;
 
 
 List<Block> allBlocks;
@@ -84,6 +90,10 @@ void setup()
   //SHAPE Setup
   beatShadow = sinCircle(0, 0, block_diameter/2, 0, 8, block_diameter/20);
   dashCircle = dashedCircle(0, 0, block_diameter, 10);
+  playShadow = polygon(block_diameter * .62, 6);
+    playShadow.disableStyle();
+  circleShadow = createShape(ELLIPSE, 0, 0, block_diameter, block_diameter);
+    circleShadow.disableStyle();
 
 
   // we create an instance of the TuioProcessing client
@@ -112,14 +122,21 @@ void setup()
 
   //ICONS
   float scaleFactor = 1;
-  lock = loadImage("images/lock.png");
-  scaleFactor = ((float)block_diameter/3.0) / (float)lock.height;
-  lock.resize((int)(lock.width * scaleFactor), (int)(lock.height * scaleFactor));
-  unlock = loadImage("images/unlock.png");
-  scaleFactor = ((float)block_diameter/3.0) / (float)unlock.height;
-  unlock.resize((int)(unlock.width * scaleFactor), (int)(unlock.height * scaleFactor));
+  lock_reg = loadImage("images/lock.png");
+  lock_inv = loadImage("images/lock_inv.png");
+  scaleFactor = ((float)block_diameter/3.0) / (float)lock_reg.height;
+  lock_reg.resize((int)(lock_reg.width * scaleFactor), (int)(lock_reg.height * scaleFactor));
+  lock_inv.resize((int)(lock_inv.width * scaleFactor), (int)(lock_inv.height * scaleFactor));
 
+  unlock_reg = loadImage("images/unlock.png");
+  unlock_inv = loadImage("images/unlock_inv.png");
+  scaleFactor = ((float)block_diameter/3.0) / (float)unlock_reg.height;
+  unlock_reg.resize((int)(unlock_reg.width * scaleFactor), (int)(unlock_reg.height * scaleFactor));
+  unlock_inv.resize((int)(unlock_inv.width * scaleFactor), (int)(unlock_inv.height * scaleFactor));
 
+  lock = lock_reg;
+  unlock = unlock_reg;
+  
   isInitiated = true;
   millisPerBeat = 60000/bpm;
   //playButt = new PlayButton(width - 50,height - 50,0,100);
@@ -135,12 +152,14 @@ void setup()
 
 void draw()
 {
-  //int timeProbe = millis();
 
   beatNo = (millis() /millisPerBeat);
   background(invertColor ? 0 : 255);
+      cornerBeatGlow();
+
   if (debug) {
-    cornerBeatGlow();
+    
+    //shape(playShadow, 400,400);
   }
 
   if (showFPS) {
@@ -163,6 +182,7 @@ void draw()
 
   for (Block b : allBlocks) {
     b.inChain = false;
+    if (!(b instanceof FunctionBlock))b.blockColor = color(255);
   }
 
   for (FunctionBlock func : allFunctionBlocks) {
@@ -170,11 +190,16 @@ void draw()
   }
 
   for (Block b : allBlocks) {
+
     b.Update();
+
     if (b.leadsActive) {
       b.drawLeads();
     }
+
     b.drawShadow();
+
+
   }
 
 
@@ -202,7 +227,6 @@ void draw()
     HoverDebug();
   }
 
-  //println(millis() - timeProbe);
 }
 
 
@@ -219,7 +243,15 @@ void keyPressed() {
     }
   }
   if (key == 'i') {
-    invertColor = !invertColor;
+    invertColor = !invertColor;   
+   if(invertColor){
+     lock = lock_inv;
+     unlock = unlock_inv;
+   } 
+   else{
+     lock = lock_reg;
+     unlock = unlock_reg;
+   }
   }
 }
 
@@ -269,7 +301,7 @@ void cornerBeatGlow() {
   float beatPercent = (1.0 - ((float)(millis() % (millisPerBeat)) / (float)(millisPerBeat)));
   int glowRadius = (int)(beatPercent  * 300);
   color innerCol = color(invertColor ? 0 : 255);
-  color outerCol = color(invertColor ? 255 : 150);
+  color outerCol = color(invertColor ? 100 : 150);
 
   fill(outerCol);
   noStroke();

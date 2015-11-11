@@ -35,9 +35,9 @@ println(sym_id);
     arrangeButtons();
 
     if (waitingForBeat || spawnedPlayHeads.size() > 0) {
-      float beatRadius = block_diameter * 1.25f * (1.0- ( (float)(millis() %millisPerBeat)) / (float)millisPerBeat);
+      float beatRadius = block_diameter * 1.5 * (1.0- ( (float)(millis() %millisPerBeat)) / (float)millisPerBeat);
 
-      drawBeat((int  )beatRadius);
+      drawBeat((int)beatRadius);
     }
     if (waitingForBeat && millis() >= waitUntil) {
       createPlayHead();
@@ -78,6 +78,18 @@ println(sym_id);
     return new int[] {
       0
     };
+  }
+  
+  void drawShadow() {
+    shapeMode(CORNER);
+    fill(blockColor);
+    stroke(blockColor);
+    strokeWeight(10);
+    pushMatrix();
+    translate(x_pos, y_pos);
+    rotate(rotation + 2*PI / 12);
+    shape(playShadow);
+    popMatrix();
   }
   
   void arrangeButtons(){
