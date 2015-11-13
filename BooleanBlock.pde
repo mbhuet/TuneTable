@@ -33,8 +33,9 @@ strokeWeight(20);
 rectMode(CENTER);  // Set ellipseMode to CENTER
     fill(blockColor);  // Set fill to black
     pushMatrix();
+        translate(x_pos, y_pos);
+
     rotate(rotation);
-    translate(x_pos, y_pos);
     rect(0,0,block_diameter, block_diameter);
     popMatrix();
   }

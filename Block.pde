@@ -292,7 +292,6 @@ abstract class Block {
   }
 
   void drawShadow() {
-                      int timeProbe = millis();
 
     shapeMode(CENTER);
     fill(blockColor);
@@ -302,7 +301,6 @@ abstract class Block {
     translate(x_pos, y_pos);
     shape(circleShadow);
     popMatrix();
-                      println(millis() - timeProbe);
 
   }
 

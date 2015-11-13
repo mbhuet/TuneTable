@@ -117,8 +117,10 @@ println(sym_id);
   void removePlayHead(PlayHead pHead) {
     spawnedPlayHeads.remove(pHead);
     if (spawnedPlayHeads.size() == 0) {
-      stopButt.isShowing = false;
-      executeButt.isShowing = true;
+      if(stopButt != null) //When the block is removed, buttons may be killed before playheads are removed through the playhead Kill Queue
+        stopButt.isShowing = false;
+      if(executeButt != null)
+        executeButt.isShowing = true;
     }
   }
 
@@ -126,7 +128,7 @@ println(sym_id);
     for (PlayHead head : spawnedPlayHeads) {
       killPlayHeads.add(head);
     }
-    spawnedPlayHeads.clear();
+    //spawnedPlayHeads.clear();
 
     stopButt.isShowing = false;
     executeButt.isShowing = true;
