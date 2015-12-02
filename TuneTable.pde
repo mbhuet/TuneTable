@@ -7,7 +7,7 @@ import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 
-//set resolution to 1280x1024
+//set table resolution to 1280x1024
 
 import java.util.Map.*;
 import java.util.Iterator.*;
@@ -22,7 +22,7 @@ Delay myDelay;
 
 
 boolean debug = true;
-boolean invertColor = false;
+boolean invertColor = true;
 boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
@@ -32,17 +32,14 @@ boolean analyticsOn = false;
 // to create scalable graphical feedback
 float cursor_size = 15;
 int block_diameter = 120;
-float table_size = 760;
-float scale_factor = 1;
-float cur_size = cursor_size*scale_factor;
+
+// used for beat calculations
 int bpm = 60;
 int beatsPerMeasure = 4;
 int millisPerBeat;
 int beatNo = 0;
-PFont font;
 
-static int display_width = 640;
-static int display_height = 480;
+PFont font;
 
 PImage lock;
 PImage unlock;
@@ -85,20 +82,18 @@ void setup()
 
   hint(ENABLE_NATIVE_FONTS);
   font = createFont("Arial", 18);
-  scale_factor = height/table_size;
 
   //SHAPE Setup
   beatShadow = sinCircle(0, 0, block_diameter/2, 0, 8, block_diameter/20);
   dashCircle = dashedCircle(0, 0, block_diameter, 10);
   playShadow = polygon(block_diameter * .62, 6);
-    playShadow.disableStyle();
+  playShadow.disableStyle();
   circleShadow = createShape(ELLIPSE, 0, 0, block_diameter, block_diameter);
-    circleShadow.disableStyle();
+  circleShadow.disableStyle();
 
 
   // we create an instance of the TuioProcessing client
   // since we add "this" class as an argument the TuioProcessing class expects
-  // an implementation of the TUIO callback methods (see below)
   tuioClient  = new TuioProcessing(this);
   minim = new Minim(this);
 
@@ -136,10 +131,9 @@ void setup()
 
   lock = lock_reg;
   unlock = unlock_reg;
-  
+
   isInitiated = true;
   millisPerBeat = 60000/bpm;
-  //playButt = new PlayButton(width - 50,height - 50,0,100);
 
   if (debug) {
     //FunctionBlock funcTest = new FunctionBlock(500,500, 0);
@@ -155,10 +149,10 @@ void draw()
 
   beatNo = (millis() /millisPerBeat);
   background(invertColor ? 0 : 255);
-      cornerBeatGlow();
+  cornerBeatGlow();
 
   if (debug) {
-    
+
     //shape(playShadow, 400,400);
   }
 
@@ -170,7 +164,7 @@ void draw()
   }
 
 
-  textFont(font, 18*scale_factor);
+  textFont(font, 18);
 
   killRemoved();
   TuioUpdate();
@@ -198,8 +192,6 @@ void draw()
     }
 
     b.drawShadow();
-
-
   }
 
 
@@ -226,7 +218,6 @@ void draw()
   if (hoverDebug) {
     HoverDebug();
   }
-
 }
 
 
@@ -234,7 +225,10 @@ boolean sketchFullScreen() {
   return (fullscreen);
 }
 
-
+/*
+  Space can be used to play all Start blocks
+ 'i' can be used to invert black/white
+ */
 void keyPressed() {
   if (key == ' ') {
     println("space " + millis());
@@ -244,23 +238,28 @@ void keyPressed() {
   }
   if (key == 'i') {
     invertColor = !invertColor;   
-   if(invertColor){
-     lock = lock_inv;
-     unlock = unlock_inv;
-   } 
-   else{
-     lock = lock_reg;
-     unlock = unlock_reg;
-   }
+    if (invertColor) {
+      lock = lock_inv;
+      unlock = unlock_inv;
+    } else {
+      lock = lock_reg;
+      unlock = unlock_reg;
+    }
   }
 }
 
+/*
+  Will cause all Start blocks to play simultaneously, useful for debugging
+ */
 void Play() {
   for (FunctionBlock func : allFunctionBlocks) {
     func.execute();
   }
 }
 
+/*
+  Mouse clicks will simulate finger cursors, useful for debugging
+ */
 void mousePressed() {
   mouse = new Cursor();
 }
@@ -269,6 +268,9 @@ void mouseReleased() {
   mouse.OnRemove();
 }
 
+/*
+  Will create an informative tooltip when the mouse is hovering over a block, useful for debugging
+ */
 void HoverDebug() {
   Block[] blocks = new Block[allBlocks.size()];
   allBlocks.toArray(blocks); // fill the array  
@@ -287,7 +289,9 @@ void HoverDebug() {
   }
 }
 
-
+/*
+Destroys blocks and playhead that have been marked for removal. This can't be done during Update() calls because it tends to cause a concurrent modification exception.
+ */
 void killRemoved() {
   while (killBlocks.peek () != null) {
     killBlocks.pop().Die();
@@ -297,6 +301,9 @@ void killRemoved() {
   }
 }
 
+/*
+  Creates pulses in the screen corners to visualize the beat
+ */
 void cornerBeatGlow() {
   float beatPercent = (1.0 - ((float)(millis() % (millisPerBeat)) / (float)(millisPerBeat)));
   int glowRadius = (int)(beatPercent  * 300);
@@ -309,11 +316,5 @@ void cornerBeatGlow() {
   ellipse(width, 0, glowRadius, glowRadius);
   ellipse(0, height, glowRadius, glowRadius);
   ellipse(width, height, glowRadius, glowRadius);
-  /*
-  radialGradient(0, 0, glowRadius, c1, c2);
-   radialGradient(width, 0, glowRadius, c1, c2);
-   radialGradient(0, height, glowRadius, c1, c2);
-   radialGradient(width, height, glowRadius, c1, c2);
-   */
 }
 

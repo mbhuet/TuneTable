@@ -20,18 +20,23 @@ abstract class Block {
   public Block[] children;
   public Lead[] leads;
 
-  LinkedList<PlayHead> playHeadList = new LinkedList<PlayHead>();
-  PlayHead playHead;
+  LinkedList<PlayHead> playHeadList = new LinkedList<PlayHead>(); //currently unused
+  PlayHead playHead; //when a playHead passes through this block, it is kept track of here
 
-  ArrayList<PVector> posHistory = new ArrayList<PVector>();
-  ArrayList<Float> rotHistory = new ArrayList<Float>();
-  int historyVals = 10;
-  int missingSince = 0;
-  final int deathDelay = 500;
+
+  ArrayList<PVector> posHistory = new ArrayList<PVector>(); //used to calculate average position
+  ArrayList<Float> rotHistory = new ArrayList<Float>();  //used to calculate average rotation
+  int historyVals = 10; //how many position and rotation values to store for calculating a moving average (data smoothing)
+  int missingSince = 0; //millis when block is reported removed by TUIO
+  final int deathDelay = 500; //how many millis after going missing for the block to be removed
 
   abstract void Setup();
   abstract int[] getSuccessors();
 
+
+  /*
+*  Init
+   */
   void Init(TuioObject tobj, int numLeads) {
     this.numLeads = numLeads;
     setTuioObject(tobj);
@@ -50,6 +55,10 @@ abstract class Block {
     Setup();
   }
 
+
+  /*
+    This Init is for simulated blocks and does not require a TuioObject
+   */
   void Init(int numLeads, int x, int y, int id) {
     this.numLeads = numLeads;
     this.sym_id = id;
@@ -78,6 +87,8 @@ abstract class Block {
   }
 
   void Update() { 
+
+    //Update leads and break connection if the child block is too far away
     for (int i = 0; i< numLeads; i++) {
       Lead l = leads[i];
       l.Update();
@@ -85,6 +96,8 @@ abstract class Block {
         breakConnection(i);
       }
     }
+
+    //checks to see if this block has been missing for too long
     if (isMissing) {
       if (millis() - missingSince >= deathDelay) {
         if (isReadyToDie()) {
@@ -93,13 +106,17 @@ abstract class Block {
         }
       }
     }
+
+    //fake blocks never use UpdatePosition(), which is where updateNeighbors is normally called
     if (isFake) {
       updateNeighbors();
     }
   }
 
 
-
+  /*
+    Called when the TuioObject is reported removed. It won't actually be destroyed until it has been missing for deathDelay milliseconds
+   */
   void OnRemove() {    
     missingBlocks.add(this);
     isMissing = true;
@@ -107,35 +124,40 @@ abstract class Block {
     if (!isFake)blockMap.remove(tuioObj.getSessionID());
   }
 
+  /*
+    Called when this block has been found while missing
+   */
   void find(TuioObject newObj) {
     isMissing = false;
     missingBlocks.remove(this);
     if (!isFake)setTuioObject(newObj);
   }
 
+  /*
+    Destroys the block and all of its connections
+   */
   void Die() {
     breakAllConnections();
     allBlocks.remove(this);
     missingBlocks.remove(this);
     if (!isFake)blockMap.remove(tuioObj.getSessionID());
-   
-
   }
 
+  //Some blocks may have certain conditions to meet before they're ready to die
   boolean isReadyToDie() {
     return true;
   }
 
-  //previous is the block that has lead the PlayHead to this block
+  //previous is the block that has directed the PlayHead to this block
   public void Activate(PlayHead play, Block previous) {
-    //playHeadList.add(play);
     playHead = play;
-    //println("activate " + this + " " +playHead);
   } 
 
+  /*
+    Called when this block has finished being active
+   This tells the playhead to move on to the next block in the chain
+   */
   public void finish() {
-    //PlayHead play = playHeadList.pop();
-    //println("finish " + this + " " +playHead);
     playHead.travel();
     playHead.playColor = this.blockColor;
     if (playHead != null)playHead = null;
@@ -143,10 +165,13 @@ abstract class Block {
 
 
 
-
+  /*
+    Uses the TuioObject to update the blocks position and rotation
+   Position and rotation are calculated using a moving average, which prevents them from jittering as much
+   */
   public void UpdatePosition() {
-    float new_x_pos = tuioObj.getScreenX(width);// - cos(rotation) * (.5/3.25) * block_height;
-    float new_y_pos = tuioObj.getScreenY(height);// - sin(rotation) * (.5/3.25) * block_height;
+    float new_x_pos = tuioObj.getScreenX(width);
+    float new_y_pos = tuioObj.getScreenY(height);
 
     rotHistory.add(tuioObj.getAngle());
     posHistory.add(new PVector(new_x_pos, new_y_pos));
@@ -199,19 +224,21 @@ abstract class Block {
     updateNeighbors();
   }
 
+  /*
+    Returns whether or not the child at index i will be an active successor to this block
+   */
   public boolean childIsSuccessor(int i) {
     return (i < numLeads);
   }
 
-  public void updateNeighbors(){
-  if (this.canBeChained) {
-        findParents();
-        
-      }
-      if (leadsActive) {
-        findChildren();
 
-      }
+  public void updateNeighbors() {
+    if (this.canBeChained) {
+      findParents();
+    }
+    if (leadsActive) {
+      findChildren();
+    }
   }
 
 
@@ -234,7 +261,6 @@ abstract class Block {
         if (block.children[i] == null) {
           if (!( block==this || block.parents.contains(this) || this.parents.contains(block)) && block.leadsActive && block.leads[i].isUnderBlock(this)) {
             block.makeConnection(this, i);
-
           }
         }
       }
@@ -268,6 +294,9 @@ abstract class Block {
     b.parents.add(this);
   }
 
+  /*
+  Breaks connection with a child at index i
+   */
   void breakConnection(int i) {
     if (children[i] != null) {
       children[i].parents.remove(this);
@@ -276,6 +305,9 @@ abstract class Block {
     }
   }
 
+  /*
+  Breaks connection with child block b
+   */
   void breakConnection(Block b) {
     for (int i = 0; i<numLeads; i++) {
       if (children[i] == b) {
@@ -291,8 +323,10 @@ abstract class Block {
     drawShadow();
   }
 
+  /*
+    Default shadow shape is a circle. We use shapes instead of ellipse() to improve performance
+   */
   void drawShadow() {
-
     shapeMode(CENTER);
     fill(blockColor);
     stroke(blockColor);
@@ -301,13 +335,14 @@ abstract class Block {
     translate(x_pos, y_pos);
     shape(circleShadow);
     popMatrix();
-
   }
 
+  /*
+  Updates the look of this block's lead depending on whether or not it's in an active path from a Start block
+*/
   void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
     this.inChain = true;
     blockColor = col;
-    //println(sym_id + " " + millis());
     for (int i = 0; i< numLeads; i++) {     
       if (isActive && childIsSuccessor(i)) {
         leads[i].options.dashed = true;
@@ -332,7 +367,9 @@ abstract class Block {
     }
   }
 
-
+  /*
+  Draws an arc around the block's center with specified radius, starting rotation and completion percentage of the arc. 
+   */
   void drawArc(int radius, float percent, float startRotation) {
     pushMatrix();
     noStroke();
@@ -348,6 +385,9 @@ abstract class Block {
     popMatrix();
   }
 
+  /*
+  Draws a circle under the block with the max specified radius at the start of each beat. The circle shrinks over time until the start of the next beat
+   */
   void drawBeat(int radius) {
     pushMatrix();
     fill(blockColor);
@@ -366,7 +406,6 @@ abstract class Block {
   }
 
   public boolean IsUnder(int hit_x, int hit_y) {
-    //will return true if the hit is near the symbol position
     return (dist(hit_x, hit_y, x_pos, y_pos) < block_diameter/2);
   }
 

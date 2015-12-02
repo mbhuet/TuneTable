@@ -45,7 +45,7 @@ class BeatBlock extends SoundBlock {
       playTimer = millis()%(totalLength);
       
 
-      if (pie)drawArc((int)(block_diameter * .5), (float)playTimer/(float)totalLength, rotation);
+      if (pie)drawArc((int)(block_diameter * .8), (float)playTimer/(float)totalLength, rotation);
       //else drawBeat((int)(block_diameter * .5));
       
       if (millis() - clipStartTime >= beatLength) {
