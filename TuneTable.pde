@@ -7,7 +7,7 @@ import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 
-//set table resolution to 1280x1024
+//set table resolution to 1280x960
 
 import java.util.Map.*;
 import java.util.Iterator.*;
