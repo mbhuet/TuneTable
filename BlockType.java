@@ -1,13 +1,14 @@
 enum BlockType
 {
-    PLAY,
+    FUNCTION,
     CLIP,
-    START_LOOP,
-    END_LOOP,
+    COUNTDOWN,
+    CONDITIONAL,
     EFFECT,
-    SILENCE,
-    INTEGER,
-    FLOAT
+    BOOLEAN,
+    CALL,
+    SPLIT,
+    BEAT
     
 };
 

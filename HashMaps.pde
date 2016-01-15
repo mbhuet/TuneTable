@@ -1,144 +1,137 @@
+color[] colorSet = new color[]
+{
+  color(52, 152, 219), //emerald green
+  color(231, 76, 60), //alizarin red
+  color(46, 204, 113), //peter river blue
+  color(230, 126, 34), //carrot orange
+  color(155, 89, 182) //amethyst
+};
+
+
 HashMap<Long, Block> blockMap;
 
-void SetupBlockMap(){
+void SetupBlockMap() {
   blockMap = new HashMap<Long, Block>();
-  
+}
+
+HashMap<Long, Cursor> cursorMap;
+
+void SetupCursorMap() {
+  cursorMap = new HashMap<Long, Cursor>();
+}
+
+HashMap<Integer, Block> funcMap;
+
+void SetupFuncMap() {
+  funcMap = new HashMap<Integer, Block>();
 }
 
 
 HashMap<Integer, ClipInfo> clipDict;
 
-void SetupClipDict(){
+void SetupClipDict() {
   clipDict = new HashMap<Integer, ClipInfo>();
-  
-  clipDict.put(1,  new ClipInfo("Bass1-Dip1-1Sec",      1));
-  clipDict.put(2,  new ClipInfo("Bass1-Dip1-1Sec",      1));
-  clipDict.put(3,  new ClipInfo("Bass1-Fall1-1Sec",     1));
-  clipDict.put(4,  new ClipInfo("Bass1-Hold1-1Sec",     1));
-  clipDict.put(5,  new ClipInfo("Bass1-Hold1-2Sec",     2));
-  clipDict.put(6,  new ClipInfo("Bass1-Hold2-1Sec",     1));
-  clipDict.put(7,  new ClipInfo("Bass1-Jump1-1Sec",     1));
-  clipDict.put(8,  new ClipInfo("Bass1-Rise1-1Sec",     1));
-  
-  clipDict.put(9,  new ClipInfo("Bass2-DipJump1-1Sec",  1));
-  clipDict.put(10, new ClipInfo("Bass2-DipJump2-1Sec",  1));
-  clipDict.put(11, new ClipInfo("Bass2-DipJump3-1Sec",  1));
-  clipDict.put(12, new ClipInfo("Bass2-Fall1-1Sec",     1));
-  clipDict.put(13, new ClipInfo("Bass2-Hold1-1Sec",     1));
-  clipDict.put(14, new ClipInfo("Bass2-Hold1-2Sec",     1));
-  clipDict.put(15, new ClipInfo("Bass2-Hold2-1Sec",     1));
-  
-  clipDict.put(16, new ClipInfo("Bell1-Hold1-1Sec",     1));
-  clipDict.put(17, new ClipInfo("Bell1-Rise1-1Sec",     1));
-  
-  clipDict.put(18, new ClipInfo("Bell2-Hold1-1Sec",     1));
-  clipDict.put(19, new ClipInfo("Bell2-Hold1-4Sec",     4));
-  clipDict.put(20, new ClipInfo("Bell2-Hold2-4Sec",     4));
-  clipDict.put(21, new ClipInfo("Bell2-Kill-1Sec",      1));
-  
-  clipDict.put(22, new ClipInfo("Brass1-Attack1-1Sec",  1));
-  clipDict.put(23, new ClipInfo("Brass1-Attack1-2Sec",  2));
-  clipDict.put(24, new ClipInfo("Brass1-Attack1-3Sec",  3));
-  clipDict.put(25, new ClipInfo("Brass1-Attack2-1Sec",  1));
-  clipDict.put(26, new ClipInfo("Brass1-Attack2-2Sec",  2));
-  clipDict.put(27, new ClipInfo("Brass1-Attack2-3Sec",  3));
-  clipDict.put(28, new ClipInfo("Brass1-Bump1-1Sec",    1));
-  clipDict.put(29, new ClipInfo("Brass1-Hold1-1Sec",    1));
-  clipDict.put(30, new ClipInfo("Brass1-Hold1-2Sec",    2));
-  clipDict.put(31, new ClipInfo("Brass1-Hold2-1Sec",    1));
-  clipDict.put(32, new ClipInfo("Brass1-Hold2-2Sec",    2));
-  clipDict.put(33, new ClipInfo("Brass1-Jump1-1Sec",    1));
-  
-  clipDict.put(34, new ClipInfo("Clap1-Begin-1Sec",     1));
-  clipDict.put(35, new ClipInfo("Clap1-Middle-1Sec",    1));
-  
-  clipDict.put(36, new ClipInfo("Crash1-Hold1-2Sec",    2));
-  
-  clipDict.put(37, new ClipInfo("Drumpad1-Hold1-1Sec",  1));
-  clipDict.put(38, new ClipInfo("Drumpad1-Hold1-2Sec",  2));
-  clipDict.put(39, new ClipInfo("Drumpad1-Hold1-3Sec",  3));
-  clipDict.put(40, new ClipInfo("Drumpad1-Hold1-4Sec",  4));
-  clipDict.put(41, new ClipInfo("Drumpad1-Triple1-1Sec",1));
-  clipDict.put(42, new ClipInfo("Drumpad1-Triple2-1Sec",1));
-  
-  clipDict.put(43, new ClipInfo("Electro1-Hold1-1Sec",  1));
-  clipDict.put(44, new ClipInfo("Electro1-Hold1-2Sec",  2));
-  clipDict.put(45, new ClipInfo("Electro1-Hold1-3Sec",  3));
-  
-  clipDict.put(46, new ClipInfo("Electro2-Hold1-1Sec",  1));
-  clipDict.put(47, new ClipInfo("Electro2-Hold1-2Sec",  2));
-  clipDict.put(48, new ClipInfo("Electro2-Hold1-3Sec",  3));
-  clipDict.put(49, new ClipInfo("Electro2-Hold1-4Sec",  4));
-  
-  clipDict.put(50, new ClipInfo("FX1-Hold1-1Sec",       1));
-  
-  clipDict.put(51, new ClipInfo("FXBuild1-Hold1-1Sec", 1));
-  clipDict.put(52, new ClipInfo("FXBuild1-Hold1-2Sec", 2));
-  clipDict.put(53, new ClipInfo("FXBuild1-Hold1-3Sec", 3));
-  
-  clipDict.put(54, new ClipInfo("HiHats1-Hold1-1Sec", 1));
-  clipDict.put(55, new ClipInfo("HiHats1-Hold1-2Sec", 2));
-  
-  clipDict.put(56, new ClipInfo("Percussion1-Hold1-2Second", 2));
-  clipDict.put(57, new ClipInfo("Percussion1-Hold2-3Second", 3));
-  
-  clipDict.put(58, new ClipInfo("Percussion2-Double1-1Second", 1));
-  clipDict.put(59, new ClipInfo("Percussion2-Double1-2Second", 2));
-  clipDict.put(60, new ClipInfo("Percussion2-Double2-1Second", 1));
-  clipDict.put(61, new ClipInfo("Percussion2-Hold1-1Second", 1));
-  clipDict.put(62, new ClipInfo("Percussion3-Double1-1Second", 1));
-  clipDict.put(63, new ClipInfo("Percussion3-Hold1-1Second", 1));
-  clipDict.put(64, new ClipInfo("Scify1-End1-1Seconds", 1));
-  clipDict.put(65, new ClipInfo("Scify1-Hold1-2Seconds", 2));
-  clipDict.put(66, new ClipInfo("Scify1-Hold1-3Seconds", 3));
-  clipDict.put(67, new ClipInfo("Scify1-Hold1-4Seconds", 4));
-  clipDict.put(68, new ClipInfo("Scify1-Rise1-1Seconds", 1));
+/*
+  clipDict.put(1, new ClipInfo("abstract/beep-1", 1));
+  clipDict.put(2, new ClipInfo("abstract/beep-2", 1));
+  clipDict.put(3, new ClipInfo("abstract/electronic-1", 1));
+  clipDict.put(4, new ClipInfo("abstract/harp-1", 1));
+  clipDict.put(5, new ClipInfo("abstract/harp-2", 2));
+  clipDict.put(6, new ClipInfo("abstract/keyboard-1", 1));
+  clipDict.put(7, new ClipInfo("abstract/keyboard-2", 1));
+  clipDict.put(8, new ClipInfo("abstract/marimba-1", 1));
 
+  clipDict.put(9, new ClipInfo("abstract/marimba-2", 1));
+  clipDict.put(10, new ClipInfo("abstract/marimba-3", 1));
+  clipDict.put(11, new ClipInfo("abstract/trill-1", 1));
+*/
+  clipDict.put(10, new ClipInfo("trad/bass-asc-progression", 1));
+  clipDict.put(11, new ClipInfo("trad/bass-fx-slap", 1));
+  clipDict.put(12, new ClipInfo("trad/bass-groovy", 1));
+  clipDict.put(13, new ClipInfo("trad/bass-pop-rock", 1));
+
+  clipDict.put(14, new ClipInfo("trad/bass-slappy", 1));
+  clipDict.put(15, new ClipInfo("trad/bass-synthetic", 1));
+
+  clipDict.put(16, new ClipInfo("trad/guitar-country", 1));
+  clipDict.put(17, new ClipInfo("trad/guitar-country-slow", 4));
+  clipDict.put(18, new ClipInfo("trad/guitar-minor", 4));
+  clipDict.put(19, new ClipInfo("trad/guitar-pop-rock", 1));
+
+  clipDict.put(20, new ClipInfo("trad/guitar-pop-rock-rhythm", 1));
+  clipDict.put(21, new ClipInfo("trad/guitar-rock", 2));
+  clipDict.put(22, new ClipInfo("trad/guitar-synth", 3));
+    clipDict.put(23, new ClipInfo("trad/guitar-synth", 3));
+
+  clipDict.put(40, new ClipInfo("kick_export", 0));
 }
 
 
 HashMap<Integer, Integer> idToEffect;
 
-void SetupIdToEffect(){
+void SetupIdToEffect() {
   idToEffect = new HashMap<Integer, Integer>();
 }
 
 
 
-HashMap<Integer, Integer> idToArg;
+HashMap<Integer, BooleanBlock> boolMap;
 
-void SetupIdToArg(){
-  idToArg = new HashMap<Integer, Integer>();
-  idToArg.put(100, 0);
-  idToArg.put(101, 1);
-  idToArg.put(102, 2);
-  idToArg.put(103, 3);
-  idToArg.put(104, 4);
-  idToArg.put(105, 5);
-  idToArg.put(106, 6);
-  idToArg.put(107, 7);
-  idToArg.put(108, 8);
-  idToArg.put(109, 9);
-  idToArg.put(110, 10);
-  
+void SetupBoolMap() {
+  boolMap = new HashMap<Integer, BooleanBlock>();
+  /*
+  boolMap.put(100, false);
+   boolMap.put(101, false);
+   boolMap.put(102, false);
+   boolMap.put(103, false);
+   boolMap.put(104, false);
+   boolMap.put(105, false);
+   boolMap.put(106, false);
+   boolMap.put(107, false);
+   boolMap.put(108, false);
+   boolMap.put(109, false);
+   */
 }
 
 HashMap<Integer, BlockType> idToType;
 
-void SetupIdToType(){
+void SetupIdToType() {
   idToType = new HashMap<Integer, BlockType>();
-  
-  //PLAY
-  idToType.put(0, BlockType.PLAY);
-  
-  //CLIPS
-  for(int i = 1; i < 100; i++){
+
+  //FUNCTION 0-4
+  for (int i = 0; i < 5; i++) {
+    idToType.put(i, BlockType.FUNCTION);
+  }
+
+  //CALL 5-9
+  for (int i = 5; i < 10; i++) {
+    idToType.put(i, BlockType.CALL);
+  }
+
+  //CLIPS 10-39
+  for (int i = 10; i < 40; i++) {
     idToType.put(i, BlockType.CLIP);
   }
+
+  //BEATS 40
+  //TODO change to whatever       
+  idToType.put(40, BlockType.BEAT);
+
+
+  //BOOLEANS 100-109
+  for (int i = 100; i < 110; i++) {
+    idToType.put(i, BlockType.BOOLEAN);
+  }
+
+  //CONDITIONALS 110-119
+  for (int i = 110; i < 120; i++) {
+    idToType.put(i, BlockType.CONDITIONAL);
+  }
+
+  //COUNTDOWN 120
+  //idToType.put(120, BlockType.COUNTDOWN);
+
   
-  //LOOPS
-  idToType.put(111, BlockType.START_LOOP);
-  idToType.put(112, BlockType.END_LOOP);
-  idToType.put(113, BlockType.SILENCE);
-  
+  idToType.put(120, BlockType.SPLIT);
 }
+

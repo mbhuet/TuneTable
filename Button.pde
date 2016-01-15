@@ -2,7 +2,7 @@ abstract class Button{
   int x,y;
   float rotation;
   float size;
-  boolean isShowing;
+  public boolean isShowing;
   
   void InitButton(int x_pos, int y_pos, float rot, float rad){
     isShowing = true;
@@ -24,7 +24,6 @@ abstract class Button{
   }
   
   public boolean IsUnder(int hit_x, int hit_y){
-    //println(hit_x + ", " + x + ", " + hit_y + ", " + y);
     
     return (dist(hit_x, hit_y, x, y) < size);
   }
@@ -37,19 +36,18 @@ abstract class Button{
     isShowing = b;
   }
   
-  abstract void Trigger();
+  abstract void Trigger(Cursor cursor);
   abstract void drawButton();
 }
 
 
 
-class PlayButton extends Button{
+class PlayAllButton extends Button{
 
-  PlayButton(int x_pos, int y_pos, float rot, float rad){
+  PlayAllButton(int x_pos, int y_pos, float rot, float rad){
     InitButton(x_pos,y_pos,rot,rad);
   }
-  public void Trigger(){
-    //println("play button hit");
+  public void Trigger(Cursor cursor){
     Play();
   }
   public void drawButton(){
@@ -67,37 +65,14 @@ class PlayButton extends Button{
   }
 }
 
-class StopButton extends Button{
-
-  StopButton(int x_pos, int y_pos, float rot, float rad){
-    InitButton(x_pos,y_pos,rot,rad);
-  }
-  public void Trigger(){
-    println("stop button hit");
-    Stop();
-  }
-  
-  public void drawButton(){
-    fill(color(0,0,0));
-    ellipse(x,y,size*2,size*2);
-    pushMatrix();
-    translate(x,y);
-    rectMode(CENTER);
-    fill(color(255,255,255));
-    rect(0,0,size*.75, size*.75);
-    popMatrix();
-  }
-}
-
 class UpButton extends Button{
-  Block block;
+  CountdownBlock block;
   
-  UpButton(int x_pos, int y_pos, float rot, float rad, Block b){
+  UpButton(int x_pos, int y_pos, float rot, float rad, CountdownBlock b){
     InitButton(x_pos,y_pos,rot, rad);
     block = b;
   }
-  public void Trigger(){
-        //println("up");
+  public void Trigger(Cursor cursor){
 
     block.IncrementArgument();
   }
@@ -127,14 +102,13 @@ class UpButton extends Button{
 }
 
 class DownButton extends Button{
-  Block block;
+  CountdownBlock block;
   
-  DownButton(int x_pos, int y_pos, float rot, float rad, Block b){
+  DownButton(int x_pos, int y_pos, float rot, float rad, CountdownBlock b){
     InitButton(x_pos,y_pos,rot, rad);
     block = b;
   }
-  public void Trigger(){
-    //println("down");
+  public void Trigger(Cursor cursor){
     block.DecrementArgument();
   }
   public void drawButton(){
@@ -164,3 +138,7 @@ class DownButton extends Button{
     
   }
 }
+
+
+
+

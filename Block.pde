@@ -1,4 +1,4 @@
-class Block {
+abstract class Block {
 
   TuioObject tuioObj;
   int sym_id;
@@ -6,441 +6,411 @@ class Block {
   float y_pos;
   float rotation;
   BlockType type;
-  int block_length = 1;
-  int clip_length;
-  int parameter = 0;
-  //int parameter;
-  int displayed_parameter; //displayed while playing
-  int max_arg = 9;
-  
+  int numLeads = 0;
+  boolean leadsActive = false;
+  boolean inChain = false;
+  boolean canBeChained = true;
+  boolean isMissing = false;
+  boolean isFake;
+  color blockColor;
+
   float block_width;
 
-  UpButton up;
-  DownButton down;
-  float button_offset_y = block_height * .7;
-  float button_offset_x = block_height * .88; //TUNING
-  float window_radius = block_height/2;//TUNING
+  public ArrayList<Block> parents;
+  public Block[] children;
+  public Lead[] leads;
 
-  Block left_neighbor;
-  Block right_neighbor;
-  
-  boolean randomFlag = false;
+  LinkedList<PlayHead> playHeadList = new LinkedList<PlayHead>(); //currently unused
+  PlayHead playHead; //when a playHead passes through this block, it is kept track of here
 
-  AudioPlayer clip;
-  
-  ArrayList<PVector> posHistory = new ArrayList<PVector>();
-  ArrayList<Float> rotHistory = new ArrayList<Float>();
-  int historyVals = 10;
-  
-  //float hold_time; //to prevent flickering
 
-  Block(TuioObject tobj) {
-    tuioObj = tobj;
-    Update();
-    type = idToType.get(sym_id);
-    parameter = 0;
-    Setup();
-    //println(tuioObj.getSessionID());
-  }
+  ArrayList<PVector> posHistory = new ArrayList<PVector>(); //used to calculate average position
+  ArrayList<Float> rotHistory = new ArrayList<Float>();  //used to calculate average rotation
+  int historyVals = 10; //how many position and rotation values to store for calculating a moving average (data smoothing)
+  int missingSince = 0; //millis when block is reported removed by TUIO
+  final int deathDelay = 500; //how many millis after going missing for the block to be removed
 
-  //FOR FAKE BLOCKS ONLY
-  Block (int id, int arg) {
-    sym_id = id;
-    x_pos = block_height;
-    y_pos = height/2;
-    rotation = 0;
-    block_length = 1;
-    type = idToType.get(sym_id);
-    parameter = arg;
+  abstract void Setup();
+  abstract int[] getSuccessors();
 
-    Setup();
-  }
 
-  //FOR FAKE BLOCKS ONLY
-  Block (int id) {
-    sym_id = id;
-    x_pos = block_height;
-    y_pos = height/2;
-    rotation = 0;
-    block_length = 1;
-    type = idToType.get(id);
-    parameter = 0;
-    Setup();
-  }
-
-  void Setup() {
+  /*
+*  Init
+   */
+  void Init(TuioObject tobj, int numLeads) {
+    this.numLeads = numLeads;
+    setTuioObject(tobj);
     allBlocks.add(this);
-    if (type == BlockType.PLAY) {
-      allChains.add(new Chain(this));
-    }
-    if (type == BlockType.CLIP) LoadClip();
 
-    if (requiresArgument()) {
-      block_width = block_height * 1.8461;
-      up = new UpButton(0, 0, 0, block_height/4, this);
-      down = new DownButton(0, 0, 0, block_height/4, this);
-      PlaceButtons();
+    parents = new ArrayList<Block>();
+    children = new Block[numLeads];
+    leads = new Lead[numLeads];
+
+    for (int i = 0; i<numLeads; i++) {
+      leads[i] = new Lead(this, rotation + i * 2*PI / numLeads);
     }
-    else{
-      block_width = block_height * 1.3076;
-    }
-    
+
+    blockColor = color(invertColor ? 255 : 0);
+
+    Setup();
   }
 
-  public void OnRemove() {
 
-    //if this is a play block, the chain it represents should be destroyed as well
-    if (type == BlockType.PLAY) {
-      for (int i = 0; i<allChains.size (); i++) {
-        if (allChains.get(i).head == this) {
-          allChains.remove(i);
+  /*
+    This Init is for simulated blocks and does not require a TuioObject
+   */
+  void Init(int numLeads, int x, int y, int id) {
+    this.numLeads = numLeads;
+    this.sym_id = id;
+    allBlocks.add(this);
+
+    parents = new ArrayList<Block>();
+    children = new Block[numLeads];
+    leads = new Lead[numLeads];
+
+    for (int i = 0; i<numLeads; i++) {
+      leads[i] = new Lead(this, rotation + i * 2*PI / numLeads);
+    }
+
+    blockColor = color(invertColor ? 255 : 0);
+    isFake = true;
+    x_pos = x; 
+    y_pos = y;
+
+    Setup();
+  }
+
+  void setTuioObject(TuioObject tobj) {
+    tuioObj = tobj;
+    sym_id = tobj.getSymbolID();
+    blockMap.put(tobj.getSessionID(), this);
+  }
+
+  void Update() { 
+
+    //Update leads and break connection if the child block is too far away
+    for (int i = 0; i< numLeads; i++) {
+      Lead l = leads[i];
+      l.Update();
+      if (l.distance > l.break_distance) {
+        breakConnection(i);
+      }
+    }
+
+    //checks to see if this block has been missing for too long
+    if (isMissing) {
+      if (millis() - missingSince >= deathDelay) {
+        if (isReadyToDie()) {
+          missingBlocks.remove(this);
+          killBlocks.add(this);
         }
       }
     }
 
-    //println("remove "  + this);
-    BreakNeighbors();
-    for (Chain c : allChains) {
-      if (c.containsBlock(this)) {
-        c.Remove(this);
-      }
+    //fake blocks never use UpdatePosition(), which is where updateNeighbors is normally called
+    if (isFake) {
+      updateNeighbors();
     }
-    
-    if (requiresArgument()){
-      allButtons.remove(up);
-      allButtons.remove(down);
-    }
-    
+  }
+
+
+  /*
+    Called when the TuioObject is reported removed. It won't actually be destroyed until it has been missing for deathDelay milliseconds
+   */
+  void OnRemove() {    
+    missingBlocks.add(this);
+    isMissing = true;
+    missingSince = millis();
+    if (!isFake)blockMap.remove(tuioObj.getSessionID());
+  }
+
+  /*
+    Called when this block has been found while missing
+   */
+  void find(TuioObject newObj) {
+    isMissing = false;
+    missingBlocks.remove(this);
+    if (!isFake)setTuioObject(newObj);
+  }
+
+  /*
+    Destroys the block and all of its connections
+   */
+  void Die() {
+    breakAllConnections();
     allBlocks.remove(this);
-    
-    if (clip != null) clip.close();
+    missingBlocks.remove(this);
+    if (!isFake)blockMap.remove(tuioObj.getSessionID());
   }
-  
-  public void OnPlay(){
-    if (parameter < 0) {
-      randomFlag = true;
-      parameter = int(random(10));
-    }
-    else randomFlag = false;
-    displayed_parameter = parameter;
+
+  //Some blocks may have certain conditions to meet before they're ready to die
+  boolean isReadyToDie() {
+    return true;
   }
-  
-  public void OnEndPlay(){
-    if (randomFlag){
-    parameter = -1;
-    }
+
+  //previous is the block that has directed the PlayHead to this block
+  public void Activate(PlayHead play, Block previous) {
+    playHead = play;
+  } 
+
+  /*
+    Called when this block has finished being active
+   This tells the playhead to move on to the next block in the chain
+   */
+  public void finish() {
+    playHead.travel();
+    playHead.playColor = this.blockColor;
+    if (playHead != null)playHead = null;
   }
 
 
 
-  public void Update() {//TuioObject tobj){
-    
-    sym_id = tuioObj.getSymbolID();
-    float new_x_pos = tuioObj.getScreenX(width) - cos(rotation) * (.5/3.25) * block_height;
-    float new_y_pos = tuioObj.getScreenY(height) - sin(rotation) * (.5/3.25) * block_height;
-    
+  /*
+    Uses the TuioObject to update the blocks position and rotation
+   Position and rotation are calculated using a moving average, which prevents them from jittering as much
+   */
+  public void UpdatePosition() {
+    float new_x_pos = tuioObj.getScreenX(width);
+    float new_y_pos = tuioObj.getScreenY(height);
+
     rotHistory.add(tuioObj.getAngle());
     posHistory.add(new PVector(new_x_pos, new_y_pos));
-    
-    if (posHistory.size() < historyVals){
+
+    if (posHistory.size() < historyVals) {
       x_pos = new_x_pos;
       y_pos = new_y_pos;
       rotation = tuioObj.getAngle();
-    }
-    else{
-    
-        if (posHistory.size() > historyVals){
-          posHistory.remove(0);
-        }
-        
-        if (rotHistory.size() > historyVals){
-          rotHistory.remove(0);
-        }
-        
-        float avg_x = 0;
-        float avg_y = 0;
-        
-        float avg_rot = 0;
-        float sum_cos = 0;
-        float sum_sin = 0;
-      
-        for (int i = 0; i<posHistory.size(); i++){
-          avg_x += posHistory.get(i).x;
-          avg_y += posHistory.get(i).y;
-        }
-        
-        for (int i = 0; i<rotHistory.size(); i++){
-          sum_cos += cos(rotHistory.get(i));
-          sum_sin += sin(rotHistory.get(i));
-        }
-        
-        avg_rot = atan2(sum_sin, sum_cos);
-        
-        avg_x = avg_x/posHistory.size();
-        avg_y = avg_y/posHistory.size();
-        
-        x_pos = avg_x;
-        y_pos = avg_y;
-        rotation = avg_rot;
-    }
-    
-    
-    if (sym_id >= 100) rotation = rotation + PI; //this is because some pucks are upside down
+    } else {
 
-    
-    FindNeighbors();
+      if (posHistory.size() > historyVals) {
+        posHistory.remove(0);
+      }
 
-    //if this block is part of any chains, that chain should rebuild itself based on the new state
-    for (Chain c : allChains) {
-      if (c.containsBlock(this) ||
-        (right_neighbor != null && c.containsBlock(right_neighbor)) ||
-        (left_neighbor != null && c.containsBlock(left_neighbor)))
-      {
-        c.BuildChain();
+      if (rotHistory.size() > historyVals) {
+        rotHistory.remove(0);
+      }
+
+      float avg_x = 0;
+      float avg_y = 0;
+
+      float avg_rot = 0;
+      float sum_cos = 0;
+      float sum_sin = 0;
+
+      for (int i = 0; i<posHistory.size (); i++) {
+        avg_x += posHistory.get(i).x;
+        avg_y += posHistory.get(i).y;
+      }
+
+      for (int i = 0; i<rotHistory.size (); i++) {
+        sum_cos += cos(rotHistory.get(i));
+        sum_sin += sin(rotHistory.get(i));
+      }
+
+      avg_rot = atan2(sum_sin, sum_cos);
+
+      avg_x = avg_x/posHistory.size();
+      avg_y = avg_y/posHistory.size();
+
+      x_pos = avg_x;
+      y_pos = avg_y;
+
+      for (Lead l : leads) { 
+        if (!l.occupied)  l.rotation += (avg_rot - rotation); //this will cause unconnected leads to rotate with the block
+      }
+      rotation = avg_rot;
+    }
+
+    updateNeighbors();
+  }
+
+  /*
+    Returns whether or not the child at index i will be an active successor to this block
+   */
+  public boolean childIsSuccessor(int i) {
+    return (i < numLeads);
+  }
+
+
+  public void updateNeighbors() {
+    if (this.canBeChained) {
+      findParents();
+    }
+    if (leadsActive) {
+      findChildren();
+    }
+  }
+
+
+  public void findChildren() {
+    for (int i = 0; i<numLeads; i++) {
+      if (children[i] == null) {
+        for (Block block : allBlocks) {
+          if (!( block==this || block.parents.contains(this) || this.parents.contains(block)) && leads[i].isUnderBlock(block) && block.canBeChained) {
+            makeConnection(block, i);
+            break;
+          }
+        }
       }
     }
+  }
 
-    if (requiresArgument()) {
-      PlaceButtons();
+  public void findParents() {
+    for (Block block : allBlocks) {
+      for (int i = 0; i< block.numLeads; i++) {
+        if (block.children[i] == null) {
+          if (!( block==this || block.parents.contains(this) || this.parents.contains(block)) && block.leadsActive && block.leads[i].isUnderBlock(this)) {
+            block.makeConnection(this, i);
+          }
+        }
+      }
     }
   }
 
-  void PlaceButtons() {
-    PVector holeCenter = new PVector(x_pos + cos(rotation) * button_offset_x,
-                                     y_pos + sin(rotation) * button_offset_x);
-    
-    PVector upPos = new PVector(holeCenter.x + cos(rotation-PI/2) * button_offset_y,
-                                holeCenter.y + sin(rotation-PI/2) * button_offset_y);
-    PVector downPos = new PVector(holeCenter.x + cos(rotation+PI/2) * button_offset_y,
-                                  holeCenter.y + sin(rotation+PI/2) * button_offset_y);
-                                     
-    up.Update((int)(upPos.x), 
-    (int)(upPos.y), 
-    rotation);
-    down.Update((int)(downPos.x), 
-    (int)(downPos.y), 
-    rotation);
+  public void breakAllConnections() {
+    breakChildConnections();
+    breakParentConnections();
   }
 
-  void BreakNeighbors() {
-
-    if (right_neighbor != null) {  
-      right_neighbor.left_neighbor = null;
+  public void breakChildConnections() {
+    for (int i = 0; i< numLeads; i++) {
+      breakConnection(i);
     }
-    if (left_neighbor != null) {   
-      left_neighbor.right_neighbor = null;
-    }
-
-    left_neighbor = null;
-    right_neighbor = null;
   }
-  
-  public void drawBlock(){
+
+  public void breakParentConnections() {
+    Block[] parentsArray = new Block[parents.size()];
+    parents.toArray(parentsArray);
+    for (Block p : parentsArray) {
+      p.breakConnection(this);
+    }
+  }
+
+  void makeConnection(Block b, int i) {
+    if (children[i] != null) 
+      breakConnection(i);
+    children[i] = b;
+    leads[i].connect(b);
+    b.parents.add(this);
+  }
+
+  /*
+  Breaks connection with a child at index i
+   */
+  void breakConnection(int i) {
+    if (children[i] != null) {
+      children[i].parents.remove(this);
+      children[i] = null;
+      leads[i].disconnect();
+    }
+  }
+
+  /*
+  Breaks connection with child block b
+   */
+  void breakConnection(Block b) {
+    for (int i = 0; i<numLeads; i++) {
+      if (children[i] == b) {
+        children[i].parents.remove(this);
+        children[i] = null;
+        leads[i].disconnect();
+      }
+    }
+  }
+
+
+  public void draw() {
+    drawShadow();
+  }
+
+  /*
+    Default shadow shape is a circle. We use shapes instead of ellipse() to improve performance
+   */
+  void drawShadow() {
+    shapeMode(CENTER);
+    fill(blockColor);
+    stroke(blockColor);
+    strokeWeight(10);
+    pushMatrix();
+    translate(x_pos, y_pos);
+    shape(circleShadow);
+    popMatrix();
+  }
+
+  /*
+  Updates the look of this block's lead depending on whether or not it's in an active path from a Start block
+*/
+  void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
+    this.inChain = true;
+    blockColor = col;
+    for (int i = 0; i< numLeads; i++) {     
+      if (isActive && childIsSuccessor(i)) {
+        leads[i].options.dashed = true;
+        leads[i].options.offset = offset;
+        leads[i].options.col = col;
+        leads[i].options.weight = 10;
+
+        if (children[i] != null && !activeVisited.contains(children[i])) {
+          activeVisited.add(children[i]);
+          children[i].updateLeads(offset, col, true, activeVisited, inactiveVisited);
+        }
+      } else {
+        leads[i].options.dashed = false;
+        leads[i].options.col = color((invertColor? 255 : 0));
+        leads[i].options.weight = 3;
+
+        if (children[i] != null && !activeVisited.contains(children[i]) && !inactiveVisited.contains(children[i])) {
+          inactiveVisited.add(children[i]);
+          children[i].updateLeads(offset, col, false, activeVisited, inactiveVisited);
+        }
+      }
+    }
+  }
+
+  /*
+  Draws an arc around the block's center with specified radius, starting rotation and completion percentage of the arc. 
+   */
+  void drawArc(int radius, float percent, float startRotation) {
     pushMatrix();
     noStroke();
-    rectMode(CENTER);
-
+    fill(blockColor);
     translate(x_pos, y_pos);
-    rotate(rotation);
-    
-    translate((block_width - block_height)/ 2, 0);
-    fill(0);
-    rect(0,0,block_width, block_height);
-        
+    rotate(startRotation);
+    arc(0, 0, 
+    block_diameter + radius, 
+    block_diameter + radius, 
+    0, 
+    percent * 2 * PI, //(float)clip.position()/(float)clip.length() * 2*PI, 
+    PIE);
     popMatrix();
-    
-    if (requiresArgument()){
-      drawArgument();
-    }
   }
-  
-  public void drawArgument(){
+
+  /*
+  Draws a circle under the block with the max specified radius at the start of each beat. The circle shrinks over time until the start of the next beat
+   */
+  void drawBeat(int radius) {
     pushMatrix();
-    rectMode(CENTER);
+    fill(blockColor);
+    noStroke();
     translate(x_pos, y_pos);
-    rotate(rotation);
-    
-      translate(button_offset_x,0);
-      
-      //White circle
-      fill(255);
-      ellipse(0,0,window_radius, window_radius);
-      fill(0);
-      
-      //Argument number
-      textAlign(CENTER,CENTER);
-      textSize(32);
-      translate(0, -textAscent() * .1);
-      String arg_string = ""+parameter;
-      
-      if (parameter < 0){ 
-        arg_string = "?";
-        //textSize(7);  
-      }
-      
-      if (player.isPlaying){
-        arg_string = displayed_parameter + "";
-      }
-      text(arg_string, 0, 0); 
-    
+    rotate(0); //should rotate such that the start angle points to the parent
+    ellipse(0, 0, radius, radius);
     popMatrix();
   }
 
-  public void FindNeighbors() {
-    //check to see if current neighbors are still neighbors before anything else
-    if (left_neighbor != null && !BlockNeighbors(left_neighbor, this)) {
-      if (left_neighbor.right_neighbor == this){
-        left_neighbor.right_neighbor = null;
-      }
-      left_neighbor = null;
-      
-    }
-    if (right_neighbor != null && !BlockNeighbors(this, right_neighbor)) {
-      if (right_neighbor.left_neighbor == this){
-        right_neighbor.left_neighbor = null;
-      }
-      right_neighbor = null;
-    }
+  void drawLeads() {
 
-
-    for (Block cur : allBlocks) {
-      if (cur == this)
-        continue;
-
-      //Block cur = entry.getValue();
-      if (cur.right_neighbor ==  null) {
-        if (BlockNeighbors(cur, this)) {
-          cur.right_neighbor = this;
-          this.left_neighbor = cur;
-        }
-      }
-      if (cur.left_neighbor == null) {
-        if (BlockNeighbors(this, cur)) {
-          cur.left_neighbor = this;
-          this.right_neighbor = cur;
-        }
-      }
-
-      //break out of the loop if neighbors have been found on both sides
-      if (right_neighbor != null && left_neighbor != null) {
-        break;
-      }
+    for (Lead l : leads) {
+      l.draw();
     }
   }
 
-  boolean SetArgument(TuioObject arg) {
-    if (arg == null) {
-      //println("null argument");
-      parameter = 0; 
-      return false;
-    } else if (idToArg.containsKey(arg.getSymbolID())) {
-      parameter = idToArg.get(arg.getSymbolID());
-      return true;
-    } else {
-      parameter = -1;
-      return false;
-    }
-  }
-
-  public void IncrementArgument() {
-    //println("arg inc");
-
-    parameter++;
-    if (parameter > max_arg)
-      parameter = -1;
-  }
-  
-  public void DecrementArgument() {
-    //println("arg dec");
-    parameter--;
-    if (parameter < -1)
-      parameter = max_arg;
-  }
-  
-  public void DecrementDisplayedArgument(){
-    displayed_parameter--;
-    if (displayed_parameter < 0) displayed_parameter = parameter;
-  }
-  
-  //this method will continue through the chain and reset any displayed loop arguments to their max
-  public void ResetInnerLoops(){
-    Block cur = this;
-    int starts = 0;
-    int ends = 0;
-    while (cur != null){
-      if (cur.type == BlockType.START_LOOP){
-        starts++;
-        if (cur != this){
-          cur.displayed_parameter = cur.parameter;
-        }
-      }
-      if(cur.type == BlockType.END_LOOP){
-        ends++;
-        if (starts == ends)
-          break;  
-        }
-      cur = cur.right_neighbor;
-    }
-  }
-  
-  
-
-
-  public void Highlight(int numBars, boolean active) {
-    float extension_off_block = .2; //a factor of block height
-    rectMode(CORNER);
-    strokeWeight(0);
-
-    if (active) {
-      fill(color(255, 0, 0));
-    } else fill(150);
-
-    float spacer = block_height*.2;
-
-    for (int i = 0; i< numBars; i++) {
-      pushMatrix();
-      translate(this.x_pos, this.y_pos);
-      rotate(this.rotation);
-      rect(- block_height/2.0 + spacer + block_height/4 * i,           //top left x
-           - (block_height/2.0 + block_height * extension_off_block),  //top left y
-           block_height/4 - 2*spacer,                                  //width
-           block_height + block_height * extension_off_block * 2);     //height
-      popMatrix();
-    }
-  }
-
-  public int getArgument(){
-    return parameter;
-    
-  }
-
-  public boolean requiresArgument() {
-    return (this.type == BlockType.PLAY ||
-      this.type == BlockType.START_LOOP ||
-      this.type == BlockType.EFFECT ||
-      this.type == BlockType.SILENCE);
-  }
-  
-  public boolean IsUnder(int hit_x, int hit_y){
-    //will only return true if the hit is near the symbol position
-    //checking if a point is within the full rectangular area would require calculating all corner points, and I don't want to do that right now.
-        return (dist(hit_x, hit_y, x_pos, y_pos) < block_height/2);
-
-  }
-
-  void LoadClip() {
-    if (clipDict.containsKey(sym_id)) {
-      ClipInfo info =  clipDict.get(sym_id);
-      String clip_name = info.name;
-      clip = minim.loadFile("clips/"+clip_name+".wav");
-      clip_length = info.length;
-    } else {
-      // println("No clip found for " + id + ": Possible typo");
-    }
+  public boolean IsUnder(int hit_x, int hit_y) {
+    return (dist(hit_x, hit_y, x_pos, y_pos) < block_diameter/2);
   }
 
   public String toString() {
-    return ("\nid: " + sym_id + " arg: " + parameter + "  x: " + x_pos + "  y: " + y_pos);
+    return ("id: " + sym_id + "  x: " + x_pos + "  y: " + y_pos);
   }
 }
 
