@@ -25,5 +25,13 @@ class EndLoopBlock extends Block {
   public int[] getSuccessors() {
     return new int[] {0};
   }
+  
+  public void finish(){
+  PlayHead temp = playHead;
+    if (playHead != null)playHead = null;
+    temp.playColor = this.blockColor;
+    temp.returnToLastStartLoop();
+  
+  }
 }
 

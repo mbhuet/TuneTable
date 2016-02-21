@@ -158,9 +158,8 @@ abstract class Block {
     //println("finish " + this + " playHead " + (playHead == null ? "null" : playHead.toString()));
     PlayHead temp = playHead;
     if (playHead != null)playHead = null;
-
-    temp.travel();
     temp.playColor = this.blockColor;
+    temp.travel();
   }
 
 

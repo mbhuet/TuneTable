@@ -139,6 +139,7 @@ void setup()
     FunctionBlock funcTest = new FunctionBlock(500,500, 0);
     StartLoopBlock testLoop = new StartLoopBlock(700,500);
     ClipBlock testClip = new ClipBlock(700, 300, 10);
+    EndLoopBlock testEnd = new EndLoopBlock(700,100);
     //ConditionalBlock testCond = new ConditionalBlock(900,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }

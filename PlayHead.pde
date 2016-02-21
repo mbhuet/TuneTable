@@ -66,7 +66,6 @@ class PlayHead {
       } else { //there is no block ahead
         // if there are any start Loops in the stack, we'll jump back to it
         if(startLoops.size() > 0){
-          //println("playHead jumping back to loop start");
           activeBlock = startLoops.pop();
           activeBlock.Activate(this, currentBlock);
           hasTravelled = true;
@@ -78,6 +77,18 @@ class PlayHead {
     if (!hasTravelled) {
       dead = true;
       println("playhead " + this + " dead");
+    }
+  }
+  
+  public void returnToLastStartLoop(){
+    if(startLoops.size() == 0){
+      travel();
+    }
+    
+    else{
+      Block currentBlock = activeBlock; //activeBlock may change, so we need to keep a reference to it
+      activeBlock = startLoops.pop();
+      activeBlock.Activate(this, currentBlock);
     }
   }
 
