@@ -80,8 +80,7 @@ void setup()
   loop();
   frameRate(60);
 
-  hint(ENABLE_NATIVE_FONTS);
-  font = createFont("Arial", 18);
+  font = createFont("Arial", 32);
 
   //SHAPE Setup
   beatShadow = sinCircle(0, 0, block_diameter/2, 0, 8, block_diameter/20);
@@ -138,6 +137,7 @@ void setup()
   if (debug) {
     FunctionBlock funcTest = new FunctionBlock(500,500, 0);
     StartLoopBlock testLoop = new StartLoopBlock(700,500);
+    ClipBlock testClip = new ClipBlock(700, 300, 10);
     //ConditionalBlock testCond = new ConditionalBlock(900,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }

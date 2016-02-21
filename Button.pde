@@ -65,16 +65,16 @@ class PlayAllButton extends Button{
   }
 }
 
-class UpButton extends Button{
-  CountdownBlock block;
+class PlusButton extends Button{
+  StartLoopBlock block;
   
-  UpButton(int x_pos, int y_pos, float rot, float rad, CountdownBlock b){
+  PlusButton(int x_pos, int y_pos, float rot, float rad, StartLoopBlock b){
     InitButton(x_pos,y_pos,rot, rad);
     block = b;
   }
   public void Trigger(Cursor cursor){
 
-    block.IncrementArgument();
+    block.IncrementCount(true);
   }
   public void drawButton(){
     
@@ -83,33 +83,28 @@ class UpButton extends Button{
     //translate(size/6, 0);
     rotate(rotation);
     
-    fill(color(0,0,0));
-      stroke(0);
-    rectMode(CENTER);
-    rect(0,size, size*2,size*2);
-    
+    fill(invertColor? 255 : 0);
+    noStroke();
     ellipse(0,0,size*2,size*2);
     
-    //translate(block_width,0);
-        scale(1);
-
-    fill(color(255,255,255));
-    triangle(0,-size/2,
-             -size/2,size/2,
-             size/2, size/2);
+    fill(invertColor? 0 : 255);
+    textAlign(CENTER, CENTER);
+      textSize(size*2);
+      text("+", 0, 0);
+    
     popMatrix();
   }
 }
 
-class DownButton extends Button{
-  CountdownBlock block;
+class MinusButton extends Button{
+  StartLoopBlock block;
   
-  DownButton(int x_pos, int y_pos, float rot, float rad, CountdownBlock b){
+  MinusButton(int x_pos, int y_pos, float rot, float rad, StartLoopBlock b){
     InitButton(x_pos,y_pos,rot, rad);
     block = b;
   }
   public void Trigger(Cursor cursor){
-    block.DecrementArgument();
+    block.DecrementCount(true);
   }
   public void drawButton(){
     
@@ -117,23 +112,16 @@ class DownButton extends Button{
     translate(x,y);
     //translate(size/6, 0);
     rotate(rotation);
-          stroke(0);
-
-    fill(color(0,0,0));
     
-    rectMode(CENTER);
-    rect(0,-size, size*2,size*2);
-    
-    
+    fill(invertColor? 255 : 0);
+    noStroke();
     ellipse(0,0,size*2,size*2);
     
-    //translate(block_width,0);
-        scale(1);
-
-    fill(color(255,255,255));
-    triangle(0,size/2,
-             -size/2,-size/2,
-             size/2, -size/2);
+    fill(invertColor? 0 : 255);
+    textAlign(CENTER, CENTER);
+      textSize(size*2);
+      text("-", 0, 0);
+    
     popMatrix();
     
   }

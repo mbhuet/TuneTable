@@ -2,6 +2,9 @@ class StartLoopBlock extends Block {
   int count = 0;
   int max_count = 9;
   
+  PlusButton plus;
+  MinusButton minus;
+  
   StartLoopBlock(TuioObject tObj) {
     Init(tObj, 2);
   }
@@ -11,21 +14,28 @@ class StartLoopBlock extends Block {
   }
 
   void Setup() {
+     plus = new PlusButton(0, 0, 0, block_diameter/4, this);
+    minus = new MinusButton(0, 0, 0, block_diameter/4, this);
       leads[0].options.showNumber = true;
-
+    
   }
   void Update() {
     super.Update();
     leadsActive =  inChain;
+    arrangeButtons();
   }
   void OnRemove() {
     super.OnRemove();
   }
   public void Activate(PlayHead play, Block previous) {
     super.Activate(play, previous);
-    play.addStartLoop(this);
-    DecrementCount(false);
+    
+    if(count > 0){
+        play.addStartLoop(this);
+    }
+
     finish();
+    DecrementCount(false);
   }
   
   void updateCountLead(){
@@ -61,6 +71,26 @@ class StartLoopBlock extends Block {
     }
     updateCountLead();
   }  
+  
+  void arrangeButtons(){
+    float countLeadRot = leads[0].rotation;
+    float buttonDist = block_diameter * .75; // how far along the lead
+    float buttonLeadOffset = block_diameter/2; // how far from the lead
+    
+    PVector buttonCenter = new PVector(x_pos + cos(countLeadRot) * buttonDist, 
+                                       y_pos + sin(countLeadRot) * buttonDist);
+    PVector plusPos = new PVector(buttonCenter.x + cos(countLeadRot-PI/2) * buttonLeadOffset, 
+                                  buttonCenter.y + sin(countLeadRot-PI/2) * buttonLeadOffset);
+    PVector minusPos = new PVector(buttonCenter.x + cos(countLeadRot+PI/2) * buttonLeadOffset, 
+                                   buttonCenter.y + sin(countLeadRot+PI/2) * buttonLeadOffset);
+
+    plus.Update((int)(plusPos.x), 
+    (int)(plusPos.y), 
+    countLeadRot + PI/2);
+    minus.Update((int)(minusPos.x), 
+    (int)(minusPos.y), 
+    countLeadRot + PI/2);
+  }
   
 }
 

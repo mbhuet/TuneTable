@@ -7,7 +7,7 @@ class Lead {
   float break_distance = block_diameter * 2; //at what distance will a connection break;
   float connect_snap_dist = block_diameter / 2; //how close does a block need to be to connect to this lead?
   boolean occupied;
-  int text_size = block_diameter/4;
+  int text_size = block_diameter/3;
 
   public LeadOptions options;
 
@@ -63,9 +63,10 @@ class Lead {
       rotate(PI/2.0);
 
       fill((invertColor? 0 : 255)); //should match background
-      noStroke();
-      rectMode(CENTER);
-      rect(0, 0, text_size, text_size);
+      stroke(255);
+      strokeWeight(text_size/10);
+      ellipseMode(CENTER);
+      ellipse(0, text_size/10, text_size, text_size);
 
       textAlign(CENTER, CENTER);
       textSize(text_size);

@@ -319,12 +319,10 @@ abstract class Block {
     if(parents.size() > 1) return;
     float leadSeparation = 2*PI / leads.length;
     float startAngle = PI + parentLeadRot + leadSeparation / 2;
-        println(startAngle + " parentRot " + parentLeadRot + " leadSeparation/2 " + (leadSeparation/2));
 
     for(int i = 0; i < leads.length; i++){
       float leadAngle = (startAngle + leadSeparation * i)%(2*PI);
       leads[i].SetRotation(leadAngle);
-      println(leadAngle);
       
     }
   }

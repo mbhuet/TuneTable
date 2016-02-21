@@ -63,8 +63,13 @@ class PlayHead {
           PlayHead newPlay = new PlayHead(origin, nextBlock, currentBlock, playColor);
           newPlay.addLead(currentBlock.leads[indexOfSuccessor]);
         }
-      } else {
-        //there is no block ahead
+      } else { //there is no block ahead
+        // if there are any start Loops in the stack, we'll jump back to it
+        if(startLoops.size() > 0){
+          activeBlock = startLoops.pop();
+          activeBlock.Activate(this, currentBlock);
+          hasTravelled = true;
+        }
       }
 
     }
