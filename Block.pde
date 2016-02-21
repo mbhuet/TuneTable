@@ -155,9 +155,12 @@ abstract class Block {
    This tells the playhead to move on to the next block in the chain
    */
   public void finish() {
-    playHead.travel();
-    playHead.playColor = this.blockColor;
+    //println("finish " + this + " playHead " + (playHead == null ? "null" : playHead.toString()));
+    PlayHead temp = playHead;
     if (playHead != null)playHead = null;
+
+    temp.travel();
+    temp.playColor = this.blockColor;
   }
 
 
@@ -336,10 +339,9 @@ abstract class Block {
     Default shadow shape is a circle. We use shapes instead of ellipse() to improve performance
    */
   void drawShadow() {
+    noStroke();
     shapeMode(CENTER);
     fill(blockColor);
-    stroke(blockColor);
-    strokeWeight(10);
     pushMatrix();
     translate(x_pos, y_pos);
     shape(circleShadow);
@@ -383,6 +385,7 @@ abstract class Block {
     pushMatrix();
     noStroke();
     fill(blockColor);
+    //fill(255);
     translate(x_pos, y_pos);
     rotate(startRotation);
     arc(0, 0, 
@@ -392,6 +395,7 @@ abstract class Block {
     percent * 2 * PI, //(float)clip.position()/(float)clip.length() * 2*PI, 
     PIE);
     popMatrix();
+    
   }
 
   /*

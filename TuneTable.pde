@@ -67,7 +67,6 @@ LinkedList<PlayHead> killPlayHeads;
 
 Cursor mouse;
 
-
 boolean isInitiated = false;
 
 void setup()
@@ -87,8 +86,10 @@ void setup()
   dashCircle = dashedCircle(0, 0, block_diameter, 10);
   playShadow = polygon(block_diameter * .62, 6);
   playShadow.disableStyle();
-  circleShadow = createShape(ELLIPSE, 0, 0, block_diameter, block_diameter);
+  ellipseMode(CENTER);
+  circleShadow = createShape(ELLIPSE, 0, 0, block_diameter + 10, block_diameter +10);
   circleShadow.disableStyle();
+
 
 
   // we create an instance of the TuioProcessing client
@@ -146,7 +147,6 @@ void setup()
 
 void draw()
 {
-
   beatNo = (millis() /millisPerBeat);
   background(invertColor ? 0 : 255);
   cornerBeatGlow();
@@ -194,7 +194,8 @@ void draw()
     b.drawShadow();
   }
 
-
+  //println("end block update loop");
+  //testClip.Update();
 
 
 
@@ -218,6 +219,8 @@ void draw()
   if (hoverDebug) {
     HoverDebug();
   }
+  
+  
 }
 
 

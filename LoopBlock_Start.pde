@@ -33,7 +33,6 @@ class StartLoopBlock extends Block {
     if(count > 0){
         play.addStartLoop(this);
     }
-
     finish();
     DecrementCount(false);
   }

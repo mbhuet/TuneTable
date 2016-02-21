@@ -22,13 +22,8 @@ class EndLoopBlock extends Block {
     finish();
   }
 
-  //TODO should return two blocks
   public int[] getSuccessors() {
-    int[] suc = new int[children.length];
-    for (int i = 0; i<suc.length; i++) {
-      suc[i] = i;
-    }
-    return suc;
+    return new int[] {0};
   }
 }
 
