@@ -7,6 +7,8 @@ class PlayHead {
   color playColor;
   int lastMillis = 0;
   boolean dead = false;
+  
+  Stack<StartLoopBlock> startLoops;
 
   void Init(FunctionBlock origin, Block start, color c) {
     path = new LinkedList<Lead>();
@@ -15,6 +17,7 @@ class PlayHead {
     allPlayHeads.add(this);
     this.origin = origin;
     origin.spawnedPlayHeads.add(this);
+    startLoops = new Stack<StartLoopBlock>();
     //println("init activeBlock " + activeBlock);
   }
 
@@ -60,32 +63,10 @@ class PlayHead {
           PlayHead newPlay = new PlayHead(origin, nextBlock, currentBlock, playColor);
           newPlay.addLead(currentBlock.leads[indexOfSuccessor]);
         }
-      } else {//there is no block ahead
+      } else {
+        //there is no block ahead
       }
 
-
-
-
-
-      /*
-      int indexOfSuccessor = nextBlockIndices[i];
-       println(activeBlock.children.length);
-       Block nextBlock = activeBlock.children[indexOfSuccessor];
-       println("looking at successor " + nextBlock );
-       if (nextBlock != null && nextBlock.inChain) { //if there is a block 
-       println("  this block is a valid successor");
-       if (!hasTravelled) {
-       addLead(activeBlock.leads[indexOfSuccessor]);
-       Block lastBlock = activeBlock;    
-       activeBlock = nextBlock;
-       nextBlock.Activate(this, lastBlock);
-       hasTravelled = true;
-       } else {  
-       PlayHead newPlay = new PlayHead(origin, nextBlock, activeBlock, playColor);
-       newPlay.addLead(activeBlock.leads[indexOfSuccessor]);
-       }
-       }
-       */
     }
 
     if (!hasTravelled) {
@@ -125,6 +106,10 @@ class PlayHead {
   void addLead(Lead lead) {
     path.offerFirst(lead);
     pathDist += lead.distance - block_diameter;
+  }
+  
+  public void addStartLoop(StartLoopBlock start){
+    startLoops.push(start);
   }
 
   void Die() {

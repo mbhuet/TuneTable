@@ -2,7 +2,8 @@ enum BlockType
 {
     FUNCTION,
     CLIP,
-    COUNTDOWN,
+    START_LOOP,
+    END_LOOP,
     CONDITIONAL,
     EFFECT,
     BOOLEAN,

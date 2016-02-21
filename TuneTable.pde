@@ -136,8 +136,8 @@ void setup()
   millisPerBeat = 60000/bpm;
 
   if (debug) {
-    //FunctionBlock funcTest = new FunctionBlock(500,500, 0);
-    //ClipBlock testCLip = new ClipBlock(700,500, 1);
+    FunctionBlock funcTest = new FunctionBlock(500,500, 0);
+    StartLoopBlock testLoop = new StartLoopBlock(700,500);
     //ConditionalBlock testCond = new ConditionalBlock(900,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }

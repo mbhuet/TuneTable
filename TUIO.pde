@@ -105,10 +105,6 @@ void TuioUpdate() {
           newBlock = new ClipBlock(curObj);
           break;
 
-        case COUNTDOWN:            
-          newBlock = new CountdownBlock(curObj);
-          break;
-
         case CONDITIONAL:
           newBlock = new ConditionalBlock(curObj);
           break;
@@ -132,7 +128,15 @@ void TuioUpdate() {
         case BEAT:
           newBlock = new BeatBlock(curObj);
           break;
-
+      
+        case START_LOOP:
+          newBlock = new StartLoopBlock(curObj);
+        break;
+        
+        case END_LOOP:
+          newBlock = new EndLoopBlock(curObj);
+        break;
+        
         default:
           //newBlock = new FunctionBlock(curObj);
           break;

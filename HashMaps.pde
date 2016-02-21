@@ -128,10 +128,14 @@ void SetupIdToType() {
     idToType.put(i, BlockType.CONDITIONAL);
   }
 
-  //COUNTDOWN 120
-  //idToType.put(120, BlockType.COUNTDOWN);
+  //SPLIT 120
+  idToType.put(120, BlockType.SPLIT);
+
+  //LOOPS 121, 122
+  idToType.put(121, BlockType.START_LOOP);
+  idToType.put(122, BlockType.END_LOOP);
+
 
   
-  idToType.put(120, BlockType.SPLIT);
 }
 

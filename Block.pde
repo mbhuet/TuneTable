@@ -34,9 +34,6 @@ abstract class Block {
   abstract int[] getSuccessors();
 
 
-  /*
-*  Init
-   */
   void Init(TuioObject tobj, int numLeads) {
     this.numLeads = numLeads;
     setTuioObject(tobj);
@@ -315,6 +312,20 @@ abstract class Block {
         children[i] = null;
         leads[i].disconnect();
       }
+    }
+  }
+  
+  public void arrangeLeads(float parentLeadRot){
+    if(parents.size() > 1) return;
+    float leadSeparation = 2*PI / leads.length;
+    float startAngle = PI + parentLeadRot + leadSeparation / 2;
+        println(startAngle + " parentRot " + parentLeadRot + " leadSeparation/2 " + (leadSeparation/2));
+
+    for(int i = 0; i < leads.length; i++){
+      float leadAngle = (startAngle + leadSeparation * i)%(2*PI);
+      leads[i].SetRotation(leadAngle);
+      println(leadAngle);
+      
     }
   }
 
