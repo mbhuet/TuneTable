@@ -27,6 +27,7 @@ boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = false;
+boolean paused = false;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
@@ -146,13 +147,13 @@ void setup()
 
 void draw()
 {
-
+  if(paused) return;
   beatNo = (millis() /millisPerBeat);
   background(invertColor ? 0 : 255);
   cornerBeatGlow();
 
   if (debug) {
-
+     // println(cursors.size());
     //shape(playShadow, 400,400);
   }
 
@@ -235,6 +236,9 @@ void keyPressed() {
     for (FunctionBlock func : allFunctionBlocks) {
       func.execute();
     }
+  }
+  if (key == 'p') {
+    paused = !paused;
   }
   if (key == 'i') {
     invertColor = !invertColor;   

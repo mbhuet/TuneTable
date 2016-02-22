@@ -33,6 +33,8 @@ class CursorActionWrapper {
 // called when an object is added to the scene
 void addTuioObject(TuioObject tobj) {
   if (!isInitiated) return;
+    println("tuio object add");
+
   actionQueue.offer(new TuioActionWrapper(tobj, TuioAction.ADD));
 
 }
@@ -56,11 +58,21 @@ void updateTuioObject (TuioObject tobj) {
 
 }
 
+/*
 // called when a cursor is added to the scene
 void addTuioCursor(TuioCursor tcur) {
   if (!isInitiated) return;
+  println("tuio cursor");
     cursorQueue.offer(new CursorActionWrapper(tcur, TuioAction.ADD));
 }
+*/
+void addTuioCursor(TuioCursor tcur) {
+  //if (true) println("add cur "+tcur.getCursorID()+" ("+tcur.getSessionID()+ ") " +tcur.getX()+" "+tcur.getY());
+    if (!isInitiated) return;
+  println("tuio cursor");
+    cursorQueue.offer(new CursorActionWrapper(tcur, TuioAction.ADD));
+}
+
 
 // called when a cursor is moved
 void updateTuioCursor (TuioCursor tcur) {
@@ -74,6 +86,25 @@ void removeTuioCursor(TuioCursor tcur) {
   if (!isInitiated) return;
 
   cursorQueue.offer(new CursorActionWrapper(tcur, TuioAction.REMOVE));
+}
+
+// called when a blob is added to the scene
+void addTuioBlob(TuioBlob tblb) {
+  if (true) println("add blb "+tblb.getBlobID()+" ("+tblb.getSessionID()+") "+tblb.getX()+" "+tblb.getY()+" "+tblb.getAngle()+" "+tblb.getWidth()+" "+tblb.getHeight()+" "+tblb.getArea());
+  //redraw();
+}
+
+// called when a blob is moved
+void updateTuioBlob (TuioBlob tblb) {
+  if (true) println("set blb "+tblb.getBlobID()+" ("+tblb.getSessionID()+") "+tblb.getX()+" "+tblb.getY()+" "+tblb.getAngle()+" "+tblb.getWidth()+" "+tblb.getHeight()+" "+tblb.getArea()
+          +" "+tblb.getMotionSpeed()+" "+tblb.getRotationSpeed()+" "+tblb.getMotionAccel()+" "+tblb.getRotationAccel());
+  //redraw()
+}
+
+// called when a blob is removed from the scene
+void removeTuioBlob(TuioBlob tblb) {
+  if (true) println("del blb "+tblb.getBlobID()+" ("+tblb.getSessionID()+")");
+  //redraw()
 }
 
 
