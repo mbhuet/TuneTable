@@ -27,6 +27,7 @@ boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = false;
+boolean simulateBlocks = false;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
@@ -135,7 +136,7 @@ void setup()
   isInitiated = true;
   millisPerBeat = 60000/bpm;
 
-  if (debug) {
+  if (simulateBlocks) {
     FunctionBlock funcTest = new FunctionBlock(500,500, 0);
     StartLoopBlock testLoop = new StartLoopBlock(700,500);
     ClipBlock testClip = new ClipBlock(700, 300, 10);
