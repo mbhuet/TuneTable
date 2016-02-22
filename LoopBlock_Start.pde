@@ -1,5 +1,5 @@
 class StartLoopBlock extends Block {
-  int count = 0;
+  int count = 1;
   int max_count = 9;
   
   PlusButton plus;
@@ -17,7 +17,7 @@ class StartLoopBlock extends Block {
      plus = new PlusButton(0, 0, 0, block_diameter/4, this);
     minus = new MinusButton(0, 0, 0, block_diameter/4, this);
       leads[0].options.showNumber = true;
-    
+    updateCountLead();
   }
   void Update() {
     super.Update();
@@ -89,6 +89,12 @@ class StartLoopBlock extends Block {
     minus.Update((int)(minusPos.x), 
     (int)(minusPos.y), 
     countLeadRot + PI/2);
+  }
+  
+  void Die(){
+    super.Die();
+    plus.Destroy();
+    minus.Destroy();
   }
   
 }

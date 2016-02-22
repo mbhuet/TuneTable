@@ -7,7 +7,7 @@ class PlayHead {
   color playColor;
   int lastMillis = 0;
   boolean dead = false;
-  
+
   Stack<StartLoopBlock> startLoops;
 
   void Init(FunctionBlock origin, Block start, color c) {
@@ -65,13 +65,12 @@ class PlayHead {
         }
       } else { //there is no block ahead
         // if there are any start Loops in the stack, we'll jump back to it
-        if(startLoops.size() > 0){
+        if (startLoops.size() > 0) {
           activeBlock = startLoops.pop();
           activeBlock.Activate(this, currentBlock);
           hasTravelled = true;
         }
       }
-
     }
 
     if (!hasTravelled) {
@@ -79,13 +78,11 @@ class PlayHead {
       println("playhead " + this + " dead");
     }
   }
-  
-  public void returnToLastStartLoop(){
-    if(startLoops.size() == 0){
+
+  public void returnToLastStartLoop() {
+    if (startLoops.size() == 0) {
       travel();
-    }
-    
-    else{
+    } else {
       Block currentBlock = activeBlock; //activeBlock may change, so we need to keep a reference to it
       activeBlock = startLoops.pop();
       activeBlock.Activate(this, currentBlock);
@@ -124,9 +121,13 @@ class PlayHead {
     path.offerFirst(lead);
     pathDist += lead.distance - block_diameter;
   }
-  
-  public void addStartLoop(StartLoopBlock start){
-    startLoops.push(start);
+
+  public void addStartLoop(StartLoopBlock start) {
+    if (startLoops.size() > 0 && startLoops.peek() == start) {
+      startLoops.pop();
+    } else {    
+      startLoops.push(start);
+    }
   }
 
   void Die() {
