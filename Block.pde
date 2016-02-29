@@ -352,7 +352,10 @@ abstract class Block {
 */
   void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
     this.inChain = true;
-    blockColor = col;
+     colorMode(HSB);
+        color dulledColor = color(hue(col), saturation(col)/8, 150);
+    blockColor = (isActive? col : dulledColor);
+
     for (int i = 0; i< numLeads; i++) {     
       if (isActive && childIsSuccessor(i)) {
         leads[i].options.dashed = true;
@@ -366,8 +369,8 @@ abstract class Block {
         }
       } else {
         leads[i].options.dashed = false;
-        leads[i].options.col = color((invertColor? 255 : 0));
-        leads[i].options.weight = 3;
+        leads[i].options.col = dulledColor;
+        leads[i].options.weight = 10;
 
         if (children[i] != null && !activeVisited.contains(children[i]) && !inactiveVisited.contains(children[i])) {
           inactiveVisited.add(children[i]);

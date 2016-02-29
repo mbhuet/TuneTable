@@ -27,7 +27,7 @@ boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = false;
-boolean simulateBlocks = false;
+boolean simulateBlocks = true;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
@@ -130,8 +130,8 @@ void setup()
   unlock_reg.resize((int)(unlock_reg.width * scaleFactor), (int)(unlock_reg.height * scaleFactor));
   unlock_inv.resize((int)(unlock_inv.width * scaleFactor), (int)(unlock_inv.height * scaleFactor));
 
-  lock = lock_reg;
-  unlock = unlock_reg;
+  lock = (invertColor? lock_inv : lock_reg);
+  unlock = (invertColor ? unlock_inv : unlock_reg);
 
   isInitiated = true;
   millisPerBeat = 60000/bpm;
@@ -139,8 +139,7 @@ void setup()
   if (simulateBlocks) {
     FunctionBlock funcTest = new FunctionBlock(500,500, 0);
     StartLoopBlock testLoop = new StartLoopBlock(700,500);
-    ClipBlock testClip = new ClipBlock(700, 300, 10);
-    EndLoopBlock testEnd = new EndLoopBlock(700,100);
+    ClipBlock testClip = new ClipBlock(700, 700, 10);
     //ConditionalBlock testCond = new ConditionalBlock(900,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }
@@ -151,7 +150,7 @@ void draw()
 {
   beatNo = (millis() /millisPerBeat);
   background(invertColor ? 0 : 255);
-  cornerBeatGlow();
+  //cornerBeatGlow();
 
   if (debug) {
 
