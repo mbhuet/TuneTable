@@ -27,6 +27,7 @@ boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = false;
+boolean simulateBlocks = true;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
@@ -67,7 +68,6 @@ LinkedList<PlayHead> killPlayHeads;
 
 Cursor mouse;
 
-
 boolean isInitiated = false;
 
 void setup()
@@ -80,16 +80,17 @@ void setup()
   loop();
   frameRate(60);
 
-  hint(ENABLE_NATIVE_FONTS);
-  font = createFont("Arial", 18);
+  font = createFont("Arial", 32);
 
   //SHAPE Setup
   beatShadow = sinCircle(0, 0, block_diameter/2, 0, 8, block_diameter/20);
   dashCircle = dashedCircle(0, 0, block_diameter, 10);
   playShadow = polygon(block_diameter * .62, 6);
   playShadow.disableStyle();
-  circleShadow = createShape(ELLIPSE, 0, 0, block_diameter, block_diameter);
+  ellipseMode(CENTER);
+  circleShadow = createShape(ELLIPSE, 0, 0, block_diameter + 10, block_diameter +10);
   circleShadow.disableStyle();
+
 
 
   // we create an instance of the TuioProcessing client
@@ -129,15 +130,16 @@ void setup()
   unlock_reg.resize((int)(unlock_reg.width * scaleFactor), (int)(unlock_reg.height * scaleFactor));
   unlock_inv.resize((int)(unlock_inv.width * scaleFactor), (int)(unlock_inv.height * scaleFactor));
 
-  lock = lock_reg;
-  unlock = unlock_reg;
+  lock = (invertColor? lock_inv : lock_reg);
+  unlock = (invertColor ? unlock_inv : unlock_reg);
 
   isInitiated = true;
   millisPerBeat = 60000/bpm;
 
-  if (debug) {
-    //FunctionBlock funcTest = new FunctionBlock(500,500, 0);
-    //ClipBlock testCLip = new ClipBlock(700,500, 1);
+  if (simulateBlocks) {
+    FunctionBlock funcTest = new FunctionBlock(500,500, 0);
+    StartLoopBlock testLoop = new StartLoopBlock(700,500);
+    ClipBlock testClip = new ClipBlock(700, 700, 10);
     //ConditionalBlock testCond = new ConditionalBlock(900,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }
@@ -146,10 +148,9 @@ void setup()
 
 void draw()
 {
-
   beatNo = (millis() /millisPerBeat);
   background(invertColor ? 0 : 255);
-  cornerBeatGlow();
+  //cornerBeatGlow();
 
   if (debug) {
 
@@ -194,7 +195,8 @@ void draw()
     b.drawShadow();
   }
 
-
+  //println("end block update loop");
+  //testClip.Update();
 
 
 
@@ -218,6 +220,8 @@ void draw()
   if (hoverDebug) {
     HoverDebug();
   }
+  
+  
 }
 
 

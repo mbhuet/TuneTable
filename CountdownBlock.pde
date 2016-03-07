@@ -1,7 +1,5 @@
 class CountdownBlock extends Block {
 
-  UpButton up;
-  DownButton down;
   int count;
   int max_count = 9;
 
@@ -14,8 +12,7 @@ class CountdownBlock extends Block {
   }
 
   void Setup() {
-    up = new UpButton(0, 0, 0, block_diameter/4, this);
-    down = new DownButton(0, 0, 0, block_diameter/4, this);
+   
   }
 
   void Update() {
@@ -81,21 +78,6 @@ class CountdownBlock extends Block {
     popMatrix();
   }
 
-  void PlaceButtons() {
-    PVector holeCenter = new PVector(x_pos + cos(rotation) * window_offset_x, 
-    y_pos + sin(rotation) * window_offset_x);
-
-    PVector upPos = new PVector(holeCenter.x + cos(rotation-PI/2) * button_offset_y, 
-    holeCenter.y + sin(rotation-PI/2) * button_offset_y);
-    PVector downPos = new PVector(holeCenter.x + cos(rotation+PI/2) * button_offset_y, 
-    holeCenter.y + sin(rotation+PI/2) * button_offset_y);
-
-    up.Update((int)(upPos.x), 
-    (int)(upPos.y), 
-    rotation);
-    down.Update((int)(downPos.x), 
-    (int)(downPos.y), 
-    rotation);
-  }
+  
 }
 

@@ -12,9 +12,12 @@ class ClipBlock extends SoundBlock {
     LoadClip();
   }
   void Update() {
+    //println("begin clip update " + this + " playHead " + (playHead == null ? "null" : playHead.toString()));
     super.Update();
     leadsActive = inChain;
+
     if (isPlaying) {
+
       if (pie) {
         float arcRot = 0;
         if (previous != null) {
@@ -33,6 +36,9 @@ class ClipBlock extends SoundBlock {
         finish();
       }
     }
+    
+        //println("end clip update " + this + " playHead " + (playHead == null ? "null" : playHead.toString()));
+
   }
 
 
@@ -40,6 +46,7 @@ class ClipBlock extends SoundBlock {
     super.Activate(play, previous);
     this.previous = previous;
     Play();
+    //println("clip activate playHead = " + ((playHead == null)? "null" : playHead.toString()) );
   }
 
   public int[] getSuccessors() {

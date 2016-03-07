@@ -2,12 +2,12 @@ class Lead {
   Block owner;
   Block occupant;
   float rotation;
-
   float distance;
   float reg_distance = block_diameter * 1.5;
   float break_distance = block_diameter * 2; //at what distance will a connection break;
   float connect_snap_dist = block_diameter / 2; //how close does a block need to be to connect to this lead?
   boolean occupied;
+  int text_size = block_diameter/3;
 
   public LeadOptions options;
 
@@ -56,18 +56,36 @@ class Lead {
       popMatrix();
     }
 
-    if(!occupied){
-    translate(distance, 0);
-    dashCircle.setStroke(options.col);
-    dashCircle.setStrokeWeight(5);
-    shapeMode(CENTER);
+    if (options.showNumber) {
 
-    shape(dashCircle);
+      pushMatrix();
+      translate(distance/2, 0);
+      rotate(PI/2.0);
+
+      fill((invertColor? 0 : 255)); //should match background
+      stroke(255);
+      strokeWeight(text_size/10);
+      ellipseMode(CENTER);
+      ellipse(0, text_size/10, text_size, text_size);
+
+      textAlign(CENTER, CENTER);
+      textSize(text_size);
+      fill((invertColor? 255 : 0)); //text color
+      text(options.number, 0, 0);
+
+      popMatrix();
+    }
+
+    if (!occupied) {
+      translate(distance, 0);
+      dashCircle.setStroke(options.col);
+      dashCircle.setStrokeWeight(5);
+      shapeMode(CENTER);
+
+      shape(dashCircle);
     }
 
     popMatrix();
-    
-
   }
 
   public void highlightTravelled(float percent, color col) {
@@ -110,6 +128,7 @@ class Lead {
     occupant = block;
     occupied = true;
     trackBlock(block);
+    block.arrangeLeads(rotation);
   }
 
   public void disconnect() {
@@ -123,11 +142,17 @@ class Lead {
     (block.x_pos - owner.x_pos));
     distance = dist(block.x_pos, block.y_pos, owner.x_pos, owner.y_pos);
   }
+  
+  public void SetRotation(float rot){
+    rotation = rot;
+  }
 }
 
 class LeadOptions {
   public boolean visible = true;
   public PImage image;
+  public int number = 0;
+  public boolean showNumber = false;
   public boolean dashed = false;
   public float offset = 0;
   public color col = color(invertColor ? 255 : 0);

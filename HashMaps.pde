@@ -48,20 +48,23 @@ void SetupClipDict() {
   clipDict.put(10, new ClipInfo("trad/bass-asc-progression", 1));
   clipDict.put(11, new ClipInfo("trad/bass-fx-slap", 1));
   clipDict.put(12, new ClipInfo("trad/bass-groovy", 1));
-  clipDict.put(13, new ClipInfo("trad/bass-pop-rock", 1));
+  
+  
+  clipDict.put(13, new ClipInfo("eightbit/eight-bit Analog Drum Loop-001", 1));
 
   clipDict.put(14, new ClipInfo("trad/bass-slappy", 1));
   clipDict.put(15, new ClipInfo("trad/bass-synthetic", 1));
 
-  clipDict.put(16, new ClipInfo("trad/guitar-country", 1));
-  clipDict.put(17, new ClipInfo("trad/guitar-country-slow", 4));
-  clipDict.put(18, new ClipInfo("trad/guitar-minor", 4));
-  clipDict.put(19, new ClipInfo("trad/guitar-pop-rock", 1));
+  //EIGHTBIT Sounds
+  clipDict.put(16, new ClipInfo("eightbit/eight-bit Atari Pad-004", 1));
+  clipDict.put(17, new ClipInfo("eightbit/eight-bit Video Game Loop-003", 4));
+  clipDict.put(18, new ClipInfo("eightbit/eight-bit Analog Drum Loop-015", 4));
+  clipDict.put(19, new ClipInfo("eightbit/eight-bit Atari Bassline-003", 1));
 
-  clipDict.put(20, new ClipInfo("trad/guitar-pop-rock-rhythm", 1));
-  clipDict.put(21, new ClipInfo("trad/guitar-rock", 2));
-  clipDict.put(22, new ClipInfo("trad/guitar-synth", 3));
-    clipDict.put(23, new ClipInfo("trad/guitar-synth", 3));
+  clipDict.put(20, new ClipInfo("eightbit/eight-bit Atari Lead-009", 1));
+  clipDict.put(21, new ClipInfo("eightbit/eight-bit Atari Lead-011", 2));
+  clipDict.put(22, new ClipInfo("eightbit/eight-bit Atari Lead-008", 3));
+  clipDict.put(23, new ClipInfo("eightbit/eight-bit Atari Pad-003", 3));
 
   clipDict.put(40, new ClipInfo("kick_export", 0));
 }
@@ -128,10 +131,14 @@ void SetupIdToType() {
     idToType.put(i, BlockType.CONDITIONAL);
   }
 
-  //COUNTDOWN 120
-  //idToType.put(120, BlockType.COUNTDOWN);
+  //SPLIT 120
+  idToType.put(120, BlockType.SPLIT);
+
+  //LOOPS 121, 122
+  idToType.put(121, BlockType.START_LOOP);
+  idToType.put(122, BlockType.END_LOOP);
+
 
   
-  idToType.put(120, BlockType.SPLIT);
 }
 

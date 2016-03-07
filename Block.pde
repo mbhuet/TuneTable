@@ -34,9 +34,6 @@ abstract class Block {
   abstract int[] getSuccessors();
 
 
-  /*
-*  Init
-   */
   void Init(TuioObject tobj, int numLeads) {
     this.numLeads = numLeads;
     setTuioObject(tobj);
@@ -158,9 +155,11 @@ abstract class Block {
    This tells the playhead to move on to the next block in the chain
    */
   public void finish() {
-    playHead.travel();
-    playHead.playColor = this.blockColor;
+    //println("finish " + this + " playHead " + (playHead == null ? "null" : playHead.toString()));
+    PlayHead temp = playHead;
     if (playHead != null)playHead = null;
+    temp.playColor = this.blockColor;
+    temp.travel();
   }
 
 
@@ -317,6 +316,18 @@ abstract class Block {
       }
     }
   }
+  
+  public void arrangeLeads(float parentLeadRot){
+    if(parents.size() > 1) return;
+    float leadSeparation = 2*PI / leads.length;
+    float startAngle = PI + parentLeadRot + leadSeparation / 2;
+
+    for(int i = 0; i < leads.length; i++){
+      float leadAngle = (startAngle + leadSeparation * i)%(2*PI);
+      leads[i].SetRotation(leadAngle);
+      
+    }
+  }
 
 
   public void draw() {
@@ -327,10 +338,9 @@ abstract class Block {
     Default shadow shape is a circle. We use shapes instead of ellipse() to improve performance
    */
   void drawShadow() {
+    noStroke();
     shapeMode(CENTER);
     fill(blockColor);
-    stroke(blockColor);
-    strokeWeight(10);
     pushMatrix();
     translate(x_pos, y_pos);
     shape(circleShadow);
@@ -342,7 +352,10 @@ abstract class Block {
 */
   void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
     this.inChain = true;
-    blockColor = col;
+     colorMode(HSB);
+        color dulledColor = color(hue(col), saturation(col)/8, 150);
+    blockColor = (isActive? col : dulledColor);
+
     for (int i = 0; i< numLeads; i++) {     
       if (isActive && childIsSuccessor(i)) {
         leads[i].options.dashed = true;
@@ -356,8 +369,8 @@ abstract class Block {
         }
       } else {
         leads[i].options.dashed = false;
-        leads[i].options.col = color((invertColor? 255 : 0));
-        leads[i].options.weight = 3;
+        leads[i].options.col = dulledColor;
+        leads[i].options.weight = 10;
 
         if (children[i] != null && !activeVisited.contains(children[i]) && !inactiveVisited.contains(children[i])) {
           inactiveVisited.add(children[i]);
@@ -374,6 +387,7 @@ abstract class Block {
     pushMatrix();
     noStroke();
     fill(blockColor);
+    //fill(255);
     translate(x_pos, y_pos);
     rotate(startRotation);
     arc(0, 0, 
@@ -383,6 +397,7 @@ abstract class Block {
     percent * 2 * PI, //(float)clip.position()/(float)clip.length() * 2*PI, 
     PIE);
     popMatrix();
+    
   }
 
   /*

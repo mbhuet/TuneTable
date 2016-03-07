@@ -65,9 +65,9 @@ class ConditionalBlock extends Block {
   void OnRemove() {
     super.OnRemove();
   }
+  
   public void Activate(PlayHead play, Block previous) {
     super.Activate(play, previous);
-
     finish();
   }
 

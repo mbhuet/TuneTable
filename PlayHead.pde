@@ -8,6 +8,8 @@ class PlayHead {
   int lastMillis = 0;
   boolean dead = false;
 
+  Stack<StartLoopBlock> startLoops;
+
   void Init(FunctionBlock origin, Block start, color c) {
     path = new LinkedList<Lead>();
     playColor = c;
@@ -15,6 +17,7 @@ class PlayHead {
     allPlayHeads.add(this);
     this.origin = origin;
     origin.spawnedPlayHeads.add(this);
+    startLoops = new Stack<StartLoopBlock>();
     //println("init activeBlock " + activeBlock);
   }
 
@@ -60,37 +63,29 @@ class PlayHead {
           PlayHead newPlay = new PlayHead(origin, nextBlock, currentBlock, playColor);
           newPlay.addLead(currentBlock.leads[indexOfSuccessor]);
         }
-      } else {//there is no block ahead
+      } else { //there is no block ahead
+        // if there are any start Loops in the stack, we'll jump back to it
+        if (startLoops.size() > 0) {
+          activeBlock = startLoops.pop();
+          activeBlock.Activate(this, currentBlock);
+          hasTravelled = true;
+        }
       }
-
-
-
-
-
-      /*
-      int indexOfSuccessor = nextBlockIndices[i];
-       println(activeBlock.children.length);
-       Block nextBlock = activeBlock.children[indexOfSuccessor];
-       println("looking at successor " + nextBlock );
-       if (nextBlock != null && nextBlock.inChain) { //if there is a block 
-       println("  this block is a valid successor");
-       if (!hasTravelled) {
-       addLead(activeBlock.leads[indexOfSuccessor]);
-       Block lastBlock = activeBlock;    
-       activeBlock = nextBlock;
-       nextBlock.Activate(this, lastBlock);
-       hasTravelled = true;
-       } else {  
-       PlayHead newPlay = new PlayHead(origin, nextBlock, activeBlock, playColor);
-       newPlay.addLead(activeBlock.leads[indexOfSuccessor]);
-       }
-       }
-       */
     }
 
     if (!hasTravelled) {
       dead = true;
       println("playhead " + this + " dead");
+    }
+  }
+
+  public void returnToLastStartLoop() {
+    if (startLoops.size() == 0) {
+      travel();
+    } else {
+      Block currentBlock = activeBlock; //activeBlock may change, so we need to keep a reference to it
+      activeBlock = startLoops.pop();
+      activeBlock.Activate(this, currentBlock);
     }
   }
 
@@ -125,6 +120,14 @@ class PlayHead {
   void addLead(Lead lead) {
     path.offerFirst(lead);
     pathDist += lead.distance - block_diameter;
+  }
+
+  public void addStartLoop(StartLoopBlock start) {
+    if (startLoops.size() > 0 && startLoops.peek() == start) {
+      startLoops.pop();
+    } else {    
+      startLoops.push(start);
+    }
   }
 
   void Die() {

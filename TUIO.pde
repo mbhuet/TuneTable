@@ -58,6 +58,8 @@ void updateTuioObject (TuioObject tobj) {
 
 // called when a cursor is added to the scene
 void addTuioCursor(TuioCursor tcur) {
+  //if (true) println("add cur "+tcur.getCursorID()+" ("+tcur.getSessionID()+ ") " +tcur.getX()+" "+tcur.getY());
+
   if (!isInitiated) return;
     cursorQueue.offer(new CursorActionWrapper(tcur, TuioAction.ADD));
 }
@@ -74,6 +76,24 @@ void removeTuioCursor(TuioCursor tcur) {
   if (!isInitiated) return;
 
   cursorQueue.offer(new CursorActionWrapper(tcur, TuioAction.REMOVE));
+}
+
+void addTuioBlob(TuioBlob tblb) {
+  if (true) println("add blb "+tblb.getBlobID()+" ("+tblb.getSessionID()+") "+tblb.getX()+" "+tblb.getY()+" "+tblb.getAngle()+" "+tblb.getWidth()+" "+tblb.getHeight()+" "+tblb.getArea());
+  //redraw();
+}
+
+// called when a blob is moved
+void updateTuioBlob (TuioBlob tblb) {
+  if (true) println("set blb "+tblb.getBlobID()+" ("+tblb.getSessionID()+") "+tblb.getX()+" "+tblb.getY()+" "+tblb.getAngle()+" "+tblb.getWidth()+" "+tblb.getHeight()+" "+tblb.getArea()
+          +" "+tblb.getMotionSpeed()+" "+tblb.getRotationSpeed()+" "+tblb.getMotionAccel()+" "+tblb.getRotationAccel());
+  //redraw()
+}
+
+// called when a blob is removed from the scene
+void removeTuioBlob(TuioBlob tblb) {
+  if (true) println("del blb "+tblb.getBlobID()+" ("+tblb.getSessionID()+")");
+  //redraw()
 }
 
 
@@ -105,10 +125,6 @@ void TuioUpdate() {
           newBlock = new ClipBlock(curObj);
           break;
 
-        case COUNTDOWN:            
-          newBlock = new CountdownBlock(curObj);
-          break;
-
         case CONDITIONAL:
           newBlock = new ConditionalBlock(curObj);
           break;
@@ -132,7 +148,15 @@ void TuioUpdate() {
         case BEAT:
           newBlock = new BeatBlock(curObj);
           break;
-
+      
+        case START_LOOP:
+          newBlock = new StartLoopBlock(curObj);
+        break;
+        
+        case END_LOOP:
+          newBlock = new EndLoopBlock(curObj);
+        break;
+        
         default:
           //newBlock = new FunctionBlock(curObj);
           break;
