@@ -48,11 +48,11 @@ class Lead {
     int numVisible = numLinesVisible();
     int numVisibleVisited = 0;
     float start_x = -1 * (standardWeight * numVisible + lineSeparation * (numVisible-1))/2;
-    
-      pushMatrix();
-      translate(owner.x_pos, owner.y_pos);
-      rotate(rotation);
-      
+
+    pushMatrix();
+    translate(owner.x_pos, owner.y_pos);
+    rotate(rotation);
+
     for (int i = 0; i<lines.length; i++) {
       LeadOptions options = lines[i];
       if (!options.visible) continue;
@@ -103,21 +103,20 @@ class Lead {
 
         popMatrix();
       }
-      
-      
-     
-      popMatrix();
-            numVisibleVisited++;
 
+
+
+      popMatrix();
+      numVisibleVisited++;
     }
     if (!occupied) {
-        translate(distance, 0);
-        dashCircle.setStroke(color(255));//lines[i].col);
-        dashCircle.setStrokeWeight(5);
-        shapeMode(CENTER);
-        shape(dashCircle);
-      }
-    
+      translate(distance, 0);
+      dashCircle.setStroke(color(255));//lines[i].col);
+      dashCircle.setStrokeWeight(5);
+      shapeMode(CENTER);
+      shape(dashCircle);
+    }
+
     popMatrix();
   }
 
@@ -152,7 +151,9 @@ class Lead {
     occupant = block;
     occupied = true;
     trackBlock(block);
-    block.arrangeLeads(rotation);
+    if (block.parents.size() == 1) {
+      block.arrangeLeads(rotation);
+    }
   }
 
   public void disconnect() {

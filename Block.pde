@@ -147,10 +147,8 @@ abstract class Block {
 
   //previous is the block that has directed the PlayHead to this block
   public void Activate(PlayHead play, Block previous) {
-    blockColor = play.playColor;
     playHead = play;
-  } 
-
+  }
   /*
     Called when this block has finished being active
    This tells the playhead to move on to the next block in the chain
@@ -158,9 +156,12 @@ abstract class Block {
   public void finish() {
     //println("finish " + this + " playHead " + (playHead == null ? "null" : playHead.toString()));
     PlayHead temp = playHead;
-    if (playHead != null)playHead = null;
-    //temp.playColor = this.blockColor;
-    temp.travel();
+    if (playHead != null)
+    {
+      playHead = null;
+      //temp.playColor = this.blocolor;
+      temp.travel();
+    }
   }
 
 
@@ -290,8 +291,8 @@ abstract class Block {
     if (children[i] != null) 
       breakConnection(i);
     children[i] = b;
-    leads[i].connect(b);
     b.parents.add(this);
+    leads[i].connect(b);
   }
 
   /*
@@ -328,10 +329,10 @@ abstract class Block {
       leads[i].SetRotation(leadAngle);
     }
   }
-  
-  public void cleanLeads(){
-    for(int i = 0; i< leads.length; i++){
-      for(int j = 0; j < leads[i].lines.length; j++){
+
+  public void cleanLeads() {
+    for (int i = 0; i< leads.length; i++) {
+      for (int j = 0; j < leads[i].lines.length; j++) {
         leads[i].lines[j].visible = false;
       }
     }
@@ -398,11 +399,11 @@ abstract class Block {
   void drawArc(int radius, float percent, float startRotation) {
     pushMatrix();
     noStroke();
-    if(playHead != null)
-    fill(playHead.playColor);
+
+    if (playHead != null)
+      fill(playHead.playColor);
     else
-    fill(blockColor);
-    //fill(255);
+      fill(blockColor);
     translate(x_pos, y_pos);
     rotate(startRotation);
     arc(0, 0, 

@@ -131,9 +131,9 @@ class PlayHead {
   }
 
   void Die() {
+    println("PlayHead " + this + " Die");
     if (activeBlock instanceof SoundBlock) {
       ((SoundBlock)activeBlock).Stop();
-      //TODO stop playing immediately
     }
     allPlayHeads.remove(this);
     origin.removePlayHead(this);
