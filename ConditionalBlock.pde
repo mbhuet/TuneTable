@@ -19,13 +19,13 @@ class ConditionalBlock extends Block {
     
     boolLead = new Lead(this, 0);
     boolLead.break_distance = 9999;
-    boolLead.options.visible = false;
-    boolLead.options.col = myColor;
-    boolLead.options.dashed = false;
-    boolLead.options.weight = 5;
+    boolLead.lines[0].visible = false;
+    boolLead.lines[0].col = myColor;
+    boolLead.lines[0].dashed = false;
+    boolLead.lines[0].weight = 5;
     
     //leads[0].options.image = unlock;
-    leads[0].options.image = (isTrue ? unlock : lock);
+    leads[0].lines[0].image = (isTrue ? unlock : lock);
 
     checkBooleanBlock();
   }
@@ -45,20 +45,20 @@ class ConditionalBlock extends Block {
       isTrue = true;
       boolBlock = boolMap.get(boolId);
       boolLead.connect(boolBlock);
-      boolLead.options.visible = true;
-      boolLead.options.col = (invertColor? 255:0);
+      boolLead.lines[0].visible = true;
+      boolLead.lines[0].col = (invertColor? 255:0);
       //leads[0].options.image = lock;
 
     } else if (!inMap && isTrue) { //the booleanBlock has just been removed from the dictionary
       isTrue = false;
       boolBlock = null;
       boolLead.disconnect();
-      boolLead.options.visible = false;
-      boolLead.options.col = (invertColor? 0:255);
+      boolLead.lines[0].visible = false;
+      boolLead.lines[0].col = (invertColor? 0:255);
       //leads[0].options.image = unlock;
     }
     
-    leads[0].options.image = (isTrue? unlock : lock);
+    leads[0].lines[0].image = (isTrue? unlock : lock);
   }
 
 

@@ -108,11 +108,11 @@ class PlayHead {
 
     for (Lead l : path) {
       if (remDist >= (l.distance - block_diameter)) {
-        l.highlightTravelled(1, playColor);
+        l.highlightTravelled(origin.sym_id, 1, playColor);
         remDist -= l.distance - block_diameter;
       } else {
         float percent = (remDist/(l.distance - block_diameter));
-        l.highlightTravelled(percent, playColor);
+        l.highlightTravelled(origin.sym_id, percent, playColor);
       }
     }
   }

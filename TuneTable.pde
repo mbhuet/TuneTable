@@ -138,6 +138,9 @@ void setup()
 
   if (simulateBlocks) {
     FunctionBlock funcTest = new FunctionBlock(500,500, 0);
+        FunctionBlock funcTest2 = new FunctionBlock(500,500, 1);
+        //FunctionBlock funcTest3 = new FunctionBlock(500,500, 2);
+
     StartLoopBlock testLoop = new StartLoopBlock(700,500);
     ClipBlock testClip = new ClipBlock(700, 700, 10);
     //ConditionalBlock testCond = new ConditionalBlock(900,500);
@@ -177,6 +180,7 @@ void draw()
 
   for (Block b : allBlocks) {
     b.inChain = false;
+    b.cleanLeads();
     if (!(b instanceof FunctionBlock))b.blockColor = color(255);
   }
 

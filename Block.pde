@@ -316,16 +316,23 @@ abstract class Block {
       }
     }
   }
-  
-  public void arrangeLeads(float parentLeadRot){
-    if(parents.size() > 1) return;
+
+  public void arrangeLeads(float parentLeadRot) {
+    if (parents.size() > 1) return;
     float leadSeparation = 2*PI / leads.length;
     float startAngle = PI + parentLeadRot + leadSeparation / 2;
 
-    for(int i = 0; i < leads.length; i++){
+    for (int i = 0; i < leads.length; i++) {
       float leadAngle = (startAngle + leadSeparation * i)%(2*PI);
       leads[i].SetRotation(leadAngle);
-      
+    }
+  }
+  
+  public void cleanLeads(){
+    for(int i = 0; i< leads.length; i++){
+      for(int j = 0; j < leads[i].lines.length; j++){
+        leads[i].lines[j].visible = false;
+      }
     }
   }
 
@@ -349,28 +356,32 @@ abstract class Block {
 
   /*
   Updates the look of this block's lead depending on whether or not it's in an active path from a Start block
-*/
+   */
   void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
+    Block origin = activeVisited.get(0);
+    int originId = origin.sym_id;
     this.inChain = true;
-     colorMode(HSB);
-        color dulledColor = color(hue(col), saturation(col)/8, 150);
+    colorMode(HSB);
+    color dulledColor = color(hue(col), saturation(col)/3, 150);
     blockColor = (isActive? col : dulledColor);
 
     for (int i = 0; i< numLeads; i++) {     
       if (isActive && childIsSuccessor(i)) {
-        leads[i].options.dashed = true;
-        leads[i].options.offset = offset;
-        leads[i].options.col = col;
-        leads[i].options.weight = 10;
+        leads[i].lines[originId].dashed = true;
+        leads[i].lines[originId].dash_offset = offset;
+        leads[i].lines[originId].col = col;
+        leads[i].lines[originId].visible = true;
+
 
         if (children[i] != null && !activeVisited.contains(children[i])) {
           activeVisited.add(children[i]);
           children[i].updateLeads(offset, col, true, activeVisited, inactiveVisited);
         }
       } else {
-        leads[i].options.dashed = false;
-        leads[i].options.col = dulledColor;
-        leads[i].options.weight = 10;
+        leads[i].lines[originId].dashed = false;
+        leads[i].lines[originId].col = dulledColor;
+        leads[i].lines[originId].visible = true;
+
 
         if (children[i] != null && !activeVisited.contains(children[i]) && !inactiveVisited.contains(children[i])) {
           inactiveVisited.add(children[i]);
@@ -397,7 +408,6 @@ abstract class Block {
     percent * 2 * PI, //(float)clip.position()/(float)clip.length() * 2*PI, 
     PIE);
     popMatrix();
-    
   }
 
   /*
