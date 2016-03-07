@@ -146,6 +146,8 @@ void setup()
     //ConditionalBlock testCond = new ConditionalBlock(900,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }
+  
+  CheckForExistingTuioObjects();
 }
 
 

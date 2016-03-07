@@ -18,10 +18,10 @@ public class Cursor {
   }
 
   void Init() {
+    beatHistory = new ArrayList<BeatButton>();
     spawnTime = millis();
     checkButtons();
     dead = false;
-    beatHistory = new ArrayList<BeatButton>();
     cursors.add(this);
   }
 
@@ -30,13 +30,11 @@ public class Cursor {
     y_pos = tuioCursor.getScreenY(height);
   }
 
-  void checkButtons() {
+  void checkButtons() { // NullPointerException
     for (Button b : allButtons) {
       if (!dead && b.isShowing && b.IsUnder(x_pos, y_pos) && !beatHistory.contains(b)) {
         b.Trigger(this);
-
         if (b instanceof BeatButton) {
-
           beatHistory.add((BeatButton)b);
         } else dead = true;
       }

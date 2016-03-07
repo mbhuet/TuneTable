@@ -225,6 +225,14 @@ boolean checkMissing(TuioObject tObj) {
   return false;
 }
 
+void CheckForExistingTuioObjects(){
+  for(TuioObject obj : tuioClient.getTuioObjectList()){
+    if(!blockMap.containsKey(obj.getSessionID())){
+       // actionQueue.offer(new TuioActionWrapper(obj, TuioAction.ADD));
+    }
+  }
+}
+
 
 
 
