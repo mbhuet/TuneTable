@@ -27,7 +27,7 @@ boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = false;
-boolean simulateBlocks = true;
+boolean simulateBlocks = false;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback

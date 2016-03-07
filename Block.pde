@@ -147,6 +147,7 @@ abstract class Block {
 
   //previous is the block that has directed the PlayHead to this block
   public void Activate(PlayHead play, Block previous) {
+    blockColor = play.playColor;
     playHead = play;
   } 
 
@@ -158,7 +159,7 @@ abstract class Block {
     //println("finish " + this + " playHead " + (playHead == null ? "null" : playHead.toString()));
     PlayHead temp = playHead;
     if (playHead != null)playHead = null;
-    temp.playColor = this.blockColor;
+    //temp.playColor = this.blockColor;
     temp.travel();
   }
 
@@ -397,6 +398,9 @@ abstract class Block {
   void drawArc(int radius, float percent, float startRotation) {
     pushMatrix();
     noStroke();
+    if(playHead != null)
+    fill(playHead.playColor);
+    else
     fill(blockColor);
     //fill(255);
     translate(x_pos, y_pos);
