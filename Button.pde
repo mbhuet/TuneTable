@@ -90,7 +90,7 @@ class PlusButton extends Button{
     fill(invertColor? 0 : 255);
     textAlign(CENTER, CENTER);
       textSize(size*2);
-      text("+", 0, 0);
+      text("+", 0, -size/5);
     
     popMatrix();
   }
@@ -120,7 +120,7 @@ class MinusButton extends Button{
     fill(invertColor? 0 : 255);
     textAlign(CENTER, CENTER);
       textSize(size*2);
-      text("-", 0, 0);
+      text("-", 0, -size/3);
     
     popMatrix();
     

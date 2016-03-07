@@ -8,10 +8,17 @@ class Lead {
   float connect_snap_dist = block_diameter / 2; //how close does a block need to be to connect to this lead?
   boolean occupied;
   int text_size = block_diameter/3;
-  int lineSeparation = 5;
+  int lineSeparation = 1;
   int standardWeight = 10;
+  
+  
+  public boolean visible = true;
+  public PImage image;
+  public int number = 0;
+  public boolean showNumber = false;
+  
 
-  public LeadOptions[] lines;
+  public LineOptions[] lines;
 
 
   Lead(Block owner, float rot) {
@@ -19,9 +26,9 @@ class Lead {
     this.rotation = rot;
     occupied = false;
     distance = reg_distance;
-    lines = new LeadOptions[5];
+    lines = new LineOptions[5];
     for (int i = 0; i< lines.length; i++) {
-      lines[i] = new LeadOptions();
+      lines[i] = new LineOptions();
       lines[i].visible = false;
       lines[i].weight = standardWeight;
     }
@@ -43,6 +50,7 @@ class Lead {
   }
 
   public void draw() {
+    if(!visible) return;
     colorMode(RGB, 255);
 
     int numVisible = numLinesVisible();
@@ -54,7 +62,7 @@ class Lead {
     rotate(rotation);
 
     for (int i = 0; i<lines.length; i++) {
-      LeadOptions options = lines[i];
+      LineOptions options = lines[i];
       if (!options.visible) continue;
       stroke(options.col);
       strokeWeight(options.weight);
@@ -70,21 +78,39 @@ class Lead {
         line(0, 0, distance - block_diameter/2, 0);
       }
 
-      if (options.image != null) {
+      
+
+
+
+      popMatrix();
+      numVisibleVisited++;
+    }
+    
+    if (!occupied) {
+      pushMatrix();
+      translate(distance, 0);
+      dashCircle.setStroke(color(255));//lines[i].col);
+      dashCircle.setStrokeWeight(5);
+      shapeMode(CENTER);
+      shape(dashCircle);
+      popMatrix();
+    }
+    
+    if (image != null) {
         pushMatrix();
         translate(distance/2, 0);
         rotate(PI/2.0);
-        translate(-options.image.width/2, -options.image.height/2);
+        translate(-image.width/2, -image.height/2);
         fill((invertColor? 0 : 255));
         noStroke();
         rectMode(CORNER);
-        rect(0, 0, options.image.width, options.image.height);
+        rect(0, 0, image.width, image.height);
 
-        image(options.image, 0, 0);
+        image(image, 0, 0);
         popMatrix();
       }
 
-      if (options.showNumber) {
+      if (showNumber) {
 
         pushMatrix();
         translate(distance/2, 0);
@@ -99,23 +125,10 @@ class Lead {
         textAlign(CENTER, CENTER);
         textSize(text_size);
         fill((invertColor? 255 : 0)); //text color
-        text(options.number, 0, 0);
+        text(number, 0, 0);
 
         popMatrix();
       }
-
-
-
-      popMatrix();
-      numVisibleVisited++;
-    }
-    if (!occupied) {
-      translate(distance, 0);
-      dashCircle.setStroke(color(255));//lines[i].col);
-      dashCircle.setStrokeWeight(5);
-      shapeMode(CENTER);
-      shape(dashCircle);
-    }
 
     popMatrix();
   }
@@ -173,11 +186,8 @@ class Lead {
   }
 }
 
-class LeadOptions {
+class LineOptions {
   public boolean visible = false;
-  public PImage image;
-  public int number = 0;
-  public boolean showNumber = false;
   public boolean dashed = false;
   public boolean marching = true;
   public float dash_offset = 0;

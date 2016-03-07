@@ -36,19 +36,21 @@ abstract class Block {
 
   void Init(TuioObject tobj, int numLeads) {
     this.numLeads = numLeads;
-    setTuioObject(tobj);
-    allBlocks.add(this);
-
     parents = new ArrayList<Block>();
     children = new Block[numLeads];
     leads = new Lead[numLeads];
+    
+    setTuioObject(tobj);
+    allBlocks.add(this);
 
     for (int i = 0; i<numLeads; i++) {
       leads[i] = new Lead(this, rotation + i * 2*PI / numLeads);
     }
+    UpdatePosition();
+    arrangeLeads(rotation);
+
 
     blockColor = color(invertColor ? 255 : 0);
-
     Setup();
   }
 
@@ -73,7 +75,7 @@ abstract class Block {
     isFake = true;
     x_pos = x; 
     y_pos = y;
-
+    
     Setup();
   }
 
@@ -320,6 +322,7 @@ abstract class Block {
   }
 
   public void arrangeLeads(float parentLeadRot) {
+    //println("base rotation " + parentLeadRot);
     if (parents.size() > 1) return;
     float leadSeparation = 2*PI / leads.length;
     float startAngle = PI + parentLeadRot + leadSeparation / 2;

@@ -192,13 +192,17 @@ void draw()
 
   for (Block b : allBlocks) {
 
-    b.Update();
 
     if (b.leadsActive) {
       b.drawLeads();
     }
 
-    b.drawShadow();
+  }
+  for (Block b : allBlocks) {
+        b.Update();
+
+        b.drawShadow();
+
   }
 
   //println("end block update loop");

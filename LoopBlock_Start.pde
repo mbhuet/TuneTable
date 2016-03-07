@@ -16,7 +16,7 @@ class StartLoopBlock extends Block {
   void Setup() {
      plus = new PlusButton(0, 0, 0, block_diameter/4, this);
     minus = new MinusButton(0, 0, 0, block_diameter/4, this);
-      leads[0].lines[0].showNumber = true;
+      leads[0].showNumber = true;
     updateCountLead();
   }
   void Update() {
@@ -33,12 +33,13 @@ class StartLoopBlock extends Block {
     if(count > 0){
         play.addStartLoop(this);
     }
-    DecrementCount(false);
     finish();
+        DecrementCount(false);
+
   }
   
   void updateCountLead(){
-    leads[0].lines[0].number = count;
+    leads[0].number = count;
     //TODO choose number to represent infinity, if count is that number, showNumber = false, image = infinity.jpg
   }
 

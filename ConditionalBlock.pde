@@ -19,13 +19,14 @@ class ConditionalBlock extends Block {
     
     boolLead = new Lead(this, 0);
     boolLead.break_distance = 9999;
+    boolLead.visible = false;
     boolLead.lines[0].visible = false;
     boolLead.lines[0].col = myColor;
     boolLead.lines[0].dashed = false;
     boolLead.lines[0].weight = 5;
     
     //leads[0].options.image = unlock;
-    leads[0].lines[0].image = (isTrue ? unlock : lock);
+    leads[0].image = (isTrue ? unlock : lock);
 
     checkBooleanBlock();
   }
@@ -58,7 +59,7 @@ class ConditionalBlock extends Block {
       //leads[0].options.image = unlock;
     }
     
-    leads[0].lines[0].image = (isTrue? unlock : lock);
+    leads[0].image = (isTrue? unlock : lock);
   }
 
 
