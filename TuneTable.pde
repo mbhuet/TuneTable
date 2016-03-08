@@ -198,6 +198,12 @@ void draw()
     }
 
   }
+  
+ for (PlayHead p : allPlayHeads) {
+    p.Update();
+    p.draw();
+  }
+  
   for (Block b : allBlocks) {
         b.Update();
 
@@ -217,10 +223,7 @@ void draw()
   }
 
 
-  for (PlayHead p : allPlayHeads) {
-    p.Update();
-    p.draw();
-  }
+
 
 
 

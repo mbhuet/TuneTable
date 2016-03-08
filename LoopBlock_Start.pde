@@ -1,7 +1,9 @@
 class StartLoopBlock extends Block {
   int count = 1;
   int max_count = 9;
-  
+  int displayCount = 0;
+  int text_size = block_diameter/3;
+
   
   boolean justDepleted = false;
   
@@ -19,13 +21,13 @@ class StartLoopBlock extends Block {
   void Setup() {
      plus = new PlusButton(0, 0, 0, block_diameter/4, this);
     minus = new MinusButton(0, 0, 0, block_diameter/4, this);
-      leads[0].showNumber = true;
     updateCountLead();
   }
   void Update() {
     super.Update();
     leadsActive =  inChain;
     arrangeButtons();
+    drawNumber();
   }
   void OnRemove() {
     super.OnRemove();
@@ -47,7 +49,7 @@ class StartLoopBlock extends Block {
   }
   
   void updateCountLead(){
-    leads[0].number = count;
+    displayCount = count;
     //TODO choose number to represent infinity, if count is that number, showNumber = false, image = infinity.jpg
   }
 
@@ -111,6 +113,29 @@ class StartLoopBlock extends Block {
     super.Die();
     plus.Destroy();
     minus.Destroy();
+  }
+  
+  void drawNumber(){
+        
+        pushMatrix();
+        translate(x_pos, y_pos);
+        rotate(leads[0].rotation);
+        translate(block_diameter * .8, 0);
+        rotate(PI/2.0);
+
+        fill((invertColor? 0 : 255)); //should match background
+        stroke(255);
+        strokeWeight(text_size/10);
+        ellipseMode(CENTER);
+        ellipse(0, text_size/10, text_size, text_size);
+
+        textAlign(CENTER, CENTER);
+        textSize(text_size);
+        fill((invertColor? 255 : 0)); //text color
+        text(displayCount, 0, 0);
+
+        popMatrix();
+  
   }
   
 }

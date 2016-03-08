@@ -165,8 +165,8 @@ class BooleanButton extends Button{
     //translate(size/6, 0);
     rotate(rotation);
     
-    fill(isOn? 255 : 0);
-    stroke(isOn? 0 : 255);
+    fill(isOn? 0 : 255);
+    stroke(isOn? 255 : 0);
     strokeWeight(size/5);
     ellipse(0,0,size*2,size*2);
     
