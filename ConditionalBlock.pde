@@ -159,7 +159,7 @@ class BooleanButton extends Button{
   }
   
   public void drawButton(){
-    
+    if(!block.inChain) return;
     pushMatrix();
     translate(x,y);
     //translate(size/6, 0);

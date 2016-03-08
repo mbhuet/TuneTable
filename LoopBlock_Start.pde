@@ -2,6 +2,9 @@ class StartLoopBlock extends Block {
   int count = 1;
   int max_count = 9;
   
+  
+  boolean justDepleted = false;
+  
   PlusButton plus;
   MinusButton minus;
   
@@ -28,14 +31,19 @@ class StartLoopBlock extends Block {
     super.OnRemove();
   }
   public void Activate(PlayHead play, Block previous) {
+    println("Activate finishing " + justDepleted + ", count " + count);    
     super.Activate(play, previous);
     
     if(count > 0){
         play.addStartLoop(this);
     }
-    finish();
-        DecrementCount(false);
+    if(count == 1) justDepleted = true;
+    DecrementCount(false);
 
+    finish();
+    justDepleted = false;
+    
+    
   }
   
   void updateCountLead(){
@@ -45,22 +53,29 @@ class StartLoopBlock extends Block {
 
 
   public boolean childIsSuccessor(int i) {
+   if(justDepleted){
+     if(i==0) return true;
+     else return false;
+ }  
     if (i == 0) return (count > 0);
     else return !(count > 0);
   }
   
   public int[] getSuccessors(){
-    if (count > 0) return new int[]{0};
+ 
+    if (count > 0 || justDepleted) return new int[]{0};
     else return new int[]{1};
   }
   
   void DecrementCount(boolean cycle){
     count--;
     if(count < 0){
-      if(cycle) count = max_count;
+      if(cycle){ count = max_count;
+    }
       else count = 0;
     }
     updateCountLead();
+    
   }
   
   void IncrementCount(boolean cycle){
