@@ -27,7 +27,7 @@ boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = false;
-boolean simulateBlocks = false;
+boolean simulateBlocks = true;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
@@ -138,12 +138,12 @@ void setup()
 
   if (simulateBlocks) {
     FunctionBlock funcTest = new FunctionBlock(500,500, 0);
-        FunctionBlock funcTest2 = new FunctionBlock(500,500, 1);
-        //FunctionBlock funcTest3 = new FunctionBlock(500,500, 2);
+    //FunctionBlock funcTest2 = new FunctionBlock(500,500, 1);
+    //FunctionBlock funcTest3 = new FunctionBlock(500,500, 2);
 
-    StartLoopBlock testLoop = new StartLoopBlock(700,500);
-    ClipBlock testClip = new ClipBlock(700, 700, 10);
-    //ConditionalBlock testCond = new ConditionalBlock(900,500);
+    //StartLoopBlock testLoop = new StartLoopBlock(700,500);
+    //ClipBlock testClip = new ClipBlock(700, 700, 10);
+    ConditionalBlock testCond = new ConditionalBlock(700,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }
   
