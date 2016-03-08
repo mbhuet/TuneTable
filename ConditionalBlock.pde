@@ -170,11 +170,12 @@ class BooleanButton extends Button{
     strokeWeight(size/5);
     ellipse(0,0,size*2,size*2);
     
+    /*
     fill(invertColor? 0 : 255);
     textAlign(CENTER, CENTER);
       textSize(size*2);
       text("-", 0, -size/3);
-    
+    */
     popMatrix();
     
   }
