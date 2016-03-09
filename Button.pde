@@ -77,7 +77,8 @@ class PlusButton extends Button{
     block.IncrementCount(true);
   }
   public void drawButton(){
-    
+        if(!block.inChain) return;
+
     pushMatrix();
     translate(x,y);
     //translate(size/6, 0);
@@ -90,7 +91,7 @@ class PlusButton extends Button{
     fill(invertColor? 0 : 255);
     textAlign(CENTER, CENTER);
       textSize(size*2);
-      text("+", 0, 0);
+      text("+", 0, -size/5);
     
     popMatrix();
   }
@@ -107,7 +108,7 @@ class MinusButton extends Button{
     block.DecrementCount(true);
   }
   public void drawButton(){
-    
+    if(!block.inChain) return;
     pushMatrix();
     translate(x,y);
     //translate(size/6, 0);
@@ -120,7 +121,7 @@ class MinusButton extends Button{
     fill(invertColor? 0 : 255);
     textAlign(CENTER, CENTER);
       textSize(size*2);
-      text("-", 0, 0);
+      text("-", 0, -size/3);
     
     popMatrix();
     

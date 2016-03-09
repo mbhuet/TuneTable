@@ -27,7 +27,7 @@ boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = false;
-boolean simulateBlocks = true;
+boolean simulateBlocks = false;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
@@ -138,11 +138,16 @@ void setup()
 
   if (simulateBlocks) {
     FunctionBlock funcTest = new FunctionBlock(500,500, 0);
-    StartLoopBlock testLoop = new StartLoopBlock(700,500);
-    ClipBlock testClip = new ClipBlock(700, 700, 10);
-    //ConditionalBlock testCond = new ConditionalBlock(900,500);
+    //FunctionBlock funcTest2 = new FunctionBlock(500,500, 1);
+    //FunctionBlock funcTest3 = new FunctionBlock(500,500, 2);
+
+    //StartLoopBlock testLoop = new StartLoopBlock(700,500);
+    //ClipBlock testClip = new ClipBlock(700, 700, 10);
+    ConditionalBlock testCond = new ConditionalBlock(700,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }
+  
+  CheckForExistingTuioObjects();
 }
 
 
@@ -177,6 +182,7 @@ void draw()
 
   for (Block b : allBlocks) {
     b.inChain = false;
+    b.cleanLeads();
     if (!(b instanceof FunctionBlock))b.blockColor = color(255);
   }
 
@@ -186,13 +192,23 @@ void draw()
 
   for (Block b : allBlocks) {
 
-    b.Update();
 
     if (b.leadsActive) {
       b.drawLeads();
     }
 
-    b.drawShadow();
+  }
+  
+ for (PlayHead p : allPlayHeads) {
+    p.Update();
+    p.draw();
+  }
+  
+  for (Block b : allBlocks) {
+        b.Update();
+
+        b.drawShadow();
+
   }
 
   //println("end block update loop");
@@ -207,10 +223,7 @@ void draw()
   }
 
 
-  for (PlayHead p : allPlayHeads) {
-    p.Update();
-    p.draw();
-  }
+
 
 
 
