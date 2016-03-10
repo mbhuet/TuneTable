@@ -23,6 +23,9 @@ class StartLoopBlock extends Block {
     super.Update();
     leadsActive =  inChain;
     arrangeButtons();
+    if(inChain){
+      drawPrototypeCircleLead();
+    }
   }
   void OnRemove() {
     super.OnRemove();
@@ -95,6 +98,17 @@ class StartLoopBlock extends Block {
     super.Die();
     plus.Destroy();
     minus.Destroy();
+  }
+  
+  void drawPrototypeCircleLead(){
+   ellipseMode(CENTER);
+   strokeWeight(10);
+   stroke(255);
+   noFill();
+   PVector center = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter * 2);
+   ellipse(center.x, center.y, block_diameter * 4, block_diameter * 4);
+   PVector dashCenter = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter * 4);
+   shape(dashCircle, (int)dashCenter.x, (int)dashCenter.y);
   }
   
 }
