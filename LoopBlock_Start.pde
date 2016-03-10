@@ -108,6 +108,7 @@ class StartLoopBlock extends Block {
    PVector center = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter * 2);
    ellipse(center.x, center.y, block_diameter * 4, block_diameter * 4);
    PVector dashCenter = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter * 4);
+   shapeMode(CENTER);
    shape(dashCircle, (int)dashCenter.x, (int)dashCenter.y);
   }
   
