@@ -8,6 +8,11 @@ class StartLoopBlock extends Block {
   PlusButton plus;
   MinusButton minus;
   
+  ArrayList<LoopLead> loopLeads;
+  PVector loopCenter;
+  
+  LoopLead headLoopLead;
+  
   StartLoopBlock(TuioObject tObj) {
     Init(tObj, 2);
   }
@@ -19,6 +24,19 @@ class StartLoopBlock extends Block {
   void Setup() {
      plus = new PlusButton(0, 0, 0, block_diameter/4, this);
     minus = new MinusButton(0, 0, 0, block_diameter/4, this);
+    
+    
+    
+    loopCenter = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter);
+
+    loopLeads = new ArrayList<LoopLead>();
+    headLoopLead = new LoopLead(this, this, this, rotation, loopCenter, 0, 2*PI);
+    loopLeads.add(headLoopLead);
+    headLoopLead.options.dashed = true;
+    
+    leads[0] = headLoopLead;
+    
+    
       leads[0].options.showNumber = true;
     updateCountLead();
   }
@@ -27,9 +45,8 @@ class StartLoopBlock extends Block {
     leadsActive =  inChain;
     arrangeButtons();
     if(inChain){
-      PVector center = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter/2);
-      dashedArc((int)center.x, (int)center.y, block_diameter* 4, 0, PI, 0);
-      //drawPrototypeCircleLead();
+      //dashedArc((int)center.x, (int)center.y, block_diameter*2, 0, PI, 0);
+
     }
   }
   void OnRemove() {
@@ -115,6 +132,15 @@ class StartLoopBlock extends Block {
    PVector dashCenter = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter * 4);
    shapeMode(CENTER);
    shape(dashCircle, (int)dashCenter.x, (int)dashCenter.y);
+  }
+  
+  void drawLeads() {
+
+    for (Lead l : leads) {
+      l.draw();
+    }
+    
+    headLoopLead.draw();
   }
   
 }

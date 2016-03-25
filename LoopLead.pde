@@ -12,11 +12,16 @@
 class LoopLead extends Lead {
   float arc_start;
   float arc_end;
-  float loop_radius = block_diameter * 4;
+  float loop_radius = block_diameter;
   PVector center;
+  StartLoopBlock loopBlock;
+  
+  boolean drawFootprint = true;
 
-  LoopLead(Block owner, float rot, PVector cent, float start, float end) {
+  LoopLead(Block owner, Block occupant, StartLoopBlock loopBlock, float rot, PVector cent, float start, float end) {
     super(owner, rot);
+    this.occupant = occupant;
+    this.loopBlock = loopBlock;
     center = cent;
     arc_start = start;
     arc_end = end;
@@ -29,15 +34,16 @@ class LoopLead extends Lead {
     if (!options.visible) return;
     stroke(options.col);
     strokeWeight(options.weight);
-
+    noFill();
+    
     pushMatrix();
     translate(center.x, center.y);
     rotate(rotation);
 
     if (options.dashed) {
-      dashedLine(0, 0, (int)distance, 0, options.offset);
+      dashedArc(0, 0, loop_radius, arc_start, arc_end, options.offset);
     } else {
-      line(0, 0, distance - block_diameter/2, 0);
+      arc(0, 0, loop_radius * 2, loop_radius * 2, arc_start, arc_end);
     }
 
     if (options.image != null) {
@@ -74,7 +80,7 @@ class LoopLead extends Lead {
       popMatrix();
     }
 
-    if (!occupied) {
+    if (drawFootprint) { //this will draw a footprint
       translate(distance, 0);
       dashCircle.setStroke(options.col);
       dashCircle.setStrokeWeight(5);

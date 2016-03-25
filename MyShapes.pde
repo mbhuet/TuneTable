@@ -80,13 +80,14 @@ public void dashedArc(int center_x, int center_y, float radius,  float start, fl
   noFill();
   pushMatrix();
   translate(center_x, center_y);
+  rotate(PI);
   
   float unitAngle = arcAngle + gapAngle;
   float offsetAngle = unitAngle * offset;
 
   float gapOffset = min(gapAngle, offsetAngle);
   float arcOffset = max(0, (offsetAngle - gapAngle));
-  println("arcAngle " + arcOffset + ", gapAngle " + gapOffset);
+  //println("arcAngle " + arcOffset + ", gapAngle " + gapOffset);
 
   arc(0, 0, radius*2, radius*2, position, position + arcOffset);
   position+=arcOffset;

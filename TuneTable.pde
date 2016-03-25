@@ -27,7 +27,7 @@ boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = false;
-boolean simulateBlocks = false;
+boolean simulateBlocks = true;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
@@ -157,12 +157,7 @@ void draw()
     //shape(playShadow, 400,400);
   }
 
-  if (showFPS) {
-    textSize(32);
-    textAlign(LEFT, TOP);
-    fill(255, 0, 0);
-    text((int)frameRate, 80, 80);
-  }
+  
 
 
   textFont(font, 18);
@@ -220,10 +215,15 @@ void draw()
   if (hoverDebug) {
     HoverDebug();
   }
-        strokeWeight(10);
-        stroke(255);
-        dashedArc(200, 200, 100, 0, PI, millis()%1000/1000.0);
- 
+  
+  if (showFPS) {
+    colorMode(RGB);
+    
+    textSize(32);
+    textAlign(LEFT, TOP);
+    fill(255, 0, 0);
+    text((int)frameRate, 80, 80);
+  }
   
 }
 

@@ -145,6 +145,6 @@ class LeadOptions {
   public boolean dashed = false;
   public float offset = 0;
   public color col = color(invertColor ? 255 : 0);
-  public int weight = 3;
+  public int weight = 10;
 }
 
