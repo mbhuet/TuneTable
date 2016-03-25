@@ -106,17 +106,6 @@ class Lead {
     popMatrix();
   }
 
-  public void highlightActive(float offset, color col) {
-    dashedLine((int)owner.x_pos, 
-    (int)owner.y_pos, 
-    (int)occupant.x_pos, 
-    (int)occupant.y_pos, 
-    offset);
-  }
-
-  public void highlightOccupied() {
-  }
-
   public boolean isUnderBlock(Block b) {
     float look_x = owner.x_pos + cos(rotation) * distance;
     float look_y = owner.y_pos + sin(rotation) * distance;

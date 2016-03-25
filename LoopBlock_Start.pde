@@ -1,3 +1,6 @@
+
+
+
 class StartLoopBlock extends Block {
   int count = 1;
   int max_count = 9;
@@ -24,7 +27,9 @@ class StartLoopBlock extends Block {
     leadsActive =  inChain;
     arrangeButtons();
     if(inChain){
-      drawPrototypeCircleLead();
+      PVector center = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter/2);
+      dashedArc((int)center.x, (int)center.y, block_diameter* 4, 0, PI, 0);
+      //drawPrototypeCircleLead();
     }
   }
   void OnRemove() {

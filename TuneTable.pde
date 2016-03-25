@@ -27,12 +27,12 @@ boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = false;
-boolean simulateBlocks = true;
+boolean simulateBlocks = false;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
-float cursor_size = 15;
-int block_diameter = 120;
+static float cursor_size = 15;
+static int block_diameter = 120;
 
 // used for beat calculations
 int bpm = 60;
@@ -220,7 +220,10 @@ void draw()
   if (hoverDebug) {
     HoverDebug();
   }
-  
+        strokeWeight(10);
+        stroke(255);
+        dashedArc(200, 200, 100, 0, PI, millis()%1000/1000.0);
+ 
   
 }
 

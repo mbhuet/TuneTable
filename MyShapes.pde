@@ -43,7 +43,7 @@ public void dashedLine(int x1, int y1, int x2, int y2, float offset) {
 
   float lineOffset = min(lineLength, offsetLength);
   float gapOffset = max(0, (offsetLength - lineLength));
-
+  
   line(0, 0, lineOffset, 0);
   position+=lineOffset;
   translate(lineOffset, 0);
@@ -66,6 +66,44 @@ public void dashedLine(int x1, int y1, int x2, int y2, float offset) {
 
   popMatrix();
 }
+
+public void dashedArc(int center_x, int center_y, float radius,  float start, float end, float offset) {
+  int lineLength = block_diameter/4;
+  //total circumference  =  2 * PI * r
+  // circumference/lineLength gives us the fraction of 2 PI that results in an arc segment of length lineLength
+  float arcAngle = 2*PI / ((2 * PI * radius)/lineLength);
+  float gapAngle = arcAngle/2;
+  
+
+  float position = start;
+  strokeCap(ROUND);
+  noFill();
+  pushMatrix();
+  translate(center_x, center_y);
+  
+  float unitAngle = arcAngle + gapAngle;
+  float offsetAngle = unitAngle * offset;
+
+  float gapOffset = min(gapAngle, offsetAngle);
+  float arcOffset = max(0, (offsetAngle - gapAngle));
+  println("arcAngle " + arcOffset + ", gapAngle " + gapOffset);
+
+  arc(0, 0, radius*2, radius*2, position, position + arcOffset);
+  position+=arcOffset;
+  position+=gapOffset;
+  
+  while (position < end) {
+    //println("position " + position + ", " + min(end - position, arcAngle));
+    arc(0,0,radius*2,radius*2, position, position + min(end - position, arcAngle));
+    //line(0, 0, min(distance-position, lineLength), 0);
+    position+=arcAngle;
+    position+=gapAngle;
+  }
+
+  popMatrix();
+}
+
+
 
 PShape sinCircle(int x, int y, int radius, float rotation, int numLumps, float amplitude) {
   PShape shape = createShape();
