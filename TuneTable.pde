@@ -139,7 +139,7 @@ void setup()
   if (simulateBlocks) {
     FunctionBlock funcTest = new FunctionBlock(500,500, 0);
     StartLoopBlock testLoop = new StartLoopBlock(700,500);
-    ClipBlock testClip = new ClipBlock(700, 700, 10);
+    ClipBlock testClip = new ClipBlock(700, 200, 10);
     //ConditionalBlock testCond = new ConditionalBlock(900,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }
@@ -207,8 +207,11 @@ void draw()
     p.draw();
   }
 
-
-
+fill(255);
+stroke(255);
+strokeWeight(3);
+//arc(100,100,100,100,0, PI);
+dashedArc(100,100,100,0,PI,0);
 
 
 

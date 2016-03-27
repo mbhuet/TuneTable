@@ -10,6 +10,7 @@ class StartLoopBlock extends Block {
   
   ArrayList<LoopLead> loopLeads;
   PVector loopCenter;
+  float loopRadius = block_diameter;
   
   LoopLead headLoopLead;
   
@@ -22,32 +23,32 @@ class StartLoopBlock extends Block {
   }
 
   void Setup() {
-     plus = new PlusButton(0, 0, 0, block_diameter/4, this);
+    plus = new PlusButton(0, 0, 0, block_diameter/4, this);
     minus = new MinusButton(0, 0, 0, block_diameter/4, this);
-    
-    
     
     loopCenter = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter);
 
     loopLeads = new ArrayList<LoopLead>();
     headLoopLead = new LoopLead(this, this, this, rotation, loopCenter, 0, 2*PI);
+    println(rotation);
     loopLeads.add(headLoopLead);
     headLoopLead.options.dashed = true;
     
     leads[0] = headLoopLead;
     
-    
-      leads[0].options.showNumber = true;
+    leads[0].options.showNumber = true;
     updateCountLead();
   }
   void Update() {
     super.Update();
     leadsActive =  inChain;
+    UpdateLoopCenter();
     arrangeButtons();
     if(inChain){
       //dashedArc((int)center.x, (int)center.y, block_diameter*2, 0, PI, 0);
 
     }
+    //rotation += .01;
   }
   void OnRemove() {
     super.OnRemove();
@@ -65,6 +66,10 @@ class StartLoopBlock extends Block {
   void updateCountLead(){
     leads[0].options.number = count;
     //TODO choose number to represent infinity, if count is that number, showNumber = false, image = infinity.jpg
+  }
+  
+  void UpdateLoopCenter(){
+    loopCenter = convertFromPolar(new PVector(x_pos, y_pos), leads[0].rotation, loopRadius);
   }
 
 

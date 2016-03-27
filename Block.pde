@@ -107,6 +107,11 @@ abstract class Block {
     //fake blocks never use UpdatePosition(), which is where updateNeighbors is normally called
     if (isFake) {
       updateNeighbors();
+      /*
+      for(Lead l : leads){
+        l.UpdateRotationFromParent(.01);
+      }
+      */
     }
   }
 
@@ -214,8 +219,10 @@ abstract class Block {
       x_pos = avg_x;
       y_pos = avg_y;
 
+        float rotDelta = (avg_rot - rotation); //this will cause unconnected leads to rotate with the block
+
       for (Lead l : leads) { 
-        if (!l.occupied)  l.rotation += (avg_rot - rotation); //this will cause unconnected leads to rotate with the block
+        l.UpdateRotationFromParent(rotDelta);
       }
       rotation = avg_rot;
     }
@@ -232,7 +239,9 @@ abstract class Block {
 
 
   public void updateNeighbors() {
+
     if (this.canBeChained) {
+
       findParents();
     }
     if (leadsActive) {
@@ -242,6 +251,7 @@ abstract class Block {
 
 
   public void findChildren() {
+
     for (int i = 0; i<numLeads; i++) {
       if (children[i] == null) {
         for (Block block : allBlocks) {
@@ -324,8 +334,8 @@ abstract class Block {
 
     for(int i = 0; i < leads.length; i++){
       float leadAngle = (startAngle + leadSeparation * i)%(2*PI);
+      //println("leadAngle ");
       leads[i].SetRotation(leadAngle);
-      
     }
   }
 

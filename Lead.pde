@@ -135,6 +135,12 @@ class Lead {
   public void SetRotation(float rot){
     rotation = rot;
   }
+  
+  public void UpdateRotationFromParent(float rotDelta){
+  if (!occupied)  rotation += rotDelta; 
+  
+  
+  }
 }
 
 class LeadOptions {
