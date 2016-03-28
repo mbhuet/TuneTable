@@ -10,7 +10,6 @@
 
 
 class LoopLead extends Lead {
-  PVector center;
   StartLoopBlock loopBlock;
   Block previous_occupant;
 
@@ -33,7 +32,7 @@ class LoopLead extends Lead {
 
   public void Update() {
     UpdateArcRange();
-    
+    //println(rotation);
   }
 
   public void draw() {
@@ -132,16 +131,17 @@ class LoopLead extends Lead {
      trackBlock(block);
      block.arrangeLeads(rotation);
      */
-
   }
 
   public void disconnect() {
     occupant = occupant.children[0];
     owner.SetChild(occupant, 0);
+    if(loopBlock != null)
+    loopBlock.loopLeads.remove(this);
 
-//    occupant = null;
-  //   occupied = false;
-      /*
+    //    occupant = null;
+    //   occupied = false;
+    /*
      distance = reg_distance;
      */
   }
@@ -151,10 +151,11 @@ class LoopLead extends Lead {
   }
 
   boolean footprintActive() {
-    return abs(occupantAngle - ownerAngle)*loopBlock.loopRadius > block_diameter;
+    return abs(occupantAngle - ownerAngle)*loopBlock.loopRadius > block_diameter * 2;
   }
 
   public boolean occupantTooFar() {
+    if (occupant == owner)  return false;
     float dist = dist(occupant.x_pos, occupant.y_pos, loopBlock.loopCenter.x, loopBlock.loopCenter.y);
     return (dist > loopBlock.loopRadius + block_diameter/2 || dist < loopBlock.loopRadius - block_diameter/2);
   }
@@ -183,6 +184,12 @@ class LoopLead extends Lead {
 
   float arcMiddle() {
     return (occupantAngle - ownerAngle)/2;
+  }
+
+  public void UpdateRotationFromParent(float rotDelta) {
+    if (occupant == owner) {
+      rotation += rotDelta;
+    }
   }
 }
 

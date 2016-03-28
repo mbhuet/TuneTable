@@ -84,12 +84,11 @@ abstract class Block {
   }
 
   void Update() { 
-
     //Update leads and break connection if the child block is too far away
     for (int i = 0; i< numLeads; i++) {
       Lead l = leads[i];
       l.Update();
-      if (l.occupantTooFar()) {
+      if (l.occupant != null && l.occupantTooFar()) {
         breakConnection(i);
       }
     }

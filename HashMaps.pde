@@ -135,7 +135,7 @@ void SetupIdToType() {
   idToType.put(60, BlockType.SPLIT);
 
   //LOOPS 61, 62
-  idToType.put(61, BlockType.START_LOOP);
+  idToType.put(121, BlockType.START_LOOP);
   idToType.put(61, BlockType.END_LOOP);
 
 

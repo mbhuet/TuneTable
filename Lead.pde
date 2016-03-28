@@ -160,7 +160,9 @@ class Lead {
   }
   
   public void UpdateRotationFromParent(float rotDelta){
-  if (!occupied)  rotation += rotDelta; 
+  if (!occupied){
+    rotation += rotDelta; 
+  }
   
   
   }
