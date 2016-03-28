@@ -17,7 +17,7 @@ class ConditionalBlock extends Block {
   void Setup() {
     boolId = sym_id - 10; //booleans are 100-109, corresponding conditionals are 110-119
     
-    boolLead = new Lead(this, 0);
+    boolLead = new Lead(this, 0, -1);
     boolLead.break_distance = 9999;
     boolLead.options.visible = false;
     boolLead.options.col = myColor;

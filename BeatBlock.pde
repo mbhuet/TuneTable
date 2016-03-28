@@ -104,7 +104,7 @@ class BeatBlock extends SoundBlock {
   void drawBridge(int afterIndex) {
     noFill();
     strokeWeight(buttonSize);
-    strokeCap(ROUND);
+    //strokeCap(ROUND);
     stroke(invertColor ? 255 : 0);
     float startRot = rotation + afterIndex * 2*PI/numBeats;
     arc(x_pos, y_pos, buttonDist *2, buttonDist * 2, startRot, startRot + 2*PI/numBeats);

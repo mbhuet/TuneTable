@@ -126,17 +126,17 @@ void SetupIdToType() {
     idToType.put(i, BlockType.BOOLEAN);
   }
 
-  //CONDITIONALS 110-119
-  for (int i = 110; i < 120; i++) {
+  //CONDITIONALS 50-59
+  for (int i = 50; i < 60; i++) {
     idToType.put(i, BlockType.CONDITIONAL);
   }
 
-  //SPLIT 120
-  idToType.put(120, BlockType.SPLIT);
+  //SPLIT 60
+  idToType.put(60, BlockType.SPLIT);
 
-  //LOOPS 121, 122
-  idToType.put(121, BlockType.START_LOOP);
-  idToType.put(122, BlockType.END_LOOP);
+  //LOOPS 61, 62
+  idToType.put(61, BlockType.START_LOOP);
+  idToType.put(61, BlockType.END_LOOP);
 
 
   

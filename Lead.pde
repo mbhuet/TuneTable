@@ -1,4 +1,5 @@
 class Lead {
+  int leadIndex;
   Block owner;
   Block occupant;
   float rotation;
@@ -12,12 +13,18 @@ class Lead {
   public LeadOptions options;
 
 
-  Lead(Block owner, float rot) {
+  Lead(Block owner, float rot, int i) {
     this.owner = owner;
     this.rotation = rot;
+    leadIndex = i;
     occupied = false;
     distance = reg_distance;
     options = new LeadOptions();
+  }
+  
+  Lead(Block owner, float rot, int i, LeadOptions options){
+    this(owner, rot, i);
+    this.options = options;
   }
 
   public void Update() {
@@ -118,13 +125,20 @@ class Lead {
     occupied = true;
     trackBlock(block);
     block.arrangeLeads(rotation);
+    if(leadIndex >=0){
+      owner.SetChild(block, leadIndex);
+    }
   }
 
   public void disconnect() {
     occupant = null;
     occupied = false;
     distance = reg_distance;
+    if(leadIndex >=0){
+      owner.RemoveChild(leadIndex);
+    }
   }
+  
 
   void trackBlock(Block block) {                       
     rotation = atan2((block.y_pos - owner.y_pos), 
@@ -134,6 +148,15 @@ class Lead {
   
   public void SetRotation(float rot){
     rotation = rot;
+  }
+  
+  //returns whether or not this leads's occupant is too far away to maintain the connection
+  public boolean occupantTooFar(){
+    return distance > break_distance;
+  }
+  
+  public boolean canRecieveChild(){
+    return occupant == null;
   }
   
   public void UpdateRotationFromParent(float rotDelta){

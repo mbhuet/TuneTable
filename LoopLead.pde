@@ -10,50 +10,51 @@
 
 
 class LoopLead extends Lead {
-  float arc_start;
-  float arc_end;
   PVector center;
   StartLoopBlock loopBlock;
-  
+  Block previous_occupant;
+
   float ownerAngle;
   float occupantAngle;
-  
+
   boolean drawFootprint = true;
 
-  LoopLead(Block owner, Block occupant, StartLoopBlock loopBlock, float rot, PVector cent, float start, float end) {
-    super(owner, rot);
+  LoopLead(Block owner, Block occupant, Block previous, StartLoopBlock loopBlock, int index) {
+    super(owner, 0, index);
     this.occupant = occupant;
     this.loopBlock = loopBlock;
-    center = cent;
-    arc_start = start;
-    arc_end = end;
-    //println("constructor " + rotation);
+    loopBlock.loopLeads.add(this);
+  }
+
+  LoopLead(Block owner, Block occupant, Block previous, StartLoopBlock loopBlock, int index, LeadOptions options) {
+    this(owner, occupant, previous, loopBlock, index);
+    this.options = options;
   }
 
   public void Update() {
-    UpdateAngleRange();
-        //println("update " + rotation);
-
+    UpdateArcRange();
+    
   }
 
   public void draw() {
     if (!options.visible) return;
+
     stroke(options.col);
     strokeWeight(options.weight);
     noFill();
-    
+
     pushMatrix();
     translate(loopBlock.loopCenter.x, loopBlock.loopCenter.y);
     rotate(ownerAngle);
-        //println("ownerAngle " + ownerAngle);
+    //println("ownerAngle " + ownerAngle);
 
-      float arc_range = arc_end-arc_start;
+    float arc_range = abs(occupantAngle - ownerAngle);
 
 
     if (options.dashed) {
       dashedArc(0, 0, loopBlock.loopRadius, 0, arc_range, options.offset);
     } else {
-      arc(0, 0, loopBlock.loopRadius * 2, loopBlock.loopRadius * 2, arc_start, arc_end);
+      arc(0, 0, loopBlock.loopRadius * 2, loopBlock.loopRadius * 2, ownerAngle, occupantAngle);
     }
 
     if (options.image != null) {
@@ -90,9 +91,9 @@ class LoopLead extends Lead {
       popMatrix();
     }
 
-    if (drawFootprint) { //this will draw a footprint
-    rotate((arc_end - arc_start)/2);
-      translate(loopBlock.loopRadius,0);
+    if (footprintActive()) { //this will draw a footprint
+      rotate(arcMiddle());
+      translate(loopBlock.loopRadius, 0);
       dashCircle.setStroke(options.col);
       dashCircle.setStrokeWeight(5);
       shapeMode(CENTER);
@@ -107,45 +108,81 @@ class LoopLead extends Lead {
   }
 
   public boolean isUnderBlock(Block b) {
-   PVector footprintPos = convertFromPolar(loopBlock.loopCenter, (arc_end - arc_start)/2 + ownerAngle, loopBlock.loopRadius);
-   return (dist(footprintPos.x, footprintPos.y, b.x_pos, b.y_pos) <= connect_snap_dist);
+    if (!footprintActive()) return false;
+    PVector footprintPos = convertFromPolar(loopBlock.loopCenter, arcMiddle() + ownerAngle, loopBlock.loopRadius);
+    colorMode(RGB);
+    stroke(255, 0, 0);
+    strokeWeight(1);
+    noFill();
+    ellipse(footprintPos.x, footprintPos.y, block_diameter * 1.1, block_diameter * 1.1);
+    return (dist(footprintPos.x, footprintPos.y, b.x_pos, b.y_pos) <= connect_snap_dist);
   }
-  
+
   public void connect(Block block) {
+    owner.SetChild(block, leadIndex);
+    //LoopLead(owner, occupant, previous, loopBlock)
+    block.leads[0] = new LoopLead(block, occupant, owner, loopBlock, 0, block.leads[0].options);
+    block.SetChild(this.occupant, 0);
+
+    this.occupant = block;
+
     /*
     occupant = block;
-    occupied = true;
-    trackBlock(block);
-    block.arrangeLeads(rotation);
-    */
-    
-    
+     occupied = true;
+     trackBlock(block);
+     block.arrangeLeads(rotation);
+     */
+
   }
 
   public void disconnect() {
+    occupant = occupant.children[0];
+    owner.SetChild(occupant, 0);
+
+//    occupant = null;
+  //   occupied = false;
+      /*
+     distance = reg_distance;
+     */
   }
+
 
   void trackBlock(Block block) {
   }
 
-  
-  void UpdateAngleRange(){
+  boolean footprintActive() {
+    return abs(occupantAngle - ownerAngle)*loopBlock.loopRadius > block_diameter;
+  }
+
+  public boolean occupantTooFar() {
+    float dist = dist(occupant.x_pos, occupant.y_pos, loopBlock.loopCenter.x, loopBlock.loopCenter.y);
+    return (dist > loopBlock.loopRadius + block_diameter/2 || dist < loopBlock.loopRadius - block_diameter/2);
+  }
+
+  public boolean canRecieveChild() {
+    return footprintActive();
+  }
+
+
+
+  void UpdateArcRange() {
     PVector center = loopBlock.loopCenter;
     ownerAngle = atan2((center.y - owner.y_pos), 
     (center.x - owner.x_pos));
-    //if(ownerAngle < 0) ownerAngle = -ownerAngle;
-    //else ownerAngle = -ownerAngle + 2*PI;
-    
+
     ownerAngle = map(ownerAngle, -PI, PI, 0, 2*PI);
-    
+
     occupantAngle = atan2((center.y - occupant.y_pos), 
     (center.x - occupant.x_pos));
-        occupantAngle = map(occupantAngle, -PI, PI, 0, 2*PI);
 
-    //    if(occupantAngle < 0) occupantAngle = -occupantAngle;
-    //else occupantAngle = -occupantAngle + 2*PI;
+    occupantAngle = map(occupantAngle, -PI, PI, 0, 2*PI);
+    if (occupantAngle <= ownerAngle) occupantAngle = occupantAngle + 2*PI;
 
-    //println(ownerAngle + ", " + occupantAngle);
+    //if(occupant == owner) occupantAngle = ownerAngle + 2*PI;
+  }
+
+  float arcMiddle() {
+    return (occupantAngle - ownerAngle)/2;
   }
 }
 

@@ -29,11 +29,8 @@ class StartLoopBlock extends Block {
     loopCenter = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter);
 
     loopLeads = new ArrayList<LoopLead>();
-    headLoopLead = new LoopLead(this, this, this, rotation, loopCenter, 0, 2*PI);
-    println(rotation);
-    loopLeads.add(headLoopLead);
+    headLoopLead = new LoopLead(this, this, this, this, 0);
     headLoopLead.options.dashed = true;
-    
     leads[0] = headLoopLead;
     
     leads[0].options.showNumber = true;
@@ -43,6 +40,7 @@ class StartLoopBlock extends Block {
     super.Update();
     leadsActive =  inChain;
     UpdateLoopCenter();
+    UpdateLoopRadius();
     arrangeButtons();
     if(inChain){
       //dashedArc((int)center.x, (int)center.y, block_diameter*2, 0, PI, 0);
@@ -125,6 +123,16 @@ class StartLoopBlock extends Block {
     super.Die();
     plus.Destroy();
     minus.Destroy();
+  }
+  
+  
+  //Find the average distance of every block in the loop from the loop center, sets loop radius to that
+  void UpdateLoopRadius(){
+    float total_dist = 0;
+    for(LoopLead lead : loopLeads){
+      total_dist += dist(lead.owner.x_pos, lead.owner.y_pos, loopCenter.x, loopCenter.y);
+    }
+      loopRadius = total_dist/loopLeads.size();
   }
   
   void drawPrototypeCircleLead(){

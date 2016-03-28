@@ -68,10 +68,13 @@ LinkedList<PlayHead> killPlayHeads;
 
 Cursor mouse;
 
+ClipBlock testClip;
+
 boolean isInitiated = false;
 
 void setup()
 {
+  smooth(0);
   size(displayWidth, displayHeight, P2D);
 
   noStroke();
@@ -139,7 +142,9 @@ void setup()
   if (simulateBlocks) {
     FunctionBlock funcTest = new FunctionBlock(500,500, 0);
     StartLoopBlock testLoop = new StartLoopBlock(700,500);
-    ClipBlock testClip = new ClipBlock(700, 200, 10);
+    testClip = new ClipBlock(700, 200, 10);
+    ClipBlock testClip2 = new ClipBlock(850, 350, 11);
+    ClipBlock baitBlock = new ClipBlock(1200,600,12);
     //ConditionalBlock testCond = new ConditionalBlock(900,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }
@@ -147,7 +152,7 @@ void setup()
 
 
 void draw()
-{
+{  
   beatNo = (millis() /millisPerBeat);
   background(invertColor ? 0 : 255);
   //cornerBeatGlow();
@@ -190,9 +195,6 @@ void draw()
     b.drawShadow();
   }
 
-  //println("end block update loop");
-  //testClip.Update();
-
 
 
 
@@ -207,13 +209,6 @@ void draw()
     p.draw();
   }
 
-fill(255);
-stroke(255);
-strokeWeight(3);
-//arc(100,100,100,100,0, PI);
-dashedArc(100,100,100,0,PI,0);
-
-
 
   if (hoverDebug) {
     HoverDebug();
@@ -227,7 +222,7 @@ dashedArc(100,100,100,0,PI,0);
     fill(255, 0, 0);
     text((int)frameRate, 80, 80);
   }
-  
+
 }
 
 
@@ -272,6 +267,7 @@ void Play() {
  */
 void mousePressed() {
   mouse = new Cursor();
+  testClip.Die();
 }
 
 void mouseReleased() {
