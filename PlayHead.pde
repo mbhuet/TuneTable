@@ -2,7 +2,8 @@ class PlayHead {
   FunctionBlock origin;
   Block activeBlock;
   LinkedList<Lead> path;
-  float pathDecayRate = 0.05f;
+  float pathDecayRate = 0.01f;
+  float minDecayDist = .5f;
   float pathDist = 0;
   color playColor;
   int lastMillis = 0;
@@ -33,7 +34,8 @@ class PlayHead {
 
   public void Update() {
     //println("activeBlock " + activeBlock);
-    pathDist = pathDist * (1-pathDecayRate);// * ((float)(millis() - lastMillis)/1000.0));
+    pathDist = min(pathDist - minDecayDist, pathDist * (1-pathDecayRate));// * ((float)(millis() - lastMillis)/1000.0));
+    if(pathDist <0) pathDist = 0;
     lastMillis = millis();
     if (dead && pathDist <= 1) {
       killPlayHeads.add(this);
@@ -96,10 +98,10 @@ class PlayHead {
     for (Lead l : path) {
       totalDist += l.distance - block_diameter;
     }
-
-    while (totalDist - (path.getLast ().distance - block_diameter) > pathDist) { //NO SUCH ELEMENT EXCEPTION
+    
+    while (path.peekFirst() != null && totalDist - (path.getLast ().distance - block_diameter) > pathDist) { //NO SUCH ELEMENT EXCEPTION
       totalDist = totalDist - (path.getLast().distance - block_diameter);
-
+      
       path.removeLast();
     }
 
@@ -108,11 +110,11 @@ class PlayHead {
 
     for (Lead l : path) {
       if (remDist >= (l.distance - block_diameter)) {
-        l.highlightTravelled(1, playColor);
+        l.highlightTravelled(origin.sym_id, 1, playColor);
         remDist -= l.distance - block_diameter;
       } else {
         float percent = (remDist/(l.distance - block_diameter));
-        l.highlightTravelled(percent, playColor);
+        l.highlightTravelled(origin.sym_id, percent, playColor);
       }
     }
   }
@@ -120,6 +122,8 @@ class PlayHead {
   void addLead(Lead lead) {
     path.offerFirst(lead);
     pathDist += lead.distance - block_diameter;
+        println(pathDist);
+
   }
 
   public void addStartLoop(StartLoopBlock start) {
@@ -131,9 +135,9 @@ class PlayHead {
   }
 
   void Die() {
+    println("PlayHead " + this + " Die");
     if (activeBlock instanceof SoundBlock) {
       ((SoundBlock)activeBlock).Stop();
-      //TODO stop playing immediately
     }
     allPlayHeads.remove(this);
     origin.removePlayHead(this);

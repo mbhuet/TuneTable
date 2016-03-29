@@ -148,6 +148,8 @@ void setup()
     //ConditionalBlock testCond = new ConditionalBlock(900,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }
+  
+  CheckForExistingTuioObjects();
 }
 
 
@@ -177,6 +179,7 @@ void draw()
 
   for (Block b : allBlocks) {
     b.inChain = false;
+    b.cleanLeads();
     if (!(b instanceof FunctionBlock))b.blockColor = color(255);
   }
 
@@ -186,13 +189,23 @@ void draw()
 
   for (Block b : allBlocks) {
 
-    b.Update();
 
     if (b.leadsActive) {
       b.drawLeads();
     }
 
-    b.drawShadow();
+  }
+  
+ for (PlayHead p : allPlayHeads) {
+    p.Update();
+    p.draw();
+  }
+  
+  for (Block b : allBlocks) {
+        b.Update();
+
+        b.drawShadow();
+
   }
 
 
@@ -204,10 +217,7 @@ void draw()
   }
 
 
-  for (PlayHead p : allPlayHeads) {
-    p.Update();
-    p.draw();
-  }
+
 
 
   if (hoverDebug) {

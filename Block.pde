@@ -36,19 +36,21 @@ abstract class Block {
 
   void Init(TuioObject tobj, int numLeads) {
     this.numLeads = numLeads;
-    setTuioObject(tobj);
-    allBlocks.add(this);
-
     parents = new ArrayList<Block>();
     children = new Block[numLeads];
     leads = new Lead[numLeads];
+    
+    setTuioObject(tobj);
+    allBlocks.add(this);
 
     for (int i = 0; i<numLeads; i++) {
       leads[i] = new Lead(this, rotation + i * 2*PI / numLeads, i);
     }
+    UpdatePosition();
+    arrangeLeads(rotation);
+
 
     blockColor = color(invertColor ? 255 : 0);
-
     Setup();
   }
 
@@ -73,7 +75,7 @@ abstract class Block {
     isFake = true;
     x_pos = x; 
     y_pos = y;
-
+    
     Setup();
   }
 
@@ -152,8 +154,7 @@ abstract class Block {
   //previous is the block that has directed the PlayHead to this block
   public void Activate(PlayHead play, Block previous) {
     playHead = play;
-  } 
-
+  }
   /*
     Called when this block has finished being active
    This tells the playhead to move on to the next block in the chain
@@ -161,9 +162,12 @@ abstract class Block {
   public void finish() {
     //println("finish " + this + " playHead " + (playHead == null ? "null" : playHead.toString()));
     PlayHead temp = playHead;
-    if (playHead != null)playHead = null;
-    temp.playColor = this.blockColor;
-    temp.travel();
+    if (playHead != null)
+    {
+      playHead = null;
+      //temp.playColor = this.blocolor;
+      temp.travel();
+    }
   }
 
 
@@ -303,6 +307,7 @@ abstract class Block {
       RemoveChild(i);
     children[i] = b;
     b.parents.add(this);
+    leads[i].connect(b);
   }
   
   void RemoveChild(int i){
@@ -332,6 +337,7 @@ abstract class Block {
   }
 
   public void arrangeLeads(float parentLeadRot) {
+
     if (parents.size() > 1) return;
     float leadSeparation = 2*PI / leads.length;
     float startAngle = PI + parentLeadRot + leadSeparation / 2;
@@ -339,6 +345,14 @@ abstract class Block {
     for (int i = 0; i < leads.length; i++) {
       float leadAngle = (startAngle + leadSeparation * i)%(2*PI);
       leads[i].SetRotation(leadAngle);
+    }
+  }
+
+  public void cleanLeads() {
+    for (int i = 0; i< leads.length; i++) {
+      for (int j = 0; j < leads[i].lines.length; j++) {
+        leads[i].lines[j].visible = false;
+      }
     }
   }
 
@@ -364,26 +378,31 @@ abstract class Block {
   Updates the look of this block's lead depending on whether or not it's in an active path from a Start block
    */
   void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
+    Block origin = activeVisited.get(0);
+    int originId = origin.sym_id;
     this.inChain = true;
     colorMode(HSB);
-    color dulledColor = color(hue(col), saturation(col)/8, 150);
+
+    color dulledColor = color(hue(col), saturation(col)/3, 150);
     blockColor = (isActive? col : dulledColor);
 
     for (int i = 0; i< numLeads; i++) {     
       if (isActive && childIsSuccessor(i)) {
-        leads[i].options.dashed = true;
-        leads[i].options.offset = offset;
-        leads[i].options.col = col;
-        leads[i].options.weight = 10;
+        leads[i].lines[originId].dashed = true;
+        leads[i].lines[originId].dash_offset = offset;
+        leads[i].lines[originId].col = col;
+        leads[i].lines[originId].visible = true;
+
 
         if (children[i] != null && !activeVisited.contains(children[i])) {
           activeVisited.add(children[i]);
           children[i].updateLeads(offset, col, true, activeVisited, inactiveVisited);
         }
       } else {
-        leads[i].options.dashed = false;
-        leads[i].options.col = dulledColor;
-        leads[i].options.weight = 10;
+        leads[i].lines[originId].dashed = false;
+        leads[i].lines[originId].col = dulledColor;
+        leads[i].lines[originId].visible = true;
+
 
         if (children[i] != null && !activeVisited.contains(children[i]) && !inactiveVisited.contains(children[i])) {
           inactiveVisited.add(children[i]);
@@ -399,8 +418,11 @@ abstract class Block {
   void drawArc(int radius, float percent, float startRotation) {
     pushMatrix();
     noStroke();
-    fill(blockColor);
-    //fill(255);
+
+    if (playHead != null)
+      fill(playHead.playColor);
+    else
+      fill(blockColor);
     translate(x_pos, y_pos);
     rotate(startRotation);
     arc(0, 0, 

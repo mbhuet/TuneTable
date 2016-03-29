@@ -2,13 +2,13 @@ class BeatBlock extends SoundBlock {
   int buttonSize = block_diameter/6;
   int buttonDist;
   String beatString = "";
-  
+
   int clipStartTime = 0;
   int beatCount = 0;
   int beatTimer = 0; //used to time the current beat sound
   int totalLength = millisPerBeat * beatsPerMeasure; //this block will be one measures
   int beatLength;
-  
+
   boolean pie = true;
 
   BeatButton[] buttons;
@@ -29,6 +29,7 @@ class BeatBlock extends SoundBlock {
     for (int i = 0; i<numBeats; i++) {
       buttons[i] = new BeatButton(this, i, 0, 0, 0, buttonSize);
       beatString += "-";
+      if(i%4 == 0) buttons[i].Trigger();
     }
     buttonDist = block_diameter/2 + buttonSize;
     beatLength = millisPerBeat * beatsPerMeasure / numBeats;// millisPerBeat * 4 / 8,
@@ -43,26 +44,24 @@ class BeatBlock extends SoundBlock {
     if (isPlaying) {
       beatCount = millis()/(beatLength)%numBeats;
       playTimer = millis()%(totalLength);
-      
+
 
       if (pie)drawArc((int)(block_diameter * .8), (float)playTimer/(float)totalLength, rotation);
       //else drawBeat((int)(block_diameter * .5));
-      
+
       if (millis() - clipStartTime >= beatLength) {
-          if(beatString.charAt(beatCount) == '0' ||
-              beatString.charAt(beatCount) == '+')
+        if (beatString.charAt(beatCount) == '0' ||
+          beatString.charAt(beatCount) == '+')
           PlayBeat();
-        
       }
     }
 
-   drawBridges();
+    drawBridges();
   }
-  
+
   public void UpdatePosition() {
     super.UpdatePosition();
     arrangeButtons(rotation);
-
   }
 
 
@@ -85,7 +84,7 @@ class BeatBlock extends SoundBlock {
   void Die() {
     super.Die();
     clip.close();
-    for(int i = 0; i<numBeats; i++){
+    for (int i = 0; i<numBeats; i++) {
       buttons[i].Destroy();
       buttons[i] = null;
     }
@@ -117,8 +116,8 @@ class BeatBlock extends SoundBlock {
   }
 
   void drawShadow() {
-      shapeMode(CORNER);
-    
+    shapeMode(CORNER);
+
     beatShadow.setFill(blockColor);
     pushMatrix();
     translate(x_pos, y_pos);
@@ -133,15 +132,14 @@ class BeatBlock extends SoundBlock {
     clip.play();
     clipStartTime = millis() - (millis() % (beatLength));
   }
-  
-  void BeginPlaying(){
+
+  void BeginPlaying() {
     beatCount = 0;
     isPlaying = true;
     PlayBeat();
   }
 
-  void flipBeat(int i, Cursor cursor) {
-    //should keep track of this cursor's history somehow for dragging
+  void flipBeat(int i) {
     buttons[i].isOn = !buttons[i].isOn;
     char cur = buttons[i].isOn ? '0' : '-';
     setBeat(i, cur);
@@ -166,7 +164,7 @@ class BeatButton extends Button {
   }
   public void Trigger(Cursor cursor) {
     //the first time a cursor touches a beatbutton, it should record the new state of that button and set all others it touches to that 
-    block.flipBeat(index, cursor);
+    block.flipBeat(index);
     if (cursor.beatHistory.size() > 0) {
       BeatButton last = cursor.beatHistory.get(cursor.beatHistory.size()-1);
       if (last.block == this.block) {
@@ -182,6 +180,11 @@ class BeatButton extends Button {
       }
     }
   }
+  
+  public void Trigger(){
+    block.flipBeat(index);
+  }
+  
   public void drawButton() {
     strokeWeight(3);
 

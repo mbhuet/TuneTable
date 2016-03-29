@@ -44,8 +44,7 @@ class ClipBlock extends SoundBlock {
 
   public void Activate(PlayHead play, Block previous) {
     super.Activate(play, previous);
-    this.previous = previous;
-    Play();
+    
     //println("clip activate playHead = " + ((playHead == null)? "null" : playHead.toString()) );
   }
 
@@ -64,7 +63,7 @@ void Die() {
   super.Die();
   clip.close();
   if (playHead != null) {  
-    println("block " + this + " has been removed, killing its playhead " + playHead);
+    //println("block " + this + " has been removed, killing its playhead " + playHead);
     playHead.dead = true;
   }
 }

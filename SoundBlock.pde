@@ -11,6 +11,9 @@ abstract class SoundBlock extends Block {
 
 
   public void Activate(PlayHead play, Block previous) {
+     if(playHead != null){
+      playHead.Die();
+     }
     super.Activate(play, previous);
     this.previous = previous;
     Play();

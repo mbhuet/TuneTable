@@ -26,9 +26,9 @@ class LoopLead extends Lead {
     loopBlock.blocksInLoop.add(loopBlock.blocksInLoop.indexOf(previous) + 1, this.owner);
   }
 
-  LoopLead(Block owner, Block occupant, Block previous, StartLoopBlock loopBlock, int index, LeadOptions options) {
+  LoopLead(Block owner, Block occupant, Block previous, StartLoopBlock loopBlock, int index, LineOptions[] options) {
     this(owner, occupant, previous, loopBlock, index);
-    this.options = options;
+    this.lines = options;
   }
 
   public void Update() {
@@ -37,27 +37,38 @@ class LoopLead extends Lead {
   }
 
   public void draw() {
-    if (!options.visible) return;
+    if (!visible) return;
+    colorMode(RGB, 255);
 
-    stroke(options.col);
-    strokeWeight(options.weight);
-    noFill();
+    int numVisible = numLinesVisible();
+    int numVisibleVisited = 0;
+    float start_radius = loopBlock.loopRadius + (standardWeight * numVisible + lineSeparation * (numVisible-1))/2;
+    
+    for (int i = 0; i<lines.length; i++) {
+      LineOptions options = lines[i];
+      stroke(options.col);
+      strokeWeight(options.weight);
+      noFill();
 
-    pushMatrix();
-    translate(loopBlock.loopCenter.x, loopBlock.loopCenter.y);
-    rotate(ownerAngle);
-    //println("ownerAngle " + ownerAngle);
+      pushMatrix();
+      translate(loopBlock.loopCenter.x, loopBlock.loopCenter.y);
+      rotate(ownerAngle);
+      //println("ownerAngle " + ownerAngle);
 
-    float arc_range = abs(occupantAngle - ownerAngle);
+      float arc_range = abs(occupantAngle - ownerAngle);
+      
+       int offset_radius = (numVisibleVisited * (standardWeight + lineSeparation));
+      lines[i].x_offset = (start_radius - offset_radius);
 
-
-    if (options.dashed) {
-      dashedArc(0, 0, loopBlock.loopRadius, 0, arc_range, options.offset);
-    } else {
-      arc(0, 0, loopBlock.loopRadius * 2, loopBlock.loopRadius * 2, 0, arc_range);
+      if (options.dashed) {
+        dashedArc(0, 0, (start_radius - offset_radius), 0, arc_range, (options.marching? options.dash_offset : 0));
+      } else {
+        arc(0, 0, (start_radius - offset_radius) * 2, (start_radius - offset_radius) * 2, 0, arc_range);
+      }
+      popMatrix();
+      numVisibleVisited++;
     }
-    
-    
+
     if (footprintActive()) { //this will draw a footprint
       rotate(arcMiddle());
       translate(loopBlock.loopRadius, 0);
@@ -67,11 +78,11 @@ class LoopLead extends Lead {
 
       shape(dashCircle);
     }
-    
-    
+
+
     popMatrix();
-    
-    
+
+
     pushMatrix();
     translate(owner.x_pos, owner.y_pos);
     rotate(rotation);
@@ -110,12 +121,12 @@ class LoopLead extends Lead {
       popMatrix();
     }
 
-    
+
 
     popMatrix();
   }
 
- public void highlightTravelled(float percent, color col) {
+  public void highlightTravelled(float percent, color col) {
     percent = min(1, percent);
     percent = max(0, percent);
     stroke(col);
@@ -154,27 +165,23 @@ class LoopLead extends Lead {
   }
 
   public void disconnect(boolean connectAround) {
-        if (occupant == owner) return;
+    if (occupant == owner) return;
 
     //if we want to connect to the block after the current occupant
-    if(connectAround && occupant.leads[0].occupant != null){
+    if (connectAround && occupant.leads[0].occupant != null) {
       loopBlock.blocksInLoop.remove(occupant);
       owner.SetChild(occupant.leads[0].occupant, 0);
       occupant = occupant.leads[0].occupant;
-
+    } else {
+      owner.RemoveChild(0);
+      occupant = null;
+      loopBlock.blocksInLoop.remove(owner);
     }
-    else{
-    owner.RemoveChild(0);
-    occupant = null;
-              loopBlock.blocksInLoop.remove(owner);
-
-    }
-  
-    }
+  }
 
 
-    void trackBlock(Block block) {
-    }
+  void trackBlock(Block block) {
+  }
 
   boolean footprintActive() {
     return abs(occupantAngle - ownerAngle)*loopBlock.loopRadius > block_diameter * 2;

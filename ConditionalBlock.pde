@@ -4,7 +4,10 @@ class ConditionalBlock extends Block {
   color myColor;
 
   BooleanBlock boolBlock;
-  Lead boolLead;
+  //Lead boolLead;
+  
+  BooleanButton leftButton;
+  BooleanButton rightButton;
 
   ConditionalBlock(TuioObject tObj) {
     Init(tObj, 2);
@@ -15,55 +18,110 @@ class ConditionalBlock extends Block {
   }
 
   void Setup() {
+    
+    /*
     boolId = sym_id - 10; //booleans are 100-109, corresponding conditionals are 110-119
     
-    boolLead = new Lead(this, 0, -1);
+
+
+    boolLead = new Lead(this, 0);
     boolLead.break_distance = 9999;
-    boolLead.options.visible = false;
-    boolLead.options.col = myColor;
-    boolLead.options.dashed = false;
-    boolLead.options.weight = 5;
+    boolLead.visible = false;
+    boolLead.lines[0].visible = false;
+    boolLead.lines[0].col = myColor;
+    boolLead.lines[0].dashed = false;
+    boolLead.lines[0].weight = 5;
     
     //leads[0].options.image = unlock;
-    leads[0].options.image = (isTrue ? unlock : lock);
+    leads[0].image = (isTrue ? unlock : lock);
 
     checkBooleanBlock();
+    */
+    leftButton = new BooleanButton(0,0,0, block_diameter/5, this);
+    rightButton = new BooleanButton(0,0,0, block_diameter/5, this);
+    
+    leftButton.Flip();
+    
+    arrangeButtons();
+    
   }
 
   void Update() {
     super.Update();
     leadsActive = inChain;
+    arrangeButtons();
 
-    checkBooleanBlock();
-    boolLead.Update();
-    boolLead.draw();
+    //checkBooleanBlock();
+    //boolLead.Update();
+    //boolLead.draw();
+  }
+  
+  void arrangeButtons(){
+    float leftLeadRot = leads[0].rotation;
+    float rightLeadRot = leads[1].rotation;
+    
+    float leftButtonDist = leads[0].distance/2; // how far along the lead
+    float rightButtonDist = leads[1].distance/2;
+    
+    PVector leftPos = new PVector(x_pos + cos(leftLeadRot) * leftButtonDist, 
+                                  y_pos + sin(leftLeadRot) * leftButtonDist);
+                                       
+     PVector rightPos = new PVector(x_pos + cos(rightLeadRot) * rightButtonDist, 
+                                    y_pos + sin(rightLeadRot) * rightButtonDist);
+                                       
+    leftButton.Update((int)(leftPos.x), 
+                      (int)(leftPos.y), 
+                      leftLeadRot + PI/2);
+    
+    rightButton.Update((int)(rightPos.x), 
+                       (int)(rightPos.y), 
+                       rightLeadRot + PI/2);
   }
 
+/*
   void checkBooleanBlock() {
     boolean inMap = boolMap.containsKey(boolId);
     if (inMap && !isTrue) {//the booleanBlock has just been added to the dictionary
       isTrue = true;
       boolBlock = boolMap.get(boolId);
       boolLead.connect(boolBlock);
-      boolLead.options.visible = true;
-      boolLead.options.col = (invertColor? 255:0);
+      boolLead.lines[0].visible = true;
+      boolLead.lines[0].col = (invertColor? 255:0);
       //leads[0].options.image = lock;
 
     } else if (!inMap && isTrue) { //the booleanBlock has just been removed from the dictionary
       isTrue = false;
       boolBlock = null;
+
       boolLead.disconnect(false);
-      boolLead.options.visible = false;
-      boolLead.options.col = (invertColor? 0:255);
+      boolLead.lines[0].visible = false;
+      boolLead.lines[0].col = (invertColor? 0:255);
       //leads[0].options.image = unlock;
     }
     
-    leads[0].options.image = (isTrue? unlock : lock);
+    leads[0].image = (isTrue? unlock : lock);
+  }
+  */
+  
+  void Flip(){
+    isTrue = !isTrue;
+    leftButton.Flip();
+    rightButton.Flip();
+  
   }
 
 
   void OnRemove() {
     super.OnRemove();
+  }
+  
+  void Die() {
+    leftButton.Destroy();
+    leftButton = null;
+    rightButton.Destroy();
+    rightButton = null;
+    
+    super.Die();
   }
   
   public void Activate(PlayHead play, Block previous) {
@@ -85,4 +143,45 @@ class ConditionalBlock extends Block {
     };
   }
 }
+
+class BooleanButton extends Button{
+  ConditionalBlock block;
+  boolean isOn;
+  
+  BooleanButton(int x_pos, int y_pos, float rot, float rad, ConditionalBlock b){
+    InitButton(x_pos,y_pos,rot, rad);
+    block = b;
+  }
+  public void Trigger(Cursor cursor){
+    block.Flip();
+  }
+  
+  void Flip(){
+    isOn = !isOn;
+  }
+  
+  public void drawButton(){
+    if(!block.inChain) return;
+    pushMatrix();
+    translate(x,y);
+    //translate(size/6, 0);
+    rotate(rotation);
+    
+    fill(isOn? 0 : 255);
+    stroke(isOn? 255 : 0);
+    strokeWeight(size/5);
+    ellipse(0,0,size*2,size*2);
+    
+    /*
+    fill(invertColor? 0 : 255);
+    textAlign(CENTER, CENTER);
+      textSize(size*2);
+      text("-", 0, -size/3);
+    */
+    popMatrix();
+    
+  }
+}
+
+
 
