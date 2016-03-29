@@ -125,8 +125,10 @@ class LoopLead extends Lead {
     pushMatrix();
 
     translate(loopBlock.loopCenter.x, loopBlock.loopCenter.y);
+    //rotate(owner.rotation);
     float arc_range = abs(occupantAngle - ownerAngle);
 
+    arc(0, 0, loopBlock.loopRadius * 2, loopBlock.loopRadius * 2, ownerAngle + arc_range * (1.0-percent), occupantAngle);
 
     popMatrix();
   }
