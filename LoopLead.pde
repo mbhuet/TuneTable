@@ -22,7 +22,8 @@ class LoopLead extends Lead {
     super(owner, 0, index);
     this.occupant = occupant;
     this.loopBlock = loopBlock;
-    loopBlock.loopLeads.add(this);
+    //loopBlock.loopLeads.add(this);
+    loopBlock.blocksInLoop.add(loopBlock.blocksInLoop.indexOf(previous) + 1, this.owner);
   }
 
   LoopLead(Block owner, Block occupant, Block previous, StartLoopBlock loopBlock, int index, LeadOptions options) {
@@ -120,6 +121,7 @@ class LoopLead extends Lead {
   }
 
   public void connect(Block block) {
+    println("CONNECT " + owner + " to " + block);
     owner.SetChild(block, leadIndex);
     //LoopLead(owner, occupant, previous, loopBlock)
     block.leads[0] = new LoopLead(block, occupant, owner, loopBlock, 0, block.leads[0].options);
@@ -128,13 +130,34 @@ class LoopLead extends Lead {
     this.occupant = block;
   }
 
-  public void disconnect() {
-    if (occupant == owner) return;
+  public void disconnect(boolean connectAround) {
+        if (occupant == owner) return;
+
+    //if we want to connect to the block after the current occupant
+    if(connectAround && occupant.leads[0].occupant != null){
+      loopBlock.blocksInLoop.remove(occupant);
+      owner.SetChild(occupant.leads[0].occupant, 0);
+      occupant = occupant.leads[0].occupant;
+
+    }
+    else{
+    owner.RemoveChild(0);
+    occupant = null;
+              loopBlock.blocksInLoop.remove(owner);
+
+    }
+   
+    /*
+    println("DISCONNECT " + occupant + " from " + owner);
     loopBlock.loopLeads.remove(occupant.leads[0]);
     Block old_occupant = occupant;
     occupant = occupant.children[0];
+    if(occupant == null)println("null occup on disconnect " +this.owner);
     old_occupant.RemoveChild(0);
     owner.SetChild(occupant, 0);
+    
+    loopBlock.blocksInLoop.remove(occupant);
+      */
     }
 
 

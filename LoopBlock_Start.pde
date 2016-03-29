@@ -8,7 +8,8 @@ class StartLoopBlock extends Block {
   PlusButton plus;
   MinusButton minus;
   
-  ArrayList<LoopLead> loopLeads;
+  //ArrayList<LoopLead> loopLeads;
+  ArrayList<Block> blocksInLoop;
   PVector loopCenter;
   float loopRadius = block_diameter;
   
@@ -28,7 +29,9 @@ class StartLoopBlock extends Block {
     
     loopCenter = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter);
 
-    loopLeads = new ArrayList<LoopLead>();
+//loopLeads = new ArrayList<LoopLead>();
+    blocksInLoop = new ArrayList<Block>();
+    blocksInLoop.add(this);
     headLoopLead = new LoopLead(this, this, this, this, 0);
     headLoopLead.options.dashed = true;
     leads[0] = headLoopLead;
@@ -129,11 +132,10 @@ class StartLoopBlock extends Block {
   //Find the average distance of every block in the loop from the loop center, sets loop radius to that
   void UpdateLoopRadius(){
     float total_dist = 0;
-    for(LoopLead lead : loopLeads){
-      total_dist += dist(lead.owner.x_pos, lead.owner.y_pos, loopCenter.x, loopCenter.y);
+    for(Block block : blocksInLoop){
+      total_dist += dist(block.x_pos, block.y_pos, loopCenter.x, loopCenter.y);
     }
-    println("loop radius " + (loopLeads.size()));
-      loopRadius = min(total_dist/loopLeads.size(), block_diameter * 2);
+      loopRadius = min(total_dist/blocksInLoop.size(), block_diameter * 2);
   }
   
   void drawPrototypeCircleLead(){

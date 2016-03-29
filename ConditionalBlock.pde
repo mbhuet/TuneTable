@@ -52,7 +52,7 @@ class ConditionalBlock extends Block {
     } else if (!inMap && isTrue) { //the booleanBlock has just been removed from the dictionary
       isTrue = false;
       boolBlock = null;
-      boolLead.disconnect();
+      boolLead.disconnect(false);
       boolLead.options.visible = false;
       boolLead.options.col = (invertColor? 0:255);
       //leads[0].options.image = unlock;

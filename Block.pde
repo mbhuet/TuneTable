@@ -89,7 +89,7 @@ abstract class Block {
       Lead l = leads[i];
       l.Update();
       if (l.occupant != null && l.occupantTooFar()) {
-        breakConnection(i);
+        breakConnection(i, true);
       }
     }
 
@@ -280,7 +280,7 @@ abstract class Block {
 
   public void breakChildConnections() {
     for (int i = 0; i< numLeads; i++) {
-      breakConnection(i);
+      breakConnection(i, false);
     }
   }
 
@@ -288,7 +288,7 @@ abstract class Block {
     Block[] parentsArray = new Block[parents.size()];
     parents.toArray(parentsArray);
     for (Block p : parentsArray) {
-      p.breakConnection(this);
+      p.breakConnection(this, true);
     }
   }
 
@@ -299,6 +299,7 @@ abstract class Block {
   }
   
   void SetChild(Block b, int i){
+    println(this + " set child: Block " + b + " int " + i);
     if (children[i] != null) 
       RemoveChild(i);
     children[i] = b;
@@ -315,17 +316,22 @@ abstract class Block {
   /*
   Breaks connection with a child at index i
    */
-  void breakConnection(int i) {
-      leads[i].disconnect();
+  void breakConnection(int i, boolean connectAround) {
+    println("block " + this + " break connection with child " + i + " " + children[i]);
+    println("lead " + i + " occupant " + leads[i].occupant);
+      leads[i].disconnect(connectAround);
   }
 
   /*
   Breaks connection with child block b
    */
-  void breakConnection(Block b) {
+  void breakConnection(Block b, boolean connectAround) {
+    
     for (int i = 0; i<numLeads; i++) {
       if (children[i] == b) {
-        leads[i].disconnect();
+        println("block " + this + " break connection with child " + i + " " + children[i]);
+    println("lead " + i + " occupant " + leads[i].occupant);
+        leads[i].disconnect(connectAround);
       }
     }
   }

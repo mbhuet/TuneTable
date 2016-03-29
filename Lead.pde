@@ -130,7 +130,7 @@ class Lead {
     }
   }
 
-  public void disconnect() {
+  public void disconnect(boolean connectAround) {
     occupant = null;
     occupied = false;
     distance = reg_distance;
