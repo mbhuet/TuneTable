@@ -24,7 +24,6 @@ class FunctionBlock extends Block {
     executeButt = new ExecuteButton(this, -block_diameter, 0, 0, block_diameter/4);
     stopButt = new StopButton(this, -block_diameter, 0, 0, block_diameter/4);
     stopButt.isShowing = false;
-    //println(sym_id);
     blockColor = colorSet[sym_id];
   }
 

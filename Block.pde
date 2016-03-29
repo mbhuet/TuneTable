@@ -44,7 +44,7 @@ abstract class Block {
     allBlocks.add(this);
 
     for (int i = 0; i<numLeads; i++) {
-      leads[i] = new Lead(this, rotation + i * 2*PI / numLeads);
+      leads[i] = new Lead(this, rotation + i * 2*PI / numLeads, i);
     }
     UpdatePosition();
     arrangeLeads(rotation);
@@ -68,7 +68,7 @@ abstract class Block {
     leads = new Lead[numLeads];
 
     for (int i = 0; i<numLeads; i++) {
-      leads[i] = new Lead(this, rotation + i * 2*PI / numLeads);
+      leads[i] = new Lead(this, rotation + i * 2*PI / numLeads, i);
     }
 
     blockColor = color(invertColor ? 255 : 0);
@@ -86,13 +86,12 @@ abstract class Block {
   }
 
   void Update() { 
-
     //Update leads and break connection if the child block is too far away
     for (int i = 0; i< numLeads; i++) {
       Lead l = leads[i];
       l.Update();
-      if (l.distance > l.break_distance) {
-        breakConnection(i);
+      if (l.occupant != null && l.occupantTooFar()) {
+        breakConnection(i, true);
       }
     }
 
@@ -109,6 +108,11 @@ abstract class Block {
     //fake blocks never use UpdatePosition(), which is where updateNeighbors is normally called
     if (isFake) {
       updateNeighbors();
+      /*
+      for(Lead l : leads){
+       l.UpdateRotationFromParent(.01);
+       }
+       */
     }
   }
 
@@ -218,8 +222,10 @@ abstract class Block {
       x_pos = avg_x;
       y_pos = avg_y;
 
+      float rotDelta = (avg_rot - rotation); //this will cause unconnected leads to rotate with the block
+
       for (Lead l : leads) { 
-        if (!l.occupied)  l.rotation += (avg_rot - rotation); //this will cause unconnected leads to rotate with the block
+        l.UpdateRotationFromParent(rotDelta);
       }
       rotation = avg_rot;
     }
@@ -236,6 +242,7 @@ abstract class Block {
 
 
   public void updateNeighbors() {
+
     if (this.canBeChained) {
       findParents();
     }
@@ -247,7 +254,7 @@ abstract class Block {
 
   public void findChildren() {
     for (int i = 0; i<numLeads; i++) {
-      if (children[i] == null) {
+      if (leads[i].canRecieveChild()) {
         for (Block block : allBlocks) {
           if (!( block==this || block.parents.contains(this) || this.parents.contains(block)) && leads[i].isUnderBlock(block) && block.canBeChained) {
             makeConnection(block, i);
@@ -261,7 +268,7 @@ abstract class Block {
   public void findParents() {
     for (Block block : allBlocks) {
       for (int i = 0; i< block.numLeads; i++) {
-        if (block.children[i] == null) {
+        if (block.leads[i].canRecieveChild()) {         
           if (!( block==this || block.parents.contains(this) || this.parents.contains(block)) && block.leadsActive && block.leads[i].isUnderBlock(this)) {
             block.makeConnection(this, i);
           }
@@ -271,13 +278,13 @@ abstract class Block {
   }
 
   public void breakAllConnections() {
-    breakChildConnections();
     breakParentConnections();
+    breakChildConnections();
   }
 
   public void breakChildConnections() {
     for (int i = 0; i< numLeads; i++) {
-      breakConnection(i);
+      breakConnection(i, false);
     }
   }
 
@@ -285,44 +292,52 @@ abstract class Block {
     Block[] parentsArray = new Block[parents.size()];
     parents.toArray(parentsArray);
     for (Block p : parentsArray) {
-      p.breakConnection(this);
+      p.breakConnection(this, true);
     }
   }
 
+//ASSUMES next child does not need information about current child, which is not true for LoopLeads
   void makeConnection(Block b, int i) {
+    leads[i].connect(b);
+    //SetChild(b, i);
+  }
+  
+  void SetChild(Block b, int i){
     if (children[i] != null) 
-      breakConnection(i);
+      RemoveChild(i);
     children[i] = b;
     b.parents.add(this);
     leads[i].connect(b);
+  }
+  
+  void RemoveChild(int i){
+    if (children[i] != null) {
+      children[i].parents.remove(this);
+      children[i] = null;
+    }
   }
 
   /*
   Breaks connection with a child at index i
    */
-  void breakConnection(int i) {
-    if (children[i] != null) {
-      children[i].parents.remove(this);
-      children[i] = null;
-      leads[i].disconnect();
-    }
+  void breakConnection(int i, boolean connectAround) {
+      leads[i].disconnect(connectAround);
   }
 
   /*
   Breaks connection with child block b
    */
-  void breakConnection(Block b) {
+  void breakConnection(Block b, boolean connectAround) {
+    
     for (int i = 0; i<numLeads; i++) {
       if (children[i] == b) {
-        children[i].parents.remove(this);
-        children[i] = null;
-        leads[i].disconnect();
+        leads[i].disconnect(connectAround);
       }
     }
   }
 
   public void arrangeLeads(float parentLeadRot) {
-    //println("base rotation " + parentLeadRot);
+
     if (parents.size() > 1) return;
     float leadSeparation = 2*PI / leads.length;
     float startAngle = PI + parentLeadRot + leadSeparation / 2;
@@ -367,6 +382,7 @@ abstract class Block {
     int originId = origin.sym_id;
     this.inChain = true;
     colorMode(HSB);
+
     color dulledColor = color(hue(col), saturation(col)/3, 150);
     blockColor = (isActive? col : dulledColor);
 

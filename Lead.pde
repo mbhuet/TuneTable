@@ -1,4 +1,5 @@
 class Lead {
+  int leadIndex;
   Block owner;
   Block occupant;
   float rotation;
@@ -21,9 +22,10 @@ class Lead {
   public LineOptions[] lines;
 
 
-  Lead(Block owner, float rot) {
+  Lead(Block owner, float rot, int index) {
     this.owner = owner;
     this.rotation = rot;
+    leadIndex = index;
     occupied = false;
     distance = reg_distance;
     lines = new LineOptions[5];
@@ -32,6 +34,11 @@ class Lead {
       lines[i].visible = false;
       lines[i].weight = standardWeight;
     }
+  }
+  
+  Lead(Block owner, float rot, int index, LineOptions[] options){
+    this(owner, rot, index);
+    this.lines = options;
   }
 
   public void Update() {
@@ -152,7 +159,6 @@ class Lead {
     popMatrix();
   }
 
-
   public boolean isUnderBlock(Block b) {
     float look_x = owner.x_pos + cos(rotation) * distance;
     float look_y = owner.y_pos + sin(rotation) * distance;
@@ -164,16 +170,24 @@ class Lead {
     occupant = block;
     occupied = true;
     trackBlock(block);
+
+    if(leadIndex >=0){
+      owner.SetChild(block, leadIndex);
+    }
     if (block.parents.size() == 1) {
       block.arrangeLeads(rotation);
     }
   }
 
-  public void disconnect() {
+  public void disconnect(boolean connectAround) {
     occupant = null;
     occupied = false;
     distance = reg_distance;
+    if(leadIndex >=0){
+      owner.RemoveChild(leadIndex);
+    }
   }
+  
 
   void trackBlock(Block block) {                       
     rotation = atan2((block.y_pos - owner.y_pos), 
@@ -183,6 +197,23 @@ class Lead {
 
   public void SetRotation(float rot) {
     rotation = rot;
+  }
+  
+  //returns whether or not this leads's occupant is too far away to maintain the connection
+  public boolean occupantTooFar(){
+    return distance > break_distance;
+  }
+  
+  public boolean canRecieveChild(){
+    return occupant == null;
+  }
+  
+  public void UpdateRotationFromParent(float rotDelta){
+  if (!occupied){
+    rotation += rotDelta; 
+  }
+  
+  
   }
 }
 

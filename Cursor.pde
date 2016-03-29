@@ -29,9 +29,12 @@ public class Cursor {
     x_pos = tuioCursor.getScreenX(width);
     y_pos = tuioCursor.getScreenY(height);
   }
-
-  void checkButtons() { // NullPointerException
+  
+  void checkButtons(){// NullPointerException
+  
     for (Button b : allButtons) {
+          //println("button " + b);
+
       if (!dead && b.isShowing && b.IsUnder(x_pos, y_pos) && !beatHistory.contains(b)) {
         b.Trigger(this);
         if (b instanceof BeatButton) {

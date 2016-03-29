@@ -1,3 +1,6 @@
+
+
+
 class StartLoopBlock extends Block {
   int count = 1;
   int max_count = 9;
@@ -10,6 +13,13 @@ class StartLoopBlock extends Block {
   PlusButton plus;
   MinusButton minus;
   
+  //ArrayList<LoopLead> loopLeads;
+  ArrayList<Block> blocksInLoop;
+  PVector loopCenter;
+  float loopRadius = block_diameter;
+  
+  LoopLead headLoopLead;
+  
   StartLoopBlock(TuioObject tObj) {
     Init(tObj, 2);
   }
@@ -19,14 +29,26 @@ class StartLoopBlock extends Block {
   }
 
   void Setup() {
-     plus = new PlusButton(0, 0, 0, block_diameter/4, this);
+    plus = new PlusButton(0, 0, 0, block_diameter/4, this);
     minus = new MinusButton(0, 0, 0, block_diameter/4, this);
+    
+    loopCenter = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter);
+
+//loopLeads = new ArrayList<LoopLead>();
+    blocksInLoop = new ArrayList<Block>();
+    blocksInLoop.add(this);
+    headLoopLead = new LoopLead(this, this, this, this, 0);
+    leads[0] = headLoopLead;
     updateCountLead();
   }
   void Update() {
     super.Update();
     leadsActive =  inChain;
+    UpdateLoopCenter();
+    UpdateLoopRadius();
     arrangeButtons();
+
+
     drawNumber();
   }
   void OnRemove() {
@@ -37,7 +59,7 @@ class StartLoopBlock extends Block {
     super.Activate(play, previous);
     
     if(count > 0){
-        play.addStartLoop(this);
+        //play.addStartLoop(this);
     }
     if(count == 1) justDepleted = true;
     DecrementCount(false);
@@ -51,6 +73,17 @@ class StartLoopBlock extends Block {
   void updateCountLead(){
     displayCount = count;
     //TODO choose number to represent infinity, if count is that number, showNumber = false, image = infinity.jpg
+  }
+  
+  void UpdateLoopCenter(){
+    PVector midpoint = new PVector();
+    for(Block b : blocksInLoop){
+      midpoint.x+= b.x_pos;
+      midpoint.y+= b.y_pos;
+    }
+      midpoint.x = midpoint.x/blocksInLoop.size();
+      midpoint.y = midpoint.y/blocksInLoop.size();
+    loopCenter = convertFromPolar(new PVector(x_pos, y_pos), leads[0].rotation, loopRadius);
   }
 
 
@@ -115,6 +148,37 @@ class StartLoopBlock extends Block {
     minus.Destroy();
   }
   
+  
+  //Find the average distance of every block in the loop from the loop center, sets loop radius to that
+  void UpdateLoopRadius(){
+    float total_dist = 0;
+    for(Block block : blocksInLoop){
+      total_dist += dist(block.x_pos, block.y_pos, loopCenter.x, loopCenter.y);
+    }
+      loopRadius = min(total_dist/blocksInLoop.size(), block_diameter * 2);
+  }
+  
+  void drawPrototypeCircleLead(){
+   ellipseMode(CENTER);
+   strokeWeight(10);
+   stroke(255);
+   noFill();
+   PVector center = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter * 2);
+   ellipse(center.x, center.y, block_diameter * 4, block_diameter * 4);
+   PVector dashCenter = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter * 4);
+   shapeMode(CENTER);
+   shape(dashCircle, (int)dashCenter.x, (int)dashCenter.y);
+  }
+  
+  void drawLeads() {
+
+    for (Lead l : leads) {
+      l.draw();
+    }
+    
+    //headLoopLead.draw();
+  }
+    
   void drawNumber(){
         
         pushMatrix();

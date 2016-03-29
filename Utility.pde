@@ -62,3 +62,10 @@ public void SaveData(){
     output.flush();  // Writes the remaining data to the file
     output.close();  // Finishes the file
 }
+
+public static PVector convertFromPolar(PVector pos, float rot, float dist){
+  return new PVector(pos.x + cos(rot) * dist, 
+                     pos.y + sin(rot) * dist);
+}
+
+

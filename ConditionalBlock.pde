@@ -23,6 +23,7 @@ class ConditionalBlock extends Block {
     boolId = sym_id - 10; //booleans are 100-109, corresponding conditionals are 110-119
     
 
+
     boolLead = new Lead(this, 0);
     boolLead.break_distance = 9999;
     boolLead.visible = false;
@@ -91,7 +92,8 @@ class ConditionalBlock extends Block {
     } else if (!inMap && isTrue) { //the booleanBlock has just been removed from the dictionary
       isTrue = false;
       boolBlock = null;
-      boolLead.disconnect();
+
+      boolLead.disconnect(false);
       boolLead.lines[0].visible = false;
       boolLead.lines[0].col = (invertColor? 0:255);
       //leads[0].options.image = unlock;

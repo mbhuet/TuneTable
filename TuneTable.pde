@@ -31,8 +31,8 @@ boolean simulateBlocks = false;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
-float cursor_size = 15;
-int block_diameter = 120;
+static float cursor_size = 15;
+static int block_diameter = 120;
 
 // used for beat calculations
 int bpm = 60;
@@ -68,10 +68,13 @@ LinkedList<PlayHead> killPlayHeads;
 
 Cursor mouse;
 
+ClipBlock testClip;
+
 boolean isInitiated = false;
 
 void setup()
 {
+  smooth(0);
   size(displayWidth, displayHeight, P2D);
 
   noStroke();
@@ -138,12 +141,11 @@ void setup()
 
   if (simulateBlocks) {
     FunctionBlock funcTest = new FunctionBlock(500,500, 0);
-    //FunctionBlock funcTest2 = new FunctionBlock(500,500, 1);
-    //FunctionBlock funcTest3 = new FunctionBlock(500,500, 2);
-
-    //StartLoopBlock testLoop = new StartLoopBlock(700,500);
-    //ClipBlock testClip = new ClipBlock(700, 700, 10);
-    ConditionalBlock testCond = new ConditionalBlock(700,500);
+    StartLoopBlock testLoop = new StartLoopBlock(700,500);
+    testClip = new ClipBlock(700, 200, 10);
+    ClipBlock testClip2 = new ClipBlock(850, 350, 11);
+    ClipBlock baitBlock = new ClipBlock(1200,600,12);
+    //ConditionalBlock testCond = new ConditionalBlock(900,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }
   
@@ -152,7 +154,7 @@ void setup()
 
 
 void draw()
-{
+{  
   beatNo = (millis() /millisPerBeat);
   background(invertColor ? 0 : 255);
   //cornerBeatGlow();
@@ -162,12 +164,7 @@ void draw()
     //shape(playShadow, 400,400);
   }
 
-  if (showFPS) {
-    textSize(32);
-    textAlign(LEFT, TOP);
-    fill(255, 0, 0);
-    text((int)frameRate, 80, 80);
-  }
+  
 
 
   textFont(font, 18);
@@ -211,9 +208,6 @@ void draw()
 
   }
 
-  //println("end block update loop");
-  //testClip.Update();
-
 
 
 
@@ -226,15 +220,19 @@ void draw()
 
 
 
-
-
-
-
   if (hoverDebug) {
     HoverDebug();
   }
   
-  
+  if (showFPS) {
+    colorMode(RGB);
+    
+    textSize(32);
+    textAlign(LEFT, TOP);
+    fill(255, 0, 0);
+    text((int)frameRate, 80, 80);
+  }
+
 }
 
 
