@@ -32,9 +32,9 @@ public class Cursor {
   }
   
   void checkButtons(){
-    println("checkButtons");
+    //println("checkButtons");
     for (Button b : allButtons) {
-          println("button " + b);
+          //println("button " + b);
 
       if (!dead && b.isShowing && b.IsUnder(x_pos, y_pos) && !beatHistory.contains(b)) {
                         b.Trigger(this);

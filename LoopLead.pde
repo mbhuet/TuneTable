@@ -109,11 +109,13 @@ class LoopLead extends Lead {
   public boolean isUnderBlock(Block b) {
     if (!footprintActive()) return false;
     PVector footprintPos = convertFromPolar(loopBlock.loopCenter, arcMiddle() + ownerAngle, loopBlock.loopRadius);
-    colorMode(RGB);
-    stroke(255, 0, 0);
-    strokeWeight(1);
-    noFill();
-    ellipse(footprintPos.x, footprintPos.y, block_diameter * 1.1, block_diameter * 1.1);
+    if (debug) {
+      colorMode(RGB);
+      stroke(255, 0, 0);
+      strokeWeight(1);
+      noFill();
+      ellipse(footprintPos.x, footprintPos.y, block_diameter * 1.1, block_diameter * 1.1);
+    }
     return (dist(footprintPos.x, footprintPos.y, b.x_pos, b.y_pos) <= connect_snap_dist);
   }
 
@@ -124,31 +126,20 @@ class LoopLead extends Lead {
     block.SetChild(this.occupant, 0);
 
     this.occupant = block;
-
-    /*
-    occupant = block;
-     occupied = true;
-     trackBlock(block);
-     block.arrangeLeads(rotation);
-     */
   }
 
   public void disconnect() {
+    if (occupant == owner) return;
+    loopBlock.loopLeads.remove(occupant.leads[0]);
+    Block old_occupant = occupant;
     occupant = occupant.children[0];
+    old_occupant.RemoveChild(0);
     owner.SetChild(occupant, 0);
-    if(loopBlock != null)
-    loopBlock.loopLeads.remove(this);
-
-    //    occupant = null;
-    //   occupied = false;
-    /*
-     distance = reg_distance;
-     */
-  }
+    }
 
 
-  void trackBlock(Block block) {
-  }
+    void trackBlock(Block block) {
+    }
 
   boolean footprintActive() {
     return abs(occupantAngle - ownerAngle)*loopBlock.loopRadius > block_diameter * 2;

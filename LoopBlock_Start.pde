@@ -42,7 +42,6 @@ class StartLoopBlock extends Block {
     UpdateLoopCenter();
     UpdateLoopRadius();
     arrangeButtons();
-    println("loop leads " + loopLeads.size());
     if(inChain){
       //dashedArc((int)center.x, (int)center.y, block_diameter*2, 0, PI, 0);
 
@@ -133,6 +132,7 @@ class StartLoopBlock extends Block {
     for(LoopLead lead : loopLeads){
       total_dist += dist(lead.owner.x_pos, lead.owner.y_pos, loopCenter.x, loopCenter.y);
     }
+    println("loop radius " + (loopLeads.size()));
       loopRadius = min(total_dist/loopLeads.size(), block_diameter * 2);
   }
   
