@@ -299,7 +299,6 @@ abstract class Block {
   }
   
   void SetChild(Block b, int i){
-    println(this + " set child: Block " + b + " int " + i);
     if (children[i] != null) 
       RemoveChild(i);
     children[i] = b;
@@ -317,8 +316,6 @@ abstract class Block {
   Breaks connection with a child at index i
    */
   void breakConnection(int i, boolean connectAround) {
-    println("block " + this + " break connection with child " + i + " " + children[i]);
-    println("lead " + i + " occupant " + leads[i].occupant);
       leads[i].disconnect(connectAround);
   }
 
@@ -329,8 +326,6 @@ abstract class Block {
     
     for (int i = 0; i<numLeads; i++) {
       if (children[i] == b) {
-        println("block " + this + " break connection with child " + i + " " + children[i]);
-    println("lead " + i + " occupant " + leads[i].occupant);
         leads[i].disconnect(connectAround);
       }
     }

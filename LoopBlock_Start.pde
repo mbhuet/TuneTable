@@ -58,7 +58,7 @@ class StartLoopBlock extends Block {
     super.Activate(play, previous);
     
     if(count > 0){
-        play.addStartLoop(this);
+        //play.addStartLoop(this);
     }
     finish();
     DecrementCount(false);
@@ -70,6 +70,13 @@ class StartLoopBlock extends Block {
   }
   
   void UpdateLoopCenter(){
+    PVector midpoint = new PVector();
+    for(Block b : blocksInLoop){
+      midpoint.x+= b.x_pos;
+      midpoint.y+= b.y_pos;
+    }
+      midpoint.x = midpoint.x/blocksInLoop.size();
+      midpoint.y = midpoint.y/blocksInLoop.size();
     loopCenter = convertFromPolar(new PVector(x_pos, y_pos), leads[0].rotation, loopRadius);
   }
 

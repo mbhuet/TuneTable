@@ -54,8 +54,27 @@ class LoopLead extends Lead {
     if (options.dashed) {
       dashedArc(0, 0, loopBlock.loopRadius, 0, arc_range, options.offset);
     } else {
-      arc(0, 0, loopBlock.loopRadius * 2, loopBlock.loopRadius * 2, ownerAngle, occupantAngle);
+      arc(0, 0, loopBlock.loopRadius * 2, loopBlock.loopRadius * 2, 0, arc_range);
     }
+    
+    
+    if (footprintActive()) { //this will draw a footprint
+      rotate(arcMiddle());
+      translate(loopBlock.loopRadius, 0);
+      dashCircle.setStroke(options.col);
+      dashCircle.setStrokeWeight(5);
+      shapeMode(CENTER);
+
+      shape(dashCircle);
+    }
+    
+    
+    popMatrix();
+    
+    
+    pushMatrix();
+    translate(owner.x_pos, owner.y_pos);
+    rotate(rotation);
 
     if (options.image != null) {
       pushMatrix();
@@ -74,7 +93,7 @@ class LoopLead extends Lead {
     if (options.showNumber) {
 
       pushMatrix();
-      translate(distance/2, 0);
+      translate(block_diameter * .8, 0);
       rotate(PI/2.0);
 
       fill((invertColor? 0 : 255)); //should match background
@@ -91,20 +110,25 @@ class LoopLead extends Lead {
       popMatrix();
     }
 
-    if (footprintActive()) { //this will draw a footprint
-      rotate(arcMiddle());
-      translate(loopBlock.loopRadius, 0);
-      dashCircle.setStroke(options.col);
-      dashCircle.setStrokeWeight(5);
-      shapeMode(CENTER);
-
-      shape(dashCircle);
-    }
+    
 
     popMatrix();
   }
 
-  public void highlightTravelled(float percent, color col) {
+ public void highlightTravelled(float percent, color col) {
+    percent = min(1, percent);
+    percent = max(0, percent);
+    stroke(col);
+    strokeWeight(block_diameter/4);
+    strokeCap(SQUARE);
+    noFill();
+    pushMatrix();
+
+    translate(loopBlock.loopCenter.x, loopBlock.loopCenter.y);
+    float arc_range = abs(occupantAngle - ownerAngle);
+
+
+    popMatrix();
   }
 
   public boolean isUnderBlock(Block b) {
@@ -121,12 +145,9 @@ class LoopLead extends Lead {
   }
 
   public void connect(Block block) {
-    println("CONNECT " + owner + " to " + block);
     owner.SetChild(block, leadIndex);
-    //LoopLead(owner, occupant, previous, loopBlock)
     block.leads[0] = new LoopLead(block, occupant, owner, loopBlock, 0, block.leads[0].options);
     block.SetChild(this.occupant, 0);
-
     this.occupant = block;
   }
 
@@ -146,18 +167,7 @@ class LoopLead extends Lead {
               loopBlock.blocksInLoop.remove(owner);
 
     }
-   
-    /*
-    println("DISCONNECT " + occupant + " from " + owner);
-    loopBlock.loopLeads.remove(occupant.leads[0]);
-    Block old_occupant = occupant;
-    occupant = occupant.children[0];
-    if(occupant == null)println("null occup on disconnect " +this.owner);
-    old_occupant.RemoveChild(0);
-    owner.SetChild(occupant, 0);
-    
-    loopBlock.blocksInLoop.remove(occupant);
-      */
+  
     }
 
 

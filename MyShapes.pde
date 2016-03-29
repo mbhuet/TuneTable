@@ -31,7 +31,7 @@ public void dashedLine(int x1, int y1, int x2, int y2, float offset) {
   float rotation = atan2((y2 - y1), 
   (x2 - x1));
   int position = 0;
-  //strokeCap(ROUND);
+  strokeCap(ROUND);
 
   pushMatrix();
 
