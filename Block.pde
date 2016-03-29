@@ -299,7 +299,6 @@ abstract class Block {
 //ASSUMES next child does not need information about current child, which is not true for LoopLeads
   void makeConnection(Block b, int i) {
     leads[i].connect(b);
-    //SetChild(b, i);
   }
   
   void SetChild(Block b, int i){
@@ -307,7 +306,6 @@ abstract class Block {
       RemoveChild(i);
     children[i] = b;
     b.parents.add(this);
-    leads[i].connect(b);
   }
   
   void RemoveChild(int i){

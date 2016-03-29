@@ -43,21 +43,22 @@ class LoopLead extends Lead {
     int numVisible = numLinesVisible();
     int numVisibleVisited = 0;
     float start_radius = loopBlock.loopRadius + (standardWeight * numVisible + lineSeparation * (numVisible-1))/2;
+
+    float arc_range = abs(occupantAngle - ownerAngle);
+
+    pushMatrix();
+    translate(loopBlock.loopCenter.x, loopBlock.loopCenter.y);
+    rotate(ownerAngle);
     
     for (int i = 0; i<lines.length; i++) {
       LineOptions options = lines[i];
+            if (!options.visible) continue;
+
       stroke(options.col);
       strokeWeight(options.weight);
       noFill();
 
-      pushMatrix();
-      translate(loopBlock.loopCenter.x, loopBlock.loopCenter.y);
-      rotate(ownerAngle);
-      //println("ownerAngle " + ownerAngle);
-
-      float arc_range = abs(occupantAngle - ownerAngle);
-      
-       int offset_radius = (numVisibleVisited * (standardWeight + lineSeparation));
+      int offset_radius = (numVisibleVisited * (standardWeight + lineSeparation));
       lines[i].x_offset = (start_radius - offset_radius);
 
       if (options.dashed) {
@@ -65,14 +66,14 @@ class LoopLead extends Lead {
       } else {
         arc(0, 0, (start_radius - offset_radius) * 2, (start_radius - offset_radius) * 2, 0, arc_range);
       }
-      popMatrix();
       numVisibleVisited++;
     }
 
     if (footprintActive()) { //this will draw a footprint
+
       rotate(arcMiddle());
       translate(loopBlock.loopRadius, 0);
-      dashCircle.setStroke(options.col);
+      dashCircle.setStroke(color(255));
       dashCircle.setStrokeWeight(5);
       shapeMode(CENTER);
 
@@ -87,21 +88,21 @@ class LoopLead extends Lead {
     translate(owner.x_pos, owner.y_pos);
     rotate(rotation);
 
-    if (options.image != null) {
+    if (image != null) {
       pushMatrix();
       translate(distance/2, 0);
       rotate(PI/2.0);
-      translate(-options.image.width/2, -options.image.height/2);
+      translate(-image.width/2, -image.height/2);
       fill((invertColor? 0 : 255));
       noStroke();
       rectMode(CORNER);
-      rect(0, 0, options.image.width, options.image.height);
+      rect(0, 0, image.width, image.height);
 
-      image(options.image, 0, 0);
+      image(image, 0, 0);
       popMatrix();
     }
 
-    if (options.showNumber) {
+    if (showNumber) {
 
       pushMatrix();
       translate(block_diameter * .8, 0);
@@ -116,7 +117,7 @@ class LoopLead extends Lead {
       textAlign(CENTER, CENTER);
       textSize(text_size);
       fill((invertColor? 255 : 0)); //text color
-      text(options.number, 0, 0);
+      text(number, 0, 0);
 
       popMatrix();
     }
@@ -126,7 +127,7 @@ class LoopLead extends Lead {
     popMatrix();
   }
 
-  public void highlightTravelled(float percent, color col) {
+  public void highlightTravelled(int lineNum, float percent, color col) {
     percent = min(1, percent);
     percent = max(0, percent);
     stroke(col);
@@ -159,7 +160,7 @@ class LoopLead extends Lead {
 
   public void connect(Block block) {
     owner.SetChild(block, leadIndex);
-    block.leads[0] = new LoopLead(block, occupant, owner, loopBlock, 0, block.leads[0].options);
+    block.leads[0] = new LoopLead(block, occupant, owner, loopBlock, 0, block.leads[0].lines);
     block.SetChild(this.occupant, 0);
     this.occupant = block;
   }

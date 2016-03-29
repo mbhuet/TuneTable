@@ -110,6 +110,8 @@ void SetupIdToType() {
   for (int i = 5; i < 10; i++) {
     idToType.put(i, BlockType.CALL);
   }
+      idToType.put(122, BlockType.CALL);
+
 
   //CLIPS 10-39
   for (int i = 10; i < 40; i++) {

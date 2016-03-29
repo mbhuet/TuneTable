@@ -3,23 +3,33 @@ class CallBlock extends Block {
   Block function;
 
   CallBlock(TuioObject tObj) {
-    Init(tObj, 1);
+    Init(tObj, 2);
   }
 
   void Setup() {
-    functionId = sym_id - 10;
+    functionId = 0;
     if (funcMap.containsKey(functionId)) {
       function = funcMap.get(functionId);
+      leads[1].visible = true;
     }
-    children[0] = function;
+    else{
+      leads[1].visible = false;
+    }
+    children[1] = function;
   }
   
   void Update() {
     super.Update();
-    if (function!= null && !funcMap.containsKey(functionId))
+        leadsActive = inChain;
+
+    if (function!= null && !funcMap.containsKey(functionId)){
       function = null;
+      leads[1].visible = false;
+    }
     else if (function == null && funcMap.containsKey(functionId)) {
       function = funcMap.get(functionId);
+            leads[1].visible = true;
+
     }
   }
   void OnRemove() {

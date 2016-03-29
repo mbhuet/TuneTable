@@ -9,7 +9,7 @@ class PlayHead {
   int lastMillis = 0;
   boolean dead = false;
 
-  Stack<StartLoopBlock> startLoops;
+  Stack<FunctionBlock> functionStack;
 
   void Init(FunctionBlock origin, Block start, color c) {
     path = new LinkedList<Lead>();
@@ -18,7 +18,7 @@ class PlayHead {
     allPlayHeads.add(this);
     this.origin = origin;
     origin.spawnedPlayHeads.add(this);
-    startLoops = new Stack<StartLoopBlock>();
+    functionStack = new Stack<FunctionBlock>();
     //println("init activeBlock " + activeBlock);
   }
 
@@ -67,8 +67,8 @@ class PlayHead {
         }
       } else { //there is no block ahead
         // if there are any start Loops in the stack, we'll jump back to it
-        if (startLoops.size() > 0) {
-          activeBlock = startLoops.pop();
+        if (functionStack.size() > 0) {
+          activeBlock = functionStack.pop();
           activeBlock.Activate(this, currentBlock);
           hasTravelled = true;
         }
@@ -81,12 +81,12 @@ class PlayHead {
     }
   }
 
-  public void returnToLastStartLoop() {
-    if (startLoops.size() == 0) {
+  public void returnToLastFunction() {
+    if (functionStack.size() == 0) {
       travel();
     } else {
       Block currentBlock = activeBlock; //activeBlock may change, so we need to keep a reference to it
-      activeBlock = startLoops.pop();
+      activeBlock = functionStack.pop();
       activeBlock.Activate(this, currentBlock);
     }
   }
@@ -126,11 +126,11 @@ class PlayHead {
 
   }
 
-  public void addStartLoop(StartLoopBlock start) {
-    if (startLoops.size() > 0 && startLoops.peek() == start) {
-      startLoops.pop();
+  public void addFunction(FunctionBlock func) {
+    if (functionStack.size() > 0 && functionStack.peek() == func) {
+      functionStack.pop();
     } else {    
-      startLoops.push(start);
+      functionStack.push(func);
     }
   }
 

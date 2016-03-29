@@ -169,9 +169,11 @@ class StopButton extends Button {
     InitButton(x_pos, y_pos, rot, rad);
     func = funcBlock;
   }
+  
   public void Trigger(Cursor cursor) {
     func.Stop();
   }
+  
   public void drawButton() {
     noStroke();
     fill(invertColor ? 255 : 0);
