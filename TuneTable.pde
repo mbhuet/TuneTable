@@ -192,8 +192,6 @@ void draw()
   }
 
   for (Block b : allBlocks) {
-
-
     if (b.leadsActive) {
       b.drawLeads();
     }

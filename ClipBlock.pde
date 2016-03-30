@@ -47,6 +47,7 @@ class ClipBlock extends SoundBlock {
     }
     arrangeButtons(rotation);
     //println("end clip update " + this + " playHead " + (playHead == null ? "null" : playHead.toString()));
+    
   }
 
 

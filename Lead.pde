@@ -74,7 +74,7 @@ class Lead {
       translate(0, start_x + offset_x);
 
       if (lineOptions.dashed) {
-        dashedLine(0, 0, (int)distance, 0, (lineOptions.marching? lineOptions.dash_offset : 0));
+        dashedLine(0, 0, (int)distance, 0, (lineOptions.marching? (options.reverse_march? -lineOptions.dash_offset : lineOptions.dash_offset): 0));
       } else {
         line(0, 0, distance - block_diameter/2, 0);
       }
@@ -154,15 +154,11 @@ class Lead {
   }
 
   public boolean isUnderBlock(Block b) {
-    float look_x = owner.x_pos + cos(rotation) * distance;
-    float look_y = owner.y_pos + sin(rotation) * distance;
-
-    return (dist(look_x, look_y, b.x_pos, b.y_pos) <= connect_snap_dist);
+    PVector look = footprintPosition();
+    return (dist(look.x, look.y, b.x_pos, b.y_pos) <= connect_snap_dist);
   }
 
   public void connect(Block block) {
-    
-
     occupant = block;
     occupied = true;
     trackBlock(block);
@@ -200,6 +196,13 @@ class Lead {
     return options.unlimitedDistance ? false : distance > break_distance;
   }
   
+  public PVector footprintPosition(){
+    float x = owner.x_pos + cos(rotation) * distance;
+    float y = owner.y_pos + sin(rotation) * distance;
+    return new PVector(x,y);
+    
+  }
+  
   public boolean canRecieveChild(){
     return occupant == null;
   }
@@ -224,6 +227,7 @@ class LineOptions {
 }
 
 class LeadOptions {
+  public boolean reverse_march = false;
   public boolean visible = true;
   public PImage image;
   public int number = 0;

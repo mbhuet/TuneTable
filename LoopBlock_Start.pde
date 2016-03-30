@@ -5,7 +5,6 @@ class StartLoopBlock extends Block {
   int count = 1;
   int max_count = 9;
   int displayCount = 0;
-
   
   boolean justDepleted = false;
   

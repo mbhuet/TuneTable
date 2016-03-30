@@ -20,10 +20,10 @@ void SetupCursorMap() {
   cursorMap = new HashMap<Long, Cursor>();
 }
 
-HashMap<Integer, Block> funcMap;
+HashMap<Integer, FunctionBlock> funcMap;
 
 void SetupFuncMap() {
-  funcMap = new HashMap<Integer, Block>();
+  funcMap = new HashMap<Integer, FunctionBlock>();
 }
 
 

@@ -1,9 +1,11 @@
 class CallBlock extends Block {
   int functionId;
-  Block function;
-  
+  FunctionBlock function;
+
+  EndLead endLead;
+
   boolean returning = false;
-  
+
   //ArrayList<PlayHead> 
 
   CallBlock(TuioObject tObj) {
@@ -17,8 +19,8 @@ class CallBlock extends Block {
   void Setup() {
     functionId = 0;
     leads[1].options.unlimitedDistance = true;
-
     CheckForFunction();
+    endLead = new EndLead(this);
   }
 
   void Update() {
@@ -26,6 +28,10 @@ class CallBlock extends Block {
     leadsActive = inChain;
 
     CheckForFunction();
+    if (function != null) {
+      endLead.SetTargetLead(lastActiveLeadInChain(function));
+    }
+    endLead.Update();
   }
   void OnRemove() {
     super.OnRemove();
@@ -33,11 +39,10 @@ class CallBlock extends Block {
 
   public void Activate(PlayHead play, Block previous) {
     //if the previous block is not a parent, we can assume it is in another chain
-    if(!parents.contains(previous)){
+    if (!parents.contains(previous)) {
       returning = true;
-    }
-    else{
-        play.addFunctionCall(this);
+    } else {
+      play.addFunctionCall(this);
     }
     super.Activate(play, previous);
     finish();

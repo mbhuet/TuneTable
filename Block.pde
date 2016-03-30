@@ -48,7 +48,7 @@ abstract class Block {
     }
     UpdatePosition();
     arrangeLeads(rotation);
-
+    type = idToType.get(sym_id);
 
     blockColor = color(invertColor ? 255 : 0);
     Setup();
@@ -70,6 +70,7 @@ abstract class Block {
     for (int i = 0; i<numLeads; i++) {
       leads[i] = new Lead(this, rotation + i * 2*PI / numLeads, i);
     }
+    type = idToType.get(sym_id);
 
     blockColor = color(invertColor ? 255 : 0);
     isFake = true;

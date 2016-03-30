@@ -68,4 +68,23 @@ public static PVector convertFromPolar(PVector pos, float rot, float dist){
                      pos.y + sin(rot) * dist);
 }
 
+public Lead lastActiveLeadInChain(FunctionBlock start){
+  boolean endFound = false;
+  Block currentBlock = start;
+  while(!endFound){
+    int[] lookNext = currentBlock.getSuccessors();
+    if(currentBlock.type == BlockType.START_LOOP) lookNext = new int[]{1};
+    
+    if(currentBlock.children[lookNext[0]] != null) currentBlock = currentBlock.children[lookNext[0]];
+    else{ 
+      endFound = true;
+      return currentBlock.leads[lookNext[0]];
+    }
+  }
+  return null;
+  
+  
+  
+}
+
 

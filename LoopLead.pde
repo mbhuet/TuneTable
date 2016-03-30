@@ -147,7 +147,8 @@ class LoopLead extends Lead {
 
   public boolean isUnderBlock(Block b) {
     if (!footprintActive()) return false;
-    PVector footprintPos = convertFromPolar(loopBlock.loopCenter, arcMiddle() + ownerAngle, loopBlock.loopRadius);
+    PVector footprintPos = footprintPosition();
+    /*
     if (debug) {
       colorMode(RGB);
       stroke(255, 0, 0);
@@ -155,6 +156,7 @@ class LoopLead extends Lead {
       noFill();
       ellipse(footprintPos.x, footprintPos.y, block_diameter * 1.1, block_diameter * 1.1);
     }
+    */
     return (dist(footprintPos.x, footprintPos.y, b.x_pos, b.y_pos) <= connect_snap_dist);
   }
 
@@ -187,6 +189,10 @@ class LoopLead extends Lead {
 
   boolean footprintActive() {
     return abs(occupantAngle - ownerAngle)*loopBlock.loopRadius > block_diameter * 2;
+  }
+  
+  public PVector footprintPosition(){
+    return convertFromPolar(loopBlock.loopCenter, arcMiddle() + ownerAngle, loopBlock.loopRadius);
   }
 
   public boolean occupantTooFar() {
