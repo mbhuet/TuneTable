@@ -87,14 +87,12 @@ public void dashedArc(int center_x, int center_y, float radius, float start, flo
 
   float gapOffset = min(gapAngle, offsetAngle);
   float arcOffset = max(0, (offsetAngle - gapAngle));
-  //println("arcAngle " + arcOffset + ", gapAngle " + gapOffset);
 
   arc(0, 0, radius*2, radius*2, position, position + arcOffset);
   position+=arcOffset;
   position+=gapOffset;
 
   while (position < end) {
-    //println("position " + position + ", " + min(end - position, arcAngle));
     arc(0, 0, radius*2, radius*2, position, position + min(end - position, arcAngle));
     //line(0, 0, min(distance-position, lineLength), 0);
     position+=arcAngle;

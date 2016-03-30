@@ -19,7 +19,6 @@ class PlayHead {
     this.origin = origin;
     origin.spawnedPlayHeads.add(this);
 functionCallStack = new Stack<CallBlock>();
-    //println("init activeBlock " + activeBlock);
   }
 
   PlayHead(FunctionBlock origin, Block start, color c) {
@@ -33,13 +32,11 @@ functionCallStack = new Stack<CallBlock>();
   }
 
   public void Update() {
-    //println("activeBlock " + activeBlock);
     pathDist = min(pathDist - minDecayDist, pathDist * (1-pathDecayRate));// * ((float)(millis() - lastMillis)/1000.0));
     if(pathDist <0) pathDist = 0;
     lastMillis = millis();
     if (dead && pathDist <= 1) {
       killPlayHeads.add(this);
-      //println("add playhead to kill list");
     }
   }
 
@@ -51,7 +48,6 @@ functionCallStack = new Stack<CallBlock>();
     Block currentBlock = activeBlock; //activeBlock may change, so we need to keep a reference to it
     boolean hasTravelled = false; //if there are more than 1 valid successors, 
     int[] nextBlockIndices = currentBlock.getSuccessors();
-    //println("playhead " + this + " travelling to " + Arrays.toString(nextBlockIndices));
     for (int i = 0; i< nextBlockIndices.length; i++) {
       int indexOfSuccessor = nextBlockIndices[i];
       Block nextBlock = currentBlock.children[indexOfSuccessor];
@@ -77,7 +73,7 @@ functionCallStack = new Stack<CallBlock>();
 
     if (!hasTravelled) {
       dead = true;
-      println("playhead " + this + " dead");
+      //println("playhead " + this + " dead");
     }
   }
 
@@ -122,7 +118,6 @@ functionCallStack = new Stack<CallBlock>();
   void addLead(Lead lead) {
     path.offerFirst(lead);
     pathDist += lead.distance - block_diameter;
-        println(pathDist);
 
   }
 
@@ -135,7 +130,7 @@ functionCallStack = new Stack<CallBlock>();
   }
 
   void Die() {
-    println("PlayHead " + this + " Die");
+    //println("PlayHead " + this + " Die");
     if (activeBlock instanceof SoundBlock) {
       ((SoundBlock)activeBlock).Stop();
     }

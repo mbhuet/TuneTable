@@ -28,5 +28,9 @@ class EndLead extends Lead {
     (pos.x - owner.x_pos));
     distance = dist(pos.x, pos.y, owner.x_pos, owner.y_pos);
   }
+  
+  boolean showFootprint(){
+    return false;
+  }
 }
 

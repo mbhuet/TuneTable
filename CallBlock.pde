@@ -17,10 +17,10 @@ class CallBlock extends Block {
   }
 
   void Setup() {
+    endLead = new EndLead(this);
     functionId = 0;
     leads[1].options.unlimitedDistance = true;
     CheckForFunction();
-    endLead = new EndLead(this);
   }
 
   void Update() {
@@ -54,10 +54,12 @@ class CallBlock extends Block {
       function = null;
       leads[1].options.visible = false;
       leads[1].disconnect(false);
+      endLead.options.visible = false;
     } else if (function == null && funcMap.containsKey(functionId)) {
       function = funcMap.get(functionId);
       leads[1].options.visible = true;
       leads[1].connect(function);
+      endLead.options.visible = true;
     }
   }
 
@@ -74,6 +76,16 @@ class CallBlock extends Block {
     }
   }
 
+  void drawLeads() {
+
+    for (Lead l : leads) {
+      l.draw();
+    }
+
+    endLead.draw();
+    println("draw endLead");
+  }
+
 
 
   public int[] getSuccessors() {
@@ -86,6 +98,12 @@ class CallBlock extends Block {
         1
       };
     }
+  }
+
+  void updateLeads(float offset, color col, boolean isActive, boolean setBlockColor, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
+    super.updateLeads(offset, col, isActive, setBlockColor, activeVisited, inactiveVisited);
+    println(endLead);
+    endLead.lines = leads[1].lines;
   }
 }
 

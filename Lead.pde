@@ -87,7 +87,7 @@ class Lead {
       numVisibleVisited++;
     }
     
-    if (!occupied) {
+    if (showFootprint()) {
       pushMatrix();
       translate(distance, 0);
       dashCircle.setStroke(color(255));//lines[i].col);
@@ -169,6 +169,10 @@ class Lead {
     if (block.parents.size() == 1) {
       block.arrangeLeads(rotation);
     }
+  }
+  
+  boolean showFootprint(){
+    return !occupied;
   }
 
   public void disconnect(boolean connectAround) {

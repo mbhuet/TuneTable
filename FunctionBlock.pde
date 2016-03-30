@@ -69,7 +69,6 @@ class FunctionBlock extends Block {
 
   public void Activate(PlayHead play, Block previous) {
     super.Activate(play, previous);
-    println("func activated " + millis());
     finish();
   }
 
@@ -147,7 +146,6 @@ class ExecuteButton extends Button {
     func = funcBlock;
   }
   public void Trigger(Cursor cursor) {
-    println("play button hit");
     func.execute();
   }
   public void drawButton() {

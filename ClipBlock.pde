@@ -75,6 +75,10 @@ class ClipBlock extends SoundBlock {
 
   void Die() {
     super.Die();
+    for (int i = 0; i<buttons.length; i++) {
+      buttons[i].Destroy();
+      buttons[i] = null;
+    }
     if (playHead != null) {  
       //println("block " + this + " has been removed, killing its playhead " + playHead);
       playHead.dead = true;

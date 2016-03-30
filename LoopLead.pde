@@ -33,7 +33,6 @@ class LoopLead extends Lead {
 
   public void Update() {
     UpdateArcRange();
-    //println(rotation);
   }
 
   public void draw() {
@@ -168,18 +167,25 @@ class LoopLead extends Lead {
   }
 
   public void disconnect(boolean connectAround) {
+    println("DISCONNECT");
     if (occupant == owner) return;
 
     //if we want to connect to the block after the current occupant
     if (connectAround && occupant.leads[0].occupant != null) {
+      println(owner + " connect around " + occupant + " to " + occupant.leads[0].occupant);
+      Block former_occupant = occupant;
       loopBlock.blocksInLoop.remove(occupant);
       owner.SetChild(occupant.leads[0].occupant, 0);
       occupant = occupant.leads[0].occupant;
-    } else {
-      owner.RemoveChild(0);
-      occupant = null;
-      loopBlock.blocksInLoop.remove(owner);
-      owner.leads[0] = new Lead(owner, rotation, 0, options);
+    
+      former_occupant.RemoveChild(0);
+      println(former_occupant + "remove child");
+      loopBlock.blocksInLoop.remove(former_occupant);
+      former_occupant.leads[0] = new Lead(owner, rotation, 0, options);
+    }
+    
+    else{
+      //TODO stuff here
     }
   }
 
