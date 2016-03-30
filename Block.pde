@@ -337,6 +337,7 @@ abstract class Block {
   public void arrangeLeads(float parentLeadRot) {
 
     if (parents.size() > 1) return;
+    if(leads.length == 0) return;
     float leadSeparation = 2*PI / leads.length;
     float startAngle = PI + parentLeadRot + leadSeparation / 2;
 
@@ -375,14 +376,14 @@ abstract class Block {
   /*
   Updates the look of this block's lead depending on whether or not it's in an active path from a Start block
    */
-  void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
+  void updateLeads(float offset, color col, boolean isActive, boolean setBlockColor, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
     Block origin = activeVisited.get(0);
     int originId = origin.sym_id;
     this.inChain = true;
     colorMode(HSB);
 
     color dulledColor = color(hue(col), saturation(col)/3, 150);
-    blockColor = (isActive? col : dulledColor);
+    if(setBlockColor) blockColor = (isActive? col : dulledColor);
 
     for (int i = 0; i< numLeads; i++) {     
       if (isActive && childIsSuccessor(i)) {
@@ -394,7 +395,7 @@ abstract class Block {
 
         if (children[i] != null && !activeVisited.contains(children[i])) {
           activeVisited.add(children[i]);
-          children[i].updateLeads(offset, col, true, activeVisited, inactiveVisited);
+          children[i].updateLeads(offset, col, true, setBlockColor, activeVisited, inactiveVisited);
         }
       } else {
         leads[i].lines[originId].dashed = false;
@@ -404,7 +405,7 @@ abstract class Block {
 
         if (children[i] != null && !activeVisited.contains(children[i]) && !inactiveVisited.contains(children[i])) {
           inactiveVisited.add(children[i]);
-          children[i].updateLeads(offset, col, false, activeVisited, inactiveVisited);
+          children[i].updateLeads(offset, col, false, setBlockColor, activeVisited, inactiveVisited);
         }
       }
     }

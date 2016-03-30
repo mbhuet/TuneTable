@@ -12,14 +12,8 @@ class Lead {
   int lineSeparation = 1;
   int standardWeight = 10;
   
-  
-  public boolean visible = true;
-  public PImage image;
-  public int number = 0;
-  public boolean showNumber = false;
-  
-
   public LineOptions[] lines;
+  public LeadOptions options;
 
 
   Lead(Block owner, float rot, int index) {
@@ -28,6 +22,7 @@ class Lead {
     leadIndex = index;
     occupied = false;
     distance = reg_distance;
+    options = new LeadOptions();
     lines = new LineOptions[5];
     for (int i = 0; i< lines.length; i++) {
       lines[i] = new LineOptions();
@@ -57,7 +52,7 @@ class Lead {
   }
 
   public void draw() {
-    if(!visible) return;
+    if(!options.visible) return;
     colorMode(RGB, 255);
 
     int numVisible = numLinesVisible();
@@ -69,18 +64,18 @@ class Lead {
     rotate(rotation);
 
     for (int i = 0; i<lines.length; i++) {
-      LineOptions options = lines[i];
-      if (!options.visible) continue;
-      stroke(options.col);
-      strokeWeight(options.weight);
+      LineOptions lineOptions = lines[i];
+      if (!lineOptions.visible) continue;
+      stroke(lineOptions.col);
+      strokeWeight(lineOptions.weight);
 
       pushMatrix();
       int offset_x = (numVisibleVisited * (standardWeight + lineSeparation));
       lines[i].x_offset = (start_x + offset_x);
       translate(0, start_x + offset_x);
 
-      if (options.dashed) {
-        dashedLine(0, 0, (int)distance, 0, (options.marching? options.dash_offset : 0));
+      if (lineOptions.dashed) {
+        dashedLine(0, 0, (int)distance, 0, (lineOptions.marching? lineOptions.dash_offset : 0));
       } else {
         line(0, 0, distance - block_diameter/2, 0);
       }
@@ -103,21 +98,21 @@ class Lead {
       popMatrix();
     }
     
-    if (image != null) {
+    if (options.image != null) {
         pushMatrix();
         translate(distance/2, 0);
         rotate(PI/2.0);
-        translate(-image.width/2, -image.height/2);
+        translate(-options.image.width/2, -options.image.height/2);
         fill((invertColor? 0 : 255));
         noStroke();
         rectMode(CORNER);
-        rect(0, 0, image.width, image.height);
+        rect(0, 0, options.image.width, options.image.height);
 
-        image(image, 0, 0);
+        image(options.image, 0, 0);
         popMatrix();
       }
 
-      if (showNumber) {
+      if (options.showNumber) {
 
         pushMatrix();
         translate(distance/2, 0);
@@ -132,7 +127,7 @@ class Lead {
         textAlign(CENTER, CENTER);
         textSize(text_size);
         fill((invertColor? 255 : 0)); //text color
-        text(number, 0, 0);
+        text(options.number, 0, 0);
 
         popMatrix();
       }
@@ -167,6 +162,8 @@ class Lead {
   }
 
   public void connect(Block block) {
+    
+
     occupant = block;
     occupied = true;
     trackBlock(block);
@@ -201,7 +198,7 @@ class Lead {
   
   //returns whether or not this leads's occupant is too far away to maintain the connection
   public boolean occupantTooFar(){
-    return distance > break_distance;
+    return options.unlimitedDistance ? false : distance > break_distance;
   }
   
   public boolean canRecieveChild(){
@@ -225,5 +222,13 @@ class LineOptions {
   public float x_offset = 0;
   public color col = color(invertColor ? 255 : 0);
   public int weight = 10;
+}
+
+class LeadOptions {
+  public boolean visible = true;
+  public PImage image;
+  public int number = 0;
+  public boolean showNumber = false;
+  public boolean unlimitedDistance = false;
 }
 

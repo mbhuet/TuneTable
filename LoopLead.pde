@@ -37,7 +37,7 @@ class LoopLead extends Lead {
   }
 
   public void draw() {
-    if (!visible) return;
+    if (!options.visible) return;
     colorMode(RGB, 255);
 
     int numVisible = numLinesVisible();
@@ -88,21 +88,21 @@ class LoopLead extends Lead {
     translate(owner.x_pos, owner.y_pos);
     rotate(rotation);
 
-    if (image != null) {
+    if (options.image != null) {
       pushMatrix();
       translate(distance/2, 0);
       rotate(PI/2.0);
-      translate(-image.width/2, -image.height/2);
+      translate(-options.image.width/2, -options.image.height/2);
       fill((invertColor? 0 : 255));
       noStroke();
       rectMode(CORNER);
-      rect(0, 0, image.width, image.height);
+      rect(0, 0, options.image.width, options.image.height);
 
-      image(image, 0, 0);
+      image(options.image, 0, 0);
       popMatrix();
     }
 
-    if (showNumber) {
+    if (options.showNumber) {
 
       pushMatrix();
       translate(block_diameter * .8, 0);
@@ -117,7 +117,7 @@ class LoopLead extends Lead {
       textAlign(CENTER, CENTER);
       textSize(text_size);
       fill((invertColor? 255 : 0)); //text color
-      text(number, 0, 0);
+      text(options.number, 0, 0);
 
       popMatrix();
     }

@@ -48,7 +48,7 @@ class FunctionBlock extends Block {
     ArrayList<Block> activeVisited = new ArrayList<Block>();
     ArrayList<Block> inactiveVisited = new ArrayList<Block>();
     activeVisited.add(this);
-    updateLeads(dashedLineOffset, blockColor, true, activeVisited, inactiveVisited);
+    super.updateLeads(dashedLineOffset, blockColor, true, true, activeVisited, inactiveVisited);
   }
 
   void OnRemove() {
@@ -89,6 +89,10 @@ class FunctionBlock extends Block {
     rotate(rotation + 2*PI / 12);
     shape(playShadow);
     popMatrix();
+  }
+  
+  void updateLeads(float offset, color col, boolean isActive, boolean setBlockColor, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
+    super.updateLeads(offset, col, isActive, false, activeVisited, inactiveVisited);
   }
   
   void arrangeButtons(){
@@ -185,5 +189,7 @@ class StopButton extends Button {
     rect(0, 0, size, size);
     popMatrix();
   }
+  
+  
 }
 
