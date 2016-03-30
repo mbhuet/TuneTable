@@ -33,6 +33,7 @@ boolean simulateBlocks = true;
 // to create scalable graphical feedback
 static float cursor_size = 15;
 static int block_diameter = 120;
+int text_size;
 
 // used for beat calculations
 int bpm = 60;
@@ -84,7 +85,8 @@ void setup()
   frameRate(60);
 
   font = createFont("Arial", 32);
-
+  text_size = block_diameter/3;
+  
   //SHAPE Setup
   beatShadow = sinCircle(0, 0, block_diameter/2, 0, 8, block_diameter/20);
   dashCircle = dashedCircle(0, 0, block_diameter, 10);
@@ -93,7 +95,6 @@ void setup()
   ellipseMode(CENTER);
   circleShadow = createShape(ELLIPSE, 0, 0, block_diameter + 10, block_diameter +10);
   circleShadow.disableStyle();
-
 
 
   // we create an instance of the TuioProcessing client
@@ -140,18 +141,18 @@ void setup()
   millisPerBeat = 60000/bpm;
 
   if (simulateBlocks) {
-    FunctionBlock funcTest = new FunctionBlock(500,500, 0);
+    FunctionBlock funcTest = new FunctionBlock(500, 500, 0);
     FunctionBlock funcTest2 = new FunctionBlock(500, 800, 1);
-    
+
     //StartLoopBlock testLoop = new StartLoopBlock(700,500);
-    testClip = new ClipBlock(700, 500, 10);
-    //ClipBlock testClip2 = new ClipBlock(850, 350, 11);
+    testClip = new ClipBlock(380, 300, 10);
+    ClipBlock testClip2 = new ClipBlock(900, 800, 11);
     //ClipBlock baitBlock = new ClipBlock(1200,600,12);
-    CallBlock callTest = new CallBlock(700,800);
+    CallBlock callTest = new CallBlock(700, 800);
     //ConditionalBlock testCond = new ConditionalBlock(900,500);
     //BooleanBlock testBool = new BooleanBlock(900, 200);
   }
-  
+
   CheckForExistingTuioObjects();
 }
 
@@ -163,11 +164,11 @@ void draw()
   //cornerBeatGlow();
 
   if (debug) {
-
-    //shape(playShadow, 400,400);
+    colorMode(RGB);   
+    
   }
 
-  
+
 
 
   textFont(font, 18);
@@ -196,17 +197,16 @@ void draw()
     if (b.leadsActive) {
       b.drawLeads();
     }
-
   }
-  
- for (PlayHead p : allPlayHeads) {
+
+  for (PlayHead p : allPlayHeads) {
     p.Update();
     p.draw();
   }
-  
+
   for (Block b : allBlocks) {
-        b.Update();
-        b.drawShadow();
+    b.Update();
+    b.drawShadow();
   }
 
   for (Button b : allButtons) {
@@ -217,16 +217,15 @@ void draw()
   if (hoverDebug) {
     HoverDebug();
   }
-  
+
   if (showFPS) {
     colorMode(RGB);
-    
+
     textSize(32);
     textAlign(LEFT, TOP);
     fill(255, 0, 0);
     text((int)frameRate, 80, 80);
   }
-
 }
 
 

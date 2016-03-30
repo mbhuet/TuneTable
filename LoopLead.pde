@@ -26,9 +26,9 @@ class LoopLead extends Lead {
     loopBlock.blocksInLoop.add(loopBlock.blocksInLoop.indexOf(previous) + 1, this.owner);
   }
 
-  LoopLead(Block owner, Block occupant, Block previous, StartLoopBlock loopBlock, int index, LineOptions[] options) {
+  LoopLead(Block owner, Block occupant, Block previous, StartLoopBlock loopBlock, int index, LeadOptions options) {
     this(owner, occupant, previous, loopBlock, index);
-    this.lines = options;
+    this.options = options;
   }
 
   public void Update() {
@@ -160,7 +160,7 @@ class LoopLead extends Lead {
 
   public void connect(Block block) {
     owner.SetChild(block, leadIndex);
-    block.leads[0] = new LoopLead(block, occupant, owner, loopBlock, 0, block.leads[0].lines);
+    block.leads[0] = new LoopLead(block, occupant, owner, loopBlock, 0, block.leads[0].options);
     block.SetChild(this.occupant, 0);
     this.occupant = block;
   }
@@ -177,6 +177,7 @@ class LoopLead extends Lead {
       owner.RemoveChild(0);
       occupant = null;
       loopBlock.blocksInLoop.remove(owner);
+      owner.leads[0] = new Lead(owner, rotation, 0, options);
     }
   }
 

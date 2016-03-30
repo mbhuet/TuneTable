@@ -24,7 +24,7 @@ class BeatBlock extends SoundBlock {
 
   void Setup() {
     canBeChained = false;
-    LoadClip();
+    LoadClips();
     buttons = new BeatButton[numBeats];
     for (int i = 0; i<numBeats; i++) {
       buttons[i] = new BeatButton(this, i, 0, 0, 0, buttonSize);
@@ -83,7 +83,6 @@ class BeatBlock extends SoundBlock {
 
   void Die() {
     super.Die();
-    clip.close();
     for (int i = 0; i<numBeats; i++) {
       buttons[i].Destroy();
       buttons[i] = null;
@@ -128,8 +127,8 @@ class BeatBlock extends SoundBlock {
 
 
   void PlayBeat() {
-    clip.cue(millis() % (beatLength));
-    clip.play();
+    clips[activeClip].cue(millis() % (beatLength));
+    clips[activeClip].play();
     clipStartTime = millis() - (millis() % (beatLength));
   }
 

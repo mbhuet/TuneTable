@@ -30,7 +30,7 @@ class EndLoopBlock extends Block {
   PlayHead temp = playHead;
     if (playHead != null)playHead = null;
     temp.playColor = this.blockColor;
-    temp.returnToLastFunction();
+    temp.returnToLastFunctionCall();
   
   }
 }

@@ -5,7 +5,6 @@ class StartLoopBlock extends Block {
   int count = 1;
   int max_count = 9;
   int displayCount = 0;
-  int text_size = block_diameter/3;
 
   
   boolean justDepleted = false;
@@ -158,17 +157,7 @@ class StartLoopBlock extends Block {
       loopRadius = min(total_dist/blocksInLoop.size(), block_diameter * 2);
   }
   
-  void drawPrototypeCircleLead(){
-   ellipseMode(CENTER);
-   strokeWeight(10);
-   stroke(255);
-   noFill();
-   PVector center = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter * 2);
-   ellipse(center.x, center.y, block_diameter * 4, block_diameter * 4);
-   PVector dashCenter = convertFromPolar(new PVector(x_pos, y_pos), rotation, block_diameter * 4);
-   shapeMode(CENTER);
-   shape(dashCircle, (int)dashCenter.x, (int)dashCenter.y);
-  }
+  
   
   void drawLeads() {
 

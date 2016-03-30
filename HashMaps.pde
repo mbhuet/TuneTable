@@ -27,46 +27,43 @@ void SetupFuncMap() {
 }
 
 
-HashMap<Integer, ClipInfo> clipDict;
+HashMap<Integer, String[]> clipDict;
 
 void SetupClipDict() {
-  clipDict = new HashMap<Integer, ClipInfo>();
-/*
-  clipDict.put(1, new ClipInfo("abstract/beep-1", 1));
-  clipDict.put(2, new ClipInfo("abstract/beep-2", 1));
-  clipDict.put(3, new ClipInfo("abstract/electronic-1", 1));
-  clipDict.put(4, new ClipInfo("abstract/harp-1", 1));
-  clipDict.put(5, new ClipInfo("abstract/harp-2", 2));
-  clipDict.put(6, new ClipInfo("abstract/keyboard-1", 1));
-  clipDict.put(7, new ClipInfo("abstract/keyboard-2", 1));
-  clipDict.put(8, new ClipInfo("abstract/marimba-1", 1));
-
-  clipDict.put(9, new ClipInfo("abstract/marimba-2", 1));
-  clipDict.put(10, new ClipInfo("abstract/marimba-3", 1));
-  clipDict.put(11, new ClipInfo("abstract/trill-1", 1));
-*/
-  clipDict.put(10, new ClipInfo("trad/bass-asc-progression", 1));
-  clipDict.put(11, new ClipInfo("trad/bass-fx-slap", 1));
-  clipDict.put(12, new ClipInfo("trad/bass-groovy", 1));
+  clipDict = new HashMap<Integer, String[]>();
   
+  clipDict.put(10, new String[] {
+    "eightbit/1_eight-bit Atari Pad-001", 
+    "eightbit/1_eight-bit Atari SineDot-002", 
+    "eightbit/1_eight-bit Atari SineDot-003"
+  });
   
-  clipDict.put(13, new ClipInfo("eightbit/eight-bit Analog Drum Loop-001", 1));
-
-  clipDict.put(14, new ClipInfo("trad/bass-slappy", 1));
-  clipDict.put(15, new ClipInfo("trad/bass-synthetic", 1));
-
-  //EIGHTBIT Sounds
-  clipDict.put(16, new ClipInfo("eightbit/eight-bit Atari Pad-004", 1));
-  clipDict.put(17, new ClipInfo("eightbit/eight-bit Video Game Loop-003", 4));
-  clipDict.put(18, new ClipInfo("eightbit/eight-bit Analog Drum Loop-015", 4));
-  clipDict.put(19, new ClipInfo("eightbit/eight-bit Atari Bassline-003", 1));
-
-  clipDict.put(20, new ClipInfo("eightbit/eight-bit Atari Lead-009", 1));
-  clipDict.put(21, new ClipInfo("eightbit/eight-bit Atari Lead-011", 2));
-  clipDict.put(22, new ClipInfo("eightbit/eight-bit Atari Lead-008", 3));
-  clipDict.put(23, new ClipInfo("eightbit/eight-bit Atari Pad-003", 3));
-
-  clipDict.put(40, new ClipInfo("kick_export", 0));
+  clipDict.put(11, new String[] {
+    "eightbit/2_eight-bit Atari Lead-004", 
+    "eightbit/2_eight-bit Atari Pad-002", 
+    "eightbit/2_eight-bit Atari Pad-003"
+  });
+  clipDict.put(12, new String[] {
+    "eightbit/3_eight-bit Atari Lead-010", 
+    "eightbit/3_eight-bit Atari Synth-001", 
+    "eightbit/3_eight-bit Atari Synth-002"
+  });
+  clipDict.put(13, new String[] {
+    "eightbit/4_eight-bit Atari Bassline-003", 
+    "eightbit/4_eight-bit Atari Bassline-004", 
+    "eightbit/4_eight-bit Atari Bassline-005"
+  });
+  clipDict.put(14, new String[] {
+    "eightbit/5_eight-bit Atari Lead-008", 
+    "eightbit/5_eight-bit Atari Lead-009", 
+    "eightbit/5_eight-bit Atari Lead-011"
+  });
+  clipDict.put(15, new String[] {
+    "eightbit/6_eight-bit Atari Lead-003", 
+    "eightbit/6_eight-bit Atari Pad-004", 
+    "eightbit/6_eight-bit Atari Synth-003"
+  });
+  
 }
 
 
@@ -110,7 +107,7 @@ void SetupIdToType() {
   for (int i = 5; i < 10; i++) {
     idToType.put(i, BlockType.CALL);
   }
-      idToType.put(122, BlockType.CALL);
+  idToType.put(122, BlockType.CALL);
 
 
   //CLIPS 10-39
@@ -118,14 +115,9 @@ void SetupIdToType() {
     idToType.put(i, BlockType.CLIP);
   }
 
-  //BEATS 40
-  //TODO change to whatever       
-  idToType.put(40, BlockType.BEAT);
-
-
-  //BOOLEANS 100-109
-  for (int i = 100; i < 110; i++) {
-    idToType.put(i, BlockType.BOOLEAN);
+  //BEATS 40-45
+  for (int i = 40; i < 46; i++) {
+    idToType.put(i, BlockType.BEAT);
   }
 
   //CONDITIONALS 50-59
@@ -141,6 +133,9 @@ void SetupIdToType() {
   idToType.put(61, BlockType.END_LOOP);
 
 
-  
+  //BOOLEANS 100-109
+  for (int i = 100; i < 110; i++) {
+    idToType.put(i, BlockType.BOOLEAN);
+  }
 }
 

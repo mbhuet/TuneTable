@@ -8,7 +8,6 @@ class Lead {
   float break_distance = block_diameter * 2; //at what distance will a connection break;
   float connect_snap_dist = block_diameter / 2; //how close does a block need to be to connect to this lead?
   boolean occupied;
-  int text_size = block_diameter/3;
   int lineSeparation = 1;
   int standardWeight = 10;
   
@@ -31,9 +30,9 @@ class Lead {
     }
   }
   
-  Lead(Block owner, float rot, int index, LineOptions[] options){
+  Lead(Block owner, float rot, int index, LeadOptions options){
     this(owner, rot, index);
-    this.lines = options;
+    this.options = options;
   }
 
   public void Update() {
