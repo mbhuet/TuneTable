@@ -176,6 +176,9 @@ class Lead {
   }
 
   public void disconnect(boolean connectAround) {
+        println("LEAD DISCONNECT");
+        println(owner);
+
     occupant = null;
     occupied = false;
     distance = reg_distance;

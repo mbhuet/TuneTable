@@ -284,25 +284,31 @@ abstract class Block {
   }
 
   public void breakChildConnections() {
+    println(this +" start breaking child connections");
     for (int i = 0; i< numLeads; i++) {
       breakConnection(i, false);
     }
+        println(this +" finished breaking child connections");
+
   }
 
   public void breakParentConnections() {
+    println(this + " start breaking parent connections");
     Block[] parentsArray = new Block[parents.size()];
     parents.toArray(parentsArray);
     for (Block p : parentsArray) {
+      println("Parent " + p + " break connection with " + this);
       p.breakConnection(this, true);
     }
+    println(this + " finished breaking barent connections");
   }
 
-//ASSUMES next child does not need information about current child, which is not true for LoopLeads
   void makeConnection(Block b, int i) {
     leads[i].connect(b);
   }
   
   void SetChild(Block b, int i){
+    println(this + " Set Child " + b);
     if (children[i] != null) 
       RemoveChild(i);
     children[i] = b;
@@ -310,6 +316,7 @@ abstract class Block {
   }
   
   void RemoveChild(int i){
+    println(this + " Remove Child");
     if (children[i] != null) {
       children[i].parents.remove(this);
       children[i] = null;
@@ -320,7 +327,8 @@ abstract class Block {
   Breaks connection with a child at index i
    */
   void breakConnection(int i, boolean connectAround) {
-      leads[i].disconnect(connectAround);
+    println(this + " breakConnection("+i+"," +connectAround+")");
+    leads[i].disconnect(connectAround);
   }
 
   /*

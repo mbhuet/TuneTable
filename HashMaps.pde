@@ -124,6 +124,8 @@ void SetupIdToType() {
   for (int i = 50; i < 60; i++) {
     idToType.put(i, BlockType.CONDITIONAL);
   }
+      idToType.put(110, BlockType.CONDITIONAL);
+
 
   //SPLIT 60
   idToType.put(60, BlockType.SPLIT);

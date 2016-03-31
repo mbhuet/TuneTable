@@ -288,7 +288,8 @@ void HoverDebug() {
         "y: " + b.y_pos, 
         "rotation: " + b.rotation, 
         "in chain? " + b.inChain, 
-        "children: " + Arrays.toString(b.children)
+        "children: " + Arrays.toString(b.children),
+        "parents: " + b.parents.toString()
       }
       );
     }

@@ -167,7 +167,7 @@ class LoopLead extends Lead {
   }
 
   public void disconnect(boolean connectAround) {
-    println("DISCONNECT");
+    println("LOOPLEAD DISCONNECT");
     if (occupant == owner) return;
 
     //if we want to connect to the block after the current occupant
@@ -179,13 +179,15 @@ class LoopLead extends Lead {
       occupant = occupant.leads[0].occupant;
     
       former_occupant.RemoveChild(0);
-      println(former_occupant + "remove child");
       loopBlock.blocksInLoop.remove(former_occupant);
-      former_occupant.leads[0] = new Lead(owner, rotation, 0, options);
+      former_occupant.leads[0] = new Lead(former_occupant, rotation, 0, options);
+      
+      println(owner + " child 0 is now " + owner.children[0]);
     }
     
     else{
-      //TODO stuff here
+      println(owner + " disconnect from child ");
+       //owner.parents.get(0).breakConnection(this.owner, true);
     }
   }
 
