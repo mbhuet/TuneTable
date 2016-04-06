@@ -64,6 +64,8 @@ class StartLoopBlock extends Block {
       //play.addStartLoop(this);
     }
     if (count == 1) justDepleted = true;
+    else justDepleted = false;
+    
     DecrementCount(false);
 
     finish();
@@ -119,10 +121,12 @@ class StartLoopBlock extends Block {
 
 
   public boolean childIsSuccessor(int i) {
+    
     if (justDepleted) {
       if (i==0) return true;
       else return false;
     }  
+    
     if (i == 0) return (count > 0);
     else return !(count > 0);
   }

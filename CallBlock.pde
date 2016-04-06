@@ -19,7 +19,11 @@ class CallBlock extends Block {
   void Setup() {
     endLead = new EndLead(this);
     functionId = 0;
+    
     leads[1].options.unlimitedDistance = true;
+    leads[1].options.visible = false;
+    endLead.options.visible = false;
+
     CheckForFunction();
   }
 
@@ -52,14 +56,10 @@ class CallBlock extends Block {
   void CheckForFunction() {
     if (function!= null && !funcMap.containsKey(functionId)) {
       function = null;
-      leads[1].options.visible = false;
       leads[1].disconnect(false);
-      endLead.options.visible = false;
     } else if (function == null && funcMap.containsKey(functionId)) {
       function = funcMap.get(functionId);
-      leads[1].options.visible = false;
       leads[1].connect(function);
-      endLead.options.visible = false;//true;
     }
   }
 
