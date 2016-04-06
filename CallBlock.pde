@@ -59,7 +59,7 @@ class CallBlock extends Block {
       function = funcMap.get(functionId);
       leads[1].options.visible = true;
       leads[1].connect(function);
-      endLead.options.visible = true;
+      endLead.options.visible = false;//true;
     }
   }
 

@@ -2,7 +2,7 @@ class PlayHead {
   FunctionBlock origin;
   Block activeBlock;
   LinkedList<Lead> path;
-  float pathDecayRate = 0.01f;
+  float pathDecayRate = 1; //pixels/second
   float minDecayDist = .5f;
   float pathDist = 0;
   color playColor;
@@ -18,7 +18,8 @@ class PlayHead {
     allPlayHeads.add(this);
     this.origin = origin;
     origin.spawnedPlayHeads.add(this);
-functionCallStack = new Stack<CallBlock>();
+    functionCallStack = new Stack<CallBlock>();
+    lastMillis = millis();
   }
 
   PlayHead(FunctionBlock origin, Block start, color c) {
@@ -32,12 +33,17 @@ functionCallStack = new Stack<CallBlock>();
   }
 
   public void Update() {
-    pathDist = min(pathDist - minDecayDist, pathDist * (1-pathDecayRate));// * ((float)(millis() - lastMillis)/1000.0));
-    if(pathDist <0) pathDist = 0;
-    lastMillis = millis();
+    float deltaTime = (float)(millis() - lastMillis)/1000;
+    pathDist -= max(minDecayDist * deltaTime, 
+                   pathDist * pathDecayRate * deltaTime);
+                   println("Update pathDist to " + (deltaTime));
+    if (pathDist <0) pathDist = 0;
     if (dead && pathDist <= 1) {
       killPlayHeads.add(this);
     }
+    
+        lastMillis = millis();
+
   }
 
   public void draw() {
@@ -87,22 +93,25 @@ functionCallStack = new Stack<CallBlock>();
     }
   }
 
+  //When the playhead jumps from one block to the next, it leaves a thick line that will shrink to catch up
   void highlightPath() {
+    //if there are no Leads in the path, there's nothing to do, so return.
     if (path.peekFirst() == null) return;
 
+    //first we'll get the sum length of all Leads in the path
     float totalDist = 0;
     for (Lead l : path) {
       totalDist += l.distance - block_diameter;
     }
-    
-    while (path.peekFirst() != null && totalDist - (path.getLast ().distance - block_diameter) > pathDist) { //NO SUCH ELEMENT EXCEPTION
+
+    //while there are Leads at the end of path that will no longer be reached given our current pathDist, remove them from path
+    while (path.peekFirst () != null && (totalDist - (path.getLast ().distance - block_diameter)) > pathDist) {
       totalDist = totalDist - (path.getLast().distance - block_diameter);
-      
+
       path.removeLast();
     }
 
     float remDist = pathDist;
-
 
     for (Lead l : path) {
       if (remDist >= (l.distance - block_diameter)) {
@@ -118,6 +127,7 @@ functionCallStack = new Stack<CallBlock>();
   void addLead(Lead lead) {
     path.offerFirst(lead);
     pathDist += lead.distance - block_diameter;
+                       println("Add Lead pathDist = " + pathDist);
 
   }
 

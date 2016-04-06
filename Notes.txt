@@ -1,0 +1,5 @@
+TODO
+
+turn marching lines into arrows
+
+GOTO is causing an infinite loop somewhere. Can reproduce by stamping blue GOTO in blue lead

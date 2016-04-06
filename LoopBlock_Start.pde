@@ -175,6 +175,8 @@ class StartLoopBlock extends Block {
     (int)(minusPos.y), 
     countLeadRot + PI/2);
   }
+  
+ 
 
   void Die() {
     super.Die();
