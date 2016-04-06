@@ -74,7 +74,7 @@ public Lead lastActiveLeadInChain(FunctionBlock start){
   while(!endFound){
     int[] lookNext = currentBlock.getSuccessors();
     if(currentBlock.type == BlockType.START_LOOP) lookNext = new int[]{1};
-    
+    else if(currentBlock.type == BlockType.CALL) lookNext = new int[]{0};
     if(currentBlock.children[lookNext[0]] != null) currentBlock = currentBlock.children[lookNext[0]];
     else{ 
       endFound = true;

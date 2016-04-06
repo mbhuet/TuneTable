@@ -1,6 +1,6 @@
 class ClipBlock extends SoundBlock {
   int buttonSize = block_diameter/4;
-  int buttonDist;
+  int buttonDist = block_diameter/2;
   ClipButton[] buttons;
   
   ClipBlock(TuioObject tObj) {
@@ -13,7 +13,6 @@ class ClipBlock extends SoundBlock {
 
   void Setup() {
     LoadClips();
-    buttonDist = block_diameter/2;
     buttons = new ClipButton[clips.length];
     for(int i = 0; i< buttons.length; i++){
       buttons[i] = new ClipButton(this, i, 0, 0, 0, buttonSize);
@@ -69,7 +68,9 @@ class ClipBlock extends SoundBlock {
   
   void arrangeButtons(float startAngle) {
     for (int i = 0; i<buttons.length; i++) {
-      buttons[i].Update((int)(x_pos + cos(startAngle + i * 2*PI/clips.length) * buttonDist), (int)(y_pos + sin(startAngle + i * 2*PI/clips.length) * buttonDist), i*2*PI/clips.length);
+      buttons[i].Update((int)(x_pos + cos(startAngle + i * 2*PI/clips.length) * buttonDist), 
+                        (int)(y_pos + sin(startAngle + i * 2*PI/clips.length) * buttonDist), 
+                        startAngle + i*2.0*PI/clips.length);
     }
   }
   
@@ -114,10 +115,13 @@ class ClipButton extends Button {
     block = b;
   }
   public void Trigger(Cursor cursor) {
+    println("TRRREIIIIBIGGGERRR");
     block.SwitchClip(index);
   }
   
   public void Trigger(){
+        println("TRRREIIIIBIGGGERRR");
+
     block.SwitchClip(index);
   }
   
@@ -136,19 +140,26 @@ class ClipButton extends Button {
     stroke(strokeCol);
     
     pushMatrix();
-    //translate(block.x_pos, block.y_pos);
     translate(x,y);
-    rotate(rotation);
+        rotate(rotation);
+
     rotate(HALF_PI);
     //arc(0,0,block_diameter, block_diameter, -QUARTER_PI,QUARTER_PI);
     ellipse(0, 0, size*2, size*2);
     
     textAlign(CENTER, CENTER);
-      textSize(text_size);
+    translate(0,-size/1.5);
+    textSize(text_size/2);
     fill(strokeCol);
     text(index, 0,0);
     popMatrix();
-    //block.drawShadow();
+    
+    pushMatrix();
+    noFill();
+    stroke(strokeCol);
+    translate(block.x_pos, block.y_pos);
+    arc(0,0,block_diameter+10, block_diameter +10, rotation - PI/7, rotation + PI/7);
+    popMatrix();
   }
 }
 
