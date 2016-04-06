@@ -23,7 +23,7 @@ class FunctionBlock extends Block {
     leadsActive = true;
     executeButt = new ExecuteButton(this, -block_diameter, 0, 0, block_diameter/4);
     stopButt = new StopButton(this, -block_diameter, 0, 0, block_diameter/4);
-    stopButt.isShowing = false;
+    stopButt.SetShowing(false);
     blockColor = colorSet[sym_id];
   }
 
@@ -90,6 +90,16 @@ class FunctionBlock extends Block {
     popMatrix();
   }
   
+  void drawButtons(){
+    if(stopButt.isShowing) stopButt.drawButton();
+    if(executeButt.isShowing) executeButt.drawButton();
+  }
+  
+  void draw(){
+    drawButtons();
+    drawShadow();
+  }
+  
   void updateLeads(float offset, color col, boolean isActive, boolean setBlockColor, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
     super.updateLeads(offset, col, isActive, false, activeVisited, inactiveVisited);
   }
@@ -107,8 +117,8 @@ class FunctionBlock extends Block {
   void execute() {
     waitingForBeat = true;
     waitUntil = millis() + (millisPerBeat * beatsPerMeasure - millis() % (millisPerBeat * beatsPerMeasure));
-    executeButt.isShowing = false;
-    stopButt.isShowing = true;
+    executeButt.SetShowing(false);
+    stopButt.SetShowing(true);
 
   }
 
@@ -120,9 +130,9 @@ class FunctionBlock extends Block {
     spawnedPlayHeads.remove(pHead);
     if (spawnedPlayHeads.size() == 0) {
       if(stopButt != null) //When the block is removed, buttons may be killed before playheads are removed through the playhead Kill Queue
-        stopButt.isShowing = false;
+        stopButt.SetShowing(false);
       if(executeButt != null)
-        executeButt.isShowing = true;
+        executeButt.SetShowing(true);
     }
   }
 
@@ -132,8 +142,8 @@ class FunctionBlock extends Block {
     }
     //spawnedPlayHeads.clear();
 
-    stopButt.isShowing = false;
-    executeButt.isShowing = true;
+    stopButt.SetShowing(false);
+    executeButt.SetShowing(true);
   }
 }
 

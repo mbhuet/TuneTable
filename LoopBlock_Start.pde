@@ -47,11 +47,11 @@ class StartLoopBlock extends Block {
 
     if (inChain) {
       drawNumber();
-      plus.isShowing = true;
-      minus.isShowing = true;
+      plus.SetShowing(true);
+      minus.SetShowing(true);
     } else {
-      plus.isShowing = false;
-      minus.isShowing = false;
+      plus.SetShowing(false);
+      minus.SetShowing(false);
     }
   }
   void OnRemove() {
@@ -163,7 +163,7 @@ class StartLoopBlock extends Block {
   void arrangeButtons() {
     float countLeadRot = leads[0].rotation;
     float buttonDist = block_diameter * .75; // how far along the lead
-    float buttonLeadOffset = block_diameter/2; // how far from the lead
+    float buttonLeadOffset = block_diameter/2.5; // how far from the lead
 
     PVector buttonCenter = new PVector(x_pos + cos(countLeadRot) * buttonDist, 
     y_pos + sin(countLeadRot) * buttonDist);
@@ -178,6 +178,16 @@ class StartLoopBlock extends Block {
     minus.Update((int)(minusPos.x), 
     (int)(minusPos.y), 
     countLeadRot + PI/2);
+  }
+  
+  void drawButtons(){
+    if(plus.isShowing) plus.drawButton();
+    if(minus.isShowing) minus.drawButton();
+  }
+  
+  void draw(){
+    drawButtons();
+    drawShadow();
   }
   
  
@@ -224,7 +234,7 @@ class StartLoopBlock extends Block {
     stroke(255);
     strokeWeight(text_size/10);
     ellipseMode(CENTER);
-    ellipse(0, text_size/10, text_size, text_size);
+    //ellipse(0, text_size/10, text_size, text_size);
 
     textAlign(CENTER, CENTER);
     textSize(text_size);

@@ -244,7 +244,7 @@ abstract class Block {
 
   public void updateNeighbors() {
 
-    if (this.canBeChained) {
+    if (this.canBeChained && !this.inChain) {
       findParents();
     }
     if (leadsActive) {

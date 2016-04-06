@@ -98,6 +98,13 @@ class BeatBlock extends SoundBlock {
       buttons[i].Update((int)(x_pos + cos(startAngle + i * 2*PI/numBeats) * buttonDist), (int)(y_pos + sin(startAngle + i * 2*PI/numBeats) * buttonDist), i*2*PI/numBeats);
     }
   }
+  
+  void drawButtons(){
+    for (BeatButton butt : buttons) {
+      if(butt.isShowing)
+      butt.drawButton();
+    }
+  }
 
   void drawBridge(int afterIndex) {
     noFill();
@@ -123,6 +130,11 @@ class BeatBlock extends SoundBlock {
     rotate(rotation);
     shape(beatShadow);
     popMatrix();
+  }
+  
+  void draw(){
+    drawShadow();
+    drawButtons();
   }
 
 

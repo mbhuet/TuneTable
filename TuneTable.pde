@@ -204,13 +204,15 @@ void draw()
 
   for (Block b : allBlocks) {
     b.Update();
-    b.drawShadow();
+    b.draw();
   }
-
+  
+  /*
   for (Button b : allButtons) {
     if (b.isShowing)
       b.drawButton();
   }
+  */
 
   if (hoverDebug) {
     HoverDebug();

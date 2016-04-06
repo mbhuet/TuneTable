@@ -13,7 +13,7 @@ class ClipBlock extends SoundBlock {
 
   void Setup() {
     LoadClips();
-    buttonDist = block_diameter/2 + buttonSize;
+    buttonDist = block_diameter/2;
     buttons = new ClipButton[clips.length];
     for(int i = 0; i< buttons.length; i++){
       buttons[i] = new ClipButton(this, i, 0, 0, 0, buttonSize);
@@ -71,6 +71,24 @@ class ClipBlock extends SoundBlock {
     for (int i = 0; i<buttons.length; i++) {
       buttons[i].Update((int)(x_pos + cos(startAngle + i * 2*PI/clips.length) * buttonDist), (int)(y_pos + sin(startAngle + i * 2*PI/clips.length) * buttonDist), i*2*PI/clips.length);
     }
+  }
+  
+  void SetButtonsShowing(boolean isShowing){
+    for(ClipButton butt : buttons){
+      butt.SetShowing(isShowing);
+    }
+  }
+  
+    void drawButtons(){
+    for(ClipButton butt : buttons){
+      if(butt.isShowing)
+      butt.drawButton();
+    }
+  }
+  
+  void draw(){
+        drawButtons();
+    drawShadow();
   }
 
   void Die() {
@@ -130,6 +148,7 @@ class ClipButton extends Button {
     fill(strokeCol);
     text(index, 0,0);
     popMatrix();
+    //block.drawShadow();
   }
 }
 

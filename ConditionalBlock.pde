@@ -124,6 +124,20 @@ class ConditionalBlock extends Block {
     super.Die();
   }
   
+  void drawButtons(){
+    if(leftButton.isShowing){
+      leftButton.drawButton();
+    }
+    if(rightButton.isShowing){
+      rightButton.drawButton();
+    }
+  }
+  
+  void draw(){
+    drawShadow();
+    drawButtons();
+  }
+  
   public void Activate(PlayHead play, Block previous) {
     super.Activate(play, previous);
     finish();
