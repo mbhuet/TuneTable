@@ -198,6 +198,16 @@ class StartLoopBlock extends Block {
     for (Lead l : leads) {
       l.draw();
     }
+    
+    //This hack is necessary because drawing arcs is way too slow. Drawing the loop as a solid arc brought the framerate to 12 fps
+    if(count == 0){
+      for(LineOptions line : leads[0].lines){
+        if(!line.visible) continue;
+      stroke(line.col);
+      ellipseMode(CENTER);
+      ellipse(loopCenter.x, loopCenter.y, line.x_offset * 2, line.x_offset * 2);
+      }
+    }
 
     //headLoopLead.draw();
   }

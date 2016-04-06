@@ -257,7 +257,7 @@ abstract class Block {
     for (int i = 0; i<numLeads; i++) {
       if (leads[i].canRecieveChild()) {
         for (Block block : allBlocks) {
-          if (!( block==this || block.parents.contains(this) || this.parents.contains(block)) && leads[i].isUnderBlock(block) && block.canBeChained) {
+          if (!( block==this || block.parents.contains(this) || this.parents.contains(block) || block.inChain) && leads[i].isUnderBlock(block) && block.canBeChained) {
             makeConnection(block, i);
             break;
           }

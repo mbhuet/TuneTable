@@ -63,7 +63,7 @@ class LoopLead extends Lead {
       if (options.dashed) {
         dashedArc(0, 0, (start_radius - offset_radius), 0, arc_range, (options.marching? options.dash_offset : 0));
       } else {
-        arc(0, 0, (start_radius - offset_radius) * 2, (start_radius - offset_radius) * 2, 0, arc_range);
+        //arc(0, 0, (start_radius - offset_radius) * 2, (start_radius - offset_radius) * 2, 0, arc_range);
       }
       numVisibleVisited++;
     }
@@ -199,7 +199,7 @@ class LoopLead extends Lead {
   }
 
   boolean footprintActive() {
-    return abs(occupantAngle - ownerAngle)*loopBlock.loopRadius > block_diameter * 2;
+    return abs(occupantAngle - ownerAngle)*loopBlock.loopRadius > block_diameter * 2.5;
   }
   
   public PVector footprintPosition(){
