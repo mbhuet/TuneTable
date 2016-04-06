@@ -193,6 +193,9 @@ class LoopLead extends Lead {
 
 
   void trackBlock(Block block) {
+        float arc_range = abs(occupantAngle - ownerAngle);
+      distance = loopBlock.loopRadius * arc_range;
+    
   }
 
   boolean footprintActive() {

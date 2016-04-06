@@ -57,7 +57,7 @@ class CallBlock extends Block {
       endLead.options.visible = false;
     } else if (function == null && funcMap.containsKey(functionId)) {
       function = funcMap.get(functionId);
-      leads[1].options.visible = true;
+      leads[1].options.visible = false;
       leads[1].connect(function);
       endLead.options.visible = false;//true;
     }
@@ -83,7 +83,6 @@ class CallBlock extends Block {
     }
 
     endLead.draw();
-    println("draw endLead");
   }
 
 
@@ -102,7 +101,6 @@ class CallBlock extends Block {
 
   void updateLeads(float offset, color col, boolean isActive, boolean setBlockColor, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
     super.updateLeads(offset, col, isActive, setBlockColor, activeVisited, inactiveVisited);
-    println(endLead);
     endLead.lines = leads[1].lines;
   }
 }

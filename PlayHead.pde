@@ -3,7 +3,7 @@ class PlayHead {
   Block activeBlock;
   LinkedList<Lead> path;
   float pathDecayRate = 1; //pixels/second
-  float minDecayDist = .5f;
+  float minDecayDist = 50;
   float pathDist = 0;
   color playColor;
   int lastMillis = 0;
@@ -11,15 +11,24 @@ class PlayHead {
 
   Stack<CallBlock> functionCallStack;
 
-  void Init(FunctionBlock origin, Block start, color c) {
+  void Init(FunctionBlock origin, color c) {
     path = new LinkedList<Lead>();
     playColor = c;
-    activeBlock = start;
     allPlayHeads.add(this);
     this.origin = origin;
     origin.spawnedPlayHeads.add(this);
     functionCallStack = new Stack<CallBlock>();
     lastMillis = millis();
+  }
+
+  void Init(FunctionBlock origin, Block start, color c) {
+    Init(origin, c);
+    activeBlock = start;
+  }
+
+  //This constructor is for PlayHeads that will highlight the path of a lead that has no occupant, therefore it won't have a start Block
+  PlayHead(FunctionBlock origin, color c) {
+    Init(origin, c);
   }
 
   PlayHead(FunctionBlock origin, Block start, color c) {
@@ -35,15 +44,12 @@ class PlayHead {
   public void Update() {
     float deltaTime = (float)(millis() - lastMillis)/1000;
     pathDist -= max(minDecayDist * deltaTime, 
-                   pathDist * pathDecayRate * deltaTime);
-                   println("Update pathDist to " + (deltaTime));
+    pathDist * pathDecayRate * deltaTime);
     if (pathDist <0) pathDist = 0;
     if (dead && pathDist <= 1) {
       killPlayHeads.add(this);
     }
-    
-        lastMillis = millis();
-
+    lastMillis = millis();
   }
 
   public void draw() {
@@ -57,22 +63,30 @@ class PlayHead {
     for (int i = 0; i< nextBlockIndices.length; i++) {
       int indexOfSuccessor = nextBlockIndices[i];
       Block nextBlock = currentBlock.children[indexOfSuccessor];
+
       if (nextBlock != null && nextBlock.inChain) { //if there is a block
         if (!hasTravelled) {
           addLead(currentBlock.leads[indexOfSuccessor]);
           activeBlock = nextBlock;
           nextBlock.Activate(this, currentBlock);
           hasTravelled = true;
-        } else {  
+        } else {//create a new PlayHead that will follow this path
           PlayHead newPlay = new PlayHead(origin, nextBlock, currentBlock, playColor);
           newPlay.addLead(currentBlock.leads[indexOfSuccessor]);
         }
       } else { //there is no block ahead
-        // if there are any start Loops in the stack, we'll jump back to it
-        if (functionCallStack.size() > 0) {
-          activeBlock = functionCallStack.pop();
+        if (functionCallStack.size() > 0) {// if there are any CallBlocks in the stack, we'll jump back to the top one
+          addLead(currentBlock.leads[indexOfSuccessor]);
+          CallBlock callBlock = functionCallStack.pop();
+          addLead(callBlock.endLead);
+          activeBlock = callBlock;
           activeBlock.Activate(this, currentBlock);
           hasTravelled = true;
+        } else if (!hasTravelled) {// this PlayHead will highlight the dead-end lead and die
+          addLead(currentBlock.leads[indexOfSuccessor]);
+        } else {//create a Playhead that will only highlight the dead-end lead and die
+          PlayHead newPlay = new PlayHead(origin, playColor);
+          newPlay.addLead(currentBlock.leads[indexOfSuccessor]);
         }
       }
     }
@@ -101,12 +115,12 @@ class PlayHead {
     //first we'll get the sum length of all Leads in the path
     float totalDist = 0;
     for (Lead l : path) {
-      totalDist += l.distance - block_diameter;
+      totalDist += l.distance;// - block_diameter;
     }
 
     //while there are Leads at the end of path that will no longer be reached given our current pathDist, remove them from path
-    while (path.peekFirst () != null && (totalDist - (path.getLast ().distance - block_diameter)) > pathDist) {
-      totalDist = totalDist - (path.getLast().distance - block_diameter);
+    while (path.peekFirst () != null && (totalDist - (path.getLast ().distance)) > pathDist) {
+      totalDist = totalDist - (path.getLast().distance);
 
       path.removeLast();
     }
@@ -114,11 +128,11 @@ class PlayHead {
     float remDist = pathDist;
 
     for (Lead l : path) {
-      if (remDist >= (l.distance - block_diameter)) {
+      if (remDist >= (l.distance)) {
         l.highlightTravelled(origin.sym_id, 1, playColor);
-        remDist -= l.distance - block_diameter;
+        remDist -= l.distance;
       } else {
-        float percent = (remDist/(l.distance - block_diameter));
+        float percent = (remDist/(l.distance));
         l.highlightTravelled(origin.sym_id, percent, playColor);
       }
     }
@@ -126,9 +140,8 @@ class PlayHead {
 
   void addLead(Lead lead) {
     path.offerFirst(lead);
-    pathDist += lead.distance - block_diameter;
-                       println("Add Lead pathDist = " + pathDist);
-
+    pathDist += lead.distance;// - block_diameter;
+    println("Add Lead pathDist = " + pathDist);
   }
 
   public void addFunctionCall(CallBlock call) {

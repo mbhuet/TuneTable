@@ -146,9 +146,15 @@ class Lead {
     translate(owner.x_pos, owner.y_pos);
     //translate(lines[lineNum].x_offset, 0);
     rotate(rotation);
-    translate(block_diameter/2, 0);
-
-    line( (distance - block_diameter) * (1.0-percent), 0, distance - block_diameter, 0);
+    //translate(block_diameter/2, 0);
+    
+    if(options.reverse_march){
+      println("reverse march highlight");
+            line(0, 0, (distance) * (percent), 0);
+    }
+    else{
+      line( (distance) * (1.0-percent), 0, distance, 0);
+    }
 
     popMatrix();
   }
