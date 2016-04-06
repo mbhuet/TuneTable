@@ -24,7 +24,6 @@ abstract class Button{
   }
   
   public boolean IsUnder(int hit_x, int hit_y){
-    
     return (dist(hit_x, hit_y, x, y) < size);
   }
   
