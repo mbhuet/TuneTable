@@ -6,14 +6,16 @@ abstract class SoundBlock extends Block {
 
   Block previous;
 
-  AudioPlayer clip;
+  AudioPlayer[] clips;
+
+  int activeClip = 0;
 
 
 
   public void Activate(PlayHead play, Block previous) {
-     if(playHead != null){
+    if (playHead != null) {
       playHead.Die();
-     }
+    }
     super.Activate(play, previous);
     this.previous = previous;
     Play();
@@ -25,40 +27,59 @@ abstract class SoundBlock extends Block {
   }
 
 
-  void LoadClip() {
-    if (clipDict.containsKey(sym_id)) {
-      ClipInfo info =  clipDict.get(sym_id);
-      String clip_name = info.name;
-      clip = minim.loadFile("clips/"+clip_name+".wav");
-      clip.rewind();
-    } else {
-      println("No clip found for " + sym_id + ": Possible typo");
-      ClipInfo info =  clipDict.get(10);
-      String clip_name = info.name;
-      clip = minim.loadFile("clips/"+clip_name+".wav");
-      clip.rewind();
+  void LoadClips() {
+    int clips_id = sym_id < 40 ? sym_id%6+10 : sym_id;
+    if (!clipDict.containsKey(clips_id)) {
+      println("No clip found for " + clips_id + ": Possible typo");
+      clips_id = 10;
     }
+    String[] fileNames =  clipDict.get(clips_id);
+    clips = new AudioPlayer[fileNames.length];
+    for (int i = 0; i< fileNames.length; i++) {
+      LoadClip(i, fileNames[i]);
+    }
+  }
+
+
+  void LoadClip(int i, String fileName) {
+    clips[i] = minim.loadFile("clips/"+fileName+".wav");
+    clips[i].rewind();
+  }
+
+  void CloseClips() {
+    for (AudioPlayer clip : clips) {
+      clip.close();
+    }
+  }
+
+  void SwitchClip(int nextActiveClip) {
+    if (isPlaying) {
+      int pos = clips[activeClip].position();
+      clips[activeClip].rewind();
+      clips[activeClip].pause();
+      clips[nextActiveClip].play(pos);
+    }
+    activeClip = nextActiveClip;
   }
 
   void Play() {
     playTimer = 0;
     isPlaying = true;
-    clip.cue(millis() % millisPerBeat);
-    clip.play();
+    clips[activeClip].cue(millis() % millisPerBeat);
+    clips[activeClip].play();
     startTime = millis();
-    //println(clip.isPlaying() +" play " + clip.length() + " at millis " + millis());
   }
 
   void Stop() {
-    //println("stop " + clip.position() + " at millis " + millis());
     playTimer = 0;
     isPlaying = false;
-    clip.rewind();
-    clip.pause();
-    //println("rewind " + clip.position() + " at millis " + millis());
-    
+    clips[activeClip].rewind();
+    clips[activeClip].pause();
   }
 
-  
+  void Die() {
+    super.Die();
+    CloseClips();
+  }
 }
 

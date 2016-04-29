@@ -43,7 +43,7 @@ public void dashedLine(int x1, int y1, int x2, int y2, float offset) {
 
   float lineOffset = min(lineLength, offsetLength);
   float gapOffset = max(0, (offsetLength - lineLength));
-  
+
   line(0, 0, lineOffset, 0);
   position+=lineOffset;
   translate(lineOffset, 0);
@@ -67,13 +67,13 @@ public void dashedLine(int x1, int y1, int x2, int y2, float offset) {
   popMatrix();
 }
 
-public void dashedArc(int center_x, int center_y, float radius,  float start, float end, float offset) {
+public void dashedArc(int center_x, int center_y, float radius, float start, float end, float offset) {
   int lineLength = block_diameter/4;
   //total circumference  =  2 * PI * r
   // circumference/lineLength gives us the fraction of 2 PI that results in an arc segment of length lineLength
   float arcAngle = 2*PI / ((2 * PI * radius)/lineLength);
   float gapAngle = arcAngle/2;
-  
+
 
   float position = start;
   strokeCap(ROUND);
@@ -81,21 +81,19 @@ public void dashedArc(int center_x, int center_y, float radius,  float start, fl
   pushMatrix();
   translate(center_x, center_y);
   //rotate(PI);
-  
+
   float unitAngle = arcAngle + gapAngle;
   float offsetAngle = unitAngle * offset;
 
   float gapOffset = min(gapAngle, offsetAngle);
   float arcOffset = max(0, (offsetAngle - gapAngle));
-  //println("arcAngle " + arcOffset + ", gapAngle " + gapOffset);
 
   arc(0, 0, radius*2, radius*2, position, position + arcOffset);
   position+=arcOffset;
   position+=gapOffset;
-  
+
   while (position < end) {
-    //println("position " + position + ", " + min(end - position, arcAngle));
-    arc(0,0,radius*2,radius*2, position, position + min(end - position, arcAngle));
+    arc(0, 0, radius*2, radius*2, position, position + min(end - position, arcAngle));
     //line(0, 0, min(distance-position, lineLength), 0);
     position+=arcAngle;
     position+=gapAngle;
@@ -114,7 +112,7 @@ PShape sinCircle(int x, int y, int radius, float rotation, int numLumps, float a
   float amp = amplitude;
   float dx, dy;  
   shape.beginShape();
-  
+
   while (angle <= 2*PI) {
     float localAmp = cos(angle * freq + PI) * amp;
     dx = x + (radius + localAmp) * cos(angle);
@@ -124,24 +122,25 @@ PShape sinCircle(int x, int y, int radius, float rotation, int numLumps, float a
 
     shape.curveVertex(dx, dy);
   }
-    shape.endShape(CLOSE);
-    return shape;
+  shape.endShape(CLOSE);
+  return shape;
 }
 
-PShape circle(int radius){
+PShape circle(int radius) {
   PShape shape = createShape();
   shape.beginShape();
   float angle = 0;
-  
+
   while (angle <= 2*PI) {
     float dx = cos(angle) * 100;
     float dy = sin(angle) * 100;
     angle += PI/8;
     shape.curveVertex(dx, dy);
   }
-    shape.endShape(CLOSE);
-    return shape;
+  shape.endShape(CLOSE);
+  return shape;
 }
+
 
 //TAKES A LOT OF PROCESSING POWER
 void radialGradient(float x, float y, int radius, color innerColor, color outerColor) {
@@ -152,5 +151,19 @@ void radialGradient(float x, float y, int radius, color innerColor, color outerC
     fill(lerpColor(outerColor, innerColor, inter));
     ellipse(x, y, r*2, r*2);
   }
+}
+
+PShape testShape() {
+
+  PShape s = createShape();
+  s.beginShape();
+  s.fill(0, 0, 255);
+  s.noStroke();
+  s.vertex(0, 0);
+  s.vertex(0, 50);
+  s.vertex(50, 50);
+  s.vertex(50, 0);
+  s.endShape(CLOSE);
+  return s;
 }
 

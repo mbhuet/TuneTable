@@ -153,9 +153,6 @@ void TuioUpdate() {
           newBlock = new StartLoopBlock(curObj);
         break;
         
-        case END_LOOP:
-          newBlock = new EndLoopBlock(curObj);
-        break;
         
         default:
           //newBlock = new FunctionBlock(curObj);

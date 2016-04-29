@@ -8,18 +8,11 @@ class Lead {
   float break_distance = block_diameter * 2; //at what distance will a connection break;
   float connect_snap_dist = block_diameter / 2; //how close does a block need to be to connect to this lead?
   boolean occupied;
-  int text_size = block_diameter/3;
   int lineSeparation = 1;
   int standardWeight = 10;
   
-  
-  public boolean visible = true;
-  public PImage image;
-  public int number = 0;
-  public boolean showNumber = false;
-  
-
   public LineOptions[] lines;
+  public LeadOptions options;
 
 
   Lead(Block owner, float rot, int index) {
@@ -28,6 +21,7 @@ class Lead {
     leadIndex = index;
     occupied = false;
     distance = reg_distance;
+    options = new LeadOptions();
     lines = new LineOptions[5];
     for (int i = 0; i< lines.length; i++) {
       lines[i] = new LineOptions();
@@ -36,9 +30,9 @@ class Lead {
     }
   }
   
-  Lead(Block owner, float rot, int index, LineOptions[] options){
+  Lead(Block owner, float rot, int index, LeadOptions options){
     this(owner, rot, index);
-    this.lines = options;
+    this.options = options;
   }
 
   public void Update() {
@@ -57,7 +51,7 @@ class Lead {
   }
 
   public void draw() {
-    if(!visible) return;
+    if(!options.visible) return;
     colorMode(RGB, 255);
 
     int numVisible = numLinesVisible();
@@ -69,18 +63,18 @@ class Lead {
     rotate(rotation);
 
     for (int i = 0; i<lines.length; i++) {
-      LineOptions options = lines[i];
-      if (!options.visible) continue;
-      stroke(options.col);
-      strokeWeight(options.weight);
+      LineOptions lineOptions = lines[i];
+      if (!lineOptions.visible) continue;
+      stroke(lineOptions.col);
+      strokeWeight(lineOptions.weight);
 
       pushMatrix();
       int offset_x = (numVisibleVisited * (standardWeight + lineSeparation));
       lines[i].x_offset = (start_x + offset_x);
       translate(0, start_x + offset_x);
 
-      if (options.dashed) {
-        dashedLine(0, 0, (int)distance, 0, (options.marching? options.dash_offset : 0));
+      if (lineOptions.dashed) {
+        dashedLine(0, 0, (int)distance, 0, (lineOptions.marching? (options.reverse_march? -lineOptions.dash_offset : lineOptions.dash_offset): 0));
       } else {
         line(0, 0, distance - block_diameter/2, 0);
       }
@@ -93,7 +87,7 @@ class Lead {
       numVisibleVisited++;
     }
     
-    if (!occupied) {
+    if (showFootprint()) {
       pushMatrix();
       translate(distance, 0);
       dashCircle.setStroke(color(255));//lines[i].col);
@@ -103,21 +97,21 @@ class Lead {
       popMatrix();
     }
     
-    if (image != null) {
+    if (options.image != null) {
         pushMatrix();
         translate(distance/2, 0);
         rotate(PI/2.0);
-        translate(-image.width/2, -image.height/2);
+        translate(-options.image.width/2, -options.image.height/2);
         fill((invertColor? 0 : 255));
         noStroke();
         rectMode(CORNER);
-        rect(0, 0, image.width, image.height);
+        rect(0, 0, options.image.width, options.image.height);
 
-        image(image, 0, 0);
+        image(options.image, 0, 0);
         popMatrix();
       }
 
-      if (showNumber) {
+      if (options.showNumber) {
 
         pushMatrix();
         translate(distance/2, 0);
@@ -132,7 +126,7 @@ class Lead {
         textAlign(CENTER, CENTER);
         textSize(text_size);
         fill((invertColor? 255 : 0)); //text color
-        text(number, 0, 0);
+        text(options.number, 0, 0);
 
         popMatrix();
       }
@@ -152,18 +146,21 @@ class Lead {
     translate(owner.x_pos, owner.y_pos);
     //translate(lines[lineNum].x_offset, 0);
     rotate(rotation);
-    translate(block_diameter/2, 0);
-
-    line( (distance - block_diameter) * (1.0-percent), 0, distance - block_diameter, 0);
+    //translate(block_diameter/2, 0);
+    
+    if(options.reverse_march){
+            line(0, 0, (distance) * (percent), 0);
+    }
+    else{
+      line( (distance) * (1.0-percent), 0, distance, 0);
+    }
 
     popMatrix();
   }
 
   public boolean isUnderBlock(Block b) {
-    float look_x = owner.x_pos + cos(rotation) * distance;
-    float look_y = owner.y_pos + sin(rotation) * distance;
-
-    return (dist(look_x, look_y, b.x_pos, b.y_pos) <= connect_snap_dist);
+    PVector look = footprintPosition();
+    return (dist(look.x, look.y, b.x_pos, b.y_pos) <= connect_snap_dist);
   }
 
   public void connect(Block block) {
@@ -178,8 +175,13 @@ class Lead {
       block.arrangeLeads(rotation);
     }
   }
+  
+  boolean showFootprint(){
+    return !occupied;
+  }
 
   public void disconnect(boolean connectAround) {
+
     occupant = null;
     occupied = false;
     distance = reg_distance;
@@ -201,7 +203,14 @@ class Lead {
   
   //returns whether or not this leads's occupant is too far away to maintain the connection
   public boolean occupantTooFar(){
-    return distance > break_distance;
+    return options.unlimitedDistance ? false : distance > break_distance;
+  }
+  
+  public PVector footprintPosition(){
+    float x = owner.x_pos + cos(rotation) * distance;
+    float y = owner.y_pos + sin(rotation) * distance;
+    return new PVector(x,y);
+    
   }
   
   public boolean canRecieveChild(){
@@ -225,5 +234,14 @@ class LineOptions {
   public float x_offset = 0;
   public color col = color(invertColor ? 255 : 0);
   public int weight = 10;
+}
+
+class LeadOptions {
+  public boolean reverse_march = false;
+  public boolean visible = true;
+  public PImage image;
+  public int number = 0;
+  public boolean showNumber = false;
+  public boolean unlimitedDistance = false;
 }
 

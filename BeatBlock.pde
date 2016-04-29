@@ -23,10 +23,21 @@ class BeatBlock extends SoundBlock {
   }
 
   void Setup() {
+    switch(sym_id){
+      case 40:
+      numBeats = 8;
+      break;
+      case 41:
+      numBeats = 4;
+      break;
+      case 42:
+      numBeats = 16;
+      break;
+    }
     canBeChained = false;
-    LoadClip();
+    LoadClips();
     buttons = new BeatButton[numBeats];
-    for (int i = 0; i<numBeats; i++) {
+    for (int i = 0; i<buttons.length; i++) {
       buttons[i] = new BeatButton(this, i, 0, 0, 0, buttonSize);
       beatString += "-";
       if(i%4 == 0) buttons[i].Trigger();
@@ -57,11 +68,12 @@ class BeatBlock extends SoundBlock {
     }
 
     drawBridges();
+    arrangeButtons(rotation);
   }
 
   public void UpdatePosition() {
     super.UpdatePosition();
-    arrangeButtons(rotation);
+    //arrangeButtons(rotation);
   }
 
 
@@ -83,7 +95,6 @@ class BeatBlock extends SoundBlock {
 
   void Die() {
     super.Die();
-    clip.close();
     for (int i = 0; i<numBeats; i++) {
       buttons[i].Destroy();
       buttons[i] = null;
@@ -95,8 +106,15 @@ class BeatBlock extends SoundBlock {
   }
 
   void arrangeButtons(float startAngle) {
-    for (int i = 0; i<numBeats; i++) {
+    for (int i = 0; i<buttons.length; i++) {
       buttons[i].Update((int)(x_pos + cos(startAngle + i * 2*PI/numBeats) * buttonDist), (int)(y_pos + sin(startAngle + i * 2*PI/numBeats) * buttonDist), i*2*PI/numBeats);
+    }
+  }
+  
+  void drawButtons(){
+    for (BeatButton butt : buttons) {
+      if(butt.isShowing)
+      butt.drawButton();
     }
   }
 
@@ -125,11 +143,16 @@ class BeatBlock extends SoundBlock {
     shape(beatShadow);
     popMatrix();
   }
+  
+  void draw(){
+    drawShadow();
+    drawButtons();
+  }
 
 
   void PlayBeat() {
-    clip.cue(millis() % (beatLength));
-    clip.play();
+    clips[activeClip].cue(millis() % (beatLength));
+    clips[activeClip].play();
     clipStartTime = millis() - (millis() % (beatLength));
   }
 

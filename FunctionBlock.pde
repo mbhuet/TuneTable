@@ -7,11 +7,17 @@ class FunctionBlock extends Block {
   int waitUntil;
 
   FunctionBlock(TuioObject tObj) {
+            canBeChained = false;
+
     Init(tObj, 1);
+
   }
 
   FunctionBlock(int x, int y, int id) {
+            canBeChained = false;
+
     Init(1, x, y, id);
+
   }
 
   void Setup() { //ARRAY INDEX OUT OF BOUNDS
@@ -23,7 +29,7 @@ class FunctionBlock extends Block {
     leadsActive = true;
     executeButt = new ExecuteButton(this, -block_diameter, 0, 0, block_diameter/4);
     stopButt = new StopButton(this, -block_diameter, 0, 0, block_diameter/4);
-    stopButt.isShowing = false;
+    stopButt.SetShowing(false);
     blockColor = colorSet[sym_id];
   }
 
@@ -48,7 +54,7 @@ class FunctionBlock extends Block {
     ArrayList<Block> activeVisited = new ArrayList<Block>();
     ArrayList<Block> inactiveVisited = new ArrayList<Block>();
     activeVisited.add(this);
-    updateLeads(dashedLineOffset, blockColor, true, activeVisited, inactiveVisited);
+    super.updateLeads(dashedLineOffset, blockColor, true, true, activeVisited, inactiveVisited);
   }
 
   void OnRemove() {
@@ -69,7 +75,6 @@ class FunctionBlock extends Block {
 
   public void Activate(PlayHead play, Block previous) {
     super.Activate(play, previous);
-    println("func activated " + millis());
     finish();
   }
 
@@ -82,13 +87,28 @@ class FunctionBlock extends Block {
   void drawShadow() {
     shapeMode(CORNER);
     fill(blockColor);
-    stroke(blockColor);
-    strokeWeight(10);
+    //stroke(blockColor);
+    //strokeWeight(10);
+    noStroke();
     pushMatrix();
     translate(x_pos, y_pos);
     rotate(rotation + 2*PI / 12);
     shape(playShadow);
     popMatrix();
+  }
+  
+  void drawButtons(){
+    if(stopButt.isShowing) stopButt.drawButton();
+    if(executeButt.isShowing) executeButt.drawButton();
+  }
+  
+  void draw(){
+    drawButtons();
+    drawShadow();
+  }
+  
+  void updateLeads(float offset, color col, boolean isActive, boolean setBlockColor, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
+    super.updateLeads(offset, col, isActive, false, activeVisited, inactiveVisited);
   }
   
   void arrangeButtons(){
@@ -104,8 +124,8 @@ class FunctionBlock extends Block {
   void execute() {
     waitingForBeat = true;
     waitUntil = millis() + (millisPerBeat * beatsPerMeasure - millis() % (millisPerBeat * beatsPerMeasure));
-    executeButt.isShowing = false;
-    stopButt.isShowing = true;
+    executeButt.SetShowing(false);
+    stopButt.SetShowing(true);
 
   }
 
@@ -117,9 +137,9 @@ class FunctionBlock extends Block {
     spawnedPlayHeads.remove(pHead);
     if (spawnedPlayHeads.size() == 0) {
       if(stopButt != null) //When the block is removed, buttons may be killed before playheads are removed through the playhead Kill Queue
-        stopButt.isShowing = false;
+        stopButt.SetShowing(false);
       if(executeButt != null)
-        executeButt.isShowing = true;
+        executeButt.SetShowing(true);
     }
   }
 
@@ -129,8 +149,8 @@ class FunctionBlock extends Block {
     }
     //spawnedPlayHeads.clear();
 
-    stopButt.isShowing = false;
-    executeButt.isShowing = true;
+    stopButt.SetShowing(false);
+    executeButt.SetShowing(true);
   }
 }
 
@@ -143,7 +163,6 @@ class ExecuteButton extends Button {
     func = funcBlock;
   }
   public void Trigger(Cursor cursor) {
-    println("play button hit");
     func.execute();
   }
   public void drawButton() {
@@ -169,9 +188,11 @@ class StopButton extends Button {
     InitButton(x_pos, y_pos, rot, rad);
     func = funcBlock;
   }
+  
   public void Trigger(Cursor cursor) {
     func.Stop();
   }
+  
   public void drawButton() {
     noStroke();
     fill(invertColor ? 255 : 0);
@@ -183,5 +204,7 @@ class StopButton extends Button {
     rect(0, 0, size, size);
     popMatrix();
   }
+  
+  
 }
 

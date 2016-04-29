@@ -48,7 +48,7 @@ abstract class Block {
     }
     UpdatePosition();
     arrangeLeads(rotation);
-
+    type = idToType.get(sym_id);
 
     blockColor = color(invertColor ? 255 : 0);
     Setup();
@@ -70,6 +70,7 @@ abstract class Block {
     for (int i = 0; i<numLeads; i++) {
       leads[i] = new Lead(this, rotation + i * 2*PI / numLeads, i);
     }
+    type = idToType.get(sym_id);
 
     blockColor = color(invertColor ? 255 : 0);
     isFake = true;
@@ -243,7 +244,7 @@ abstract class Block {
 
   public void updateNeighbors() {
 
-    if (this.canBeChained) {
+    if (this.canBeChained && !this.inChain) {
       findParents();
     }
     if (leadsActive) {
@@ -256,7 +257,7 @@ abstract class Block {
     for (int i = 0; i<numLeads; i++) {
       if (leads[i].canRecieveChild()) {
         for (Block block : allBlocks) {
-          if (!( block==this || block.parents.contains(this) || this.parents.contains(block)) && leads[i].isUnderBlock(block) && block.canBeChained) {
+          if (!( block==this || block.parents.contains(this) || this.parents.contains(block) || block.inChain) && leads[i].isUnderBlock(block) && block.canBeChained) {
             makeConnection(block, i);
             break;
           }
@@ -283,34 +284,39 @@ abstract class Block {
   }
 
   public void breakChildConnections() {
+    println(this +" start breaking child connections");
     for (int i = 0; i< numLeads; i++) {
       breakConnection(i, false);
     }
+        println(this +" finished breaking child connections");
+
   }
 
   public void breakParentConnections() {
+    println(this + " start breaking parent connections");
     Block[] parentsArray = new Block[parents.size()];
     parents.toArray(parentsArray);
     for (Block p : parentsArray) {
+      println("Parent " + p + " break connection with " + this);
       p.breakConnection(this, true);
     }
+    println(this + " finished breaking barent connections");
   }
 
-//ASSUMES next child does not need information about current child, which is not true for LoopLeads
   void makeConnection(Block b, int i) {
     leads[i].connect(b);
-    //SetChild(b, i);
   }
   
   void SetChild(Block b, int i){
+    println(this + " Set Child " + b);
     if (children[i] != null) 
       RemoveChild(i);
     children[i] = b;
     b.parents.add(this);
-    leads[i].connect(b);
   }
   
   void RemoveChild(int i){
+    println(this + " Remove Child");
     if (children[i] != null) {
       children[i].parents.remove(this);
       children[i] = null;
@@ -321,7 +327,8 @@ abstract class Block {
   Breaks connection with a child at index i
    */
   void breakConnection(int i, boolean connectAround) {
-      leads[i].disconnect(connectAround);
+    println(this + " breakConnection("+i+"," +connectAround+")");
+    leads[i].disconnect(connectAround);
   }
 
   /*
@@ -339,6 +346,7 @@ abstract class Block {
   public void arrangeLeads(float parentLeadRot) {
 
     if (parents.size() > 1) return;
+    if(leads.length == 0) return;
     float leadSeparation = 2*PI / leads.length;
     float startAngle = PI + parentLeadRot + leadSeparation / 2;
 
@@ -377,14 +385,14 @@ abstract class Block {
   /*
   Updates the look of this block's lead depending on whether or not it's in an active path from a Start block
    */
-  void updateLeads(float offset, color col, boolean isActive, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
+  void updateLeads(float offset, color col, boolean isActive, boolean setBlockColor, ArrayList<Block> activeVisited, ArrayList<Block> inactiveVisited) {
     Block origin = activeVisited.get(0);
     int originId = origin.sym_id;
     this.inChain = true;
     colorMode(HSB);
 
     color dulledColor = color(hue(col), saturation(col)/3, 150);
-    blockColor = (isActive? col : dulledColor);
+    if(setBlockColor) blockColor = (isActive? col : dulledColor);
 
     for (int i = 0; i< numLeads; i++) {     
       if (isActive && childIsSuccessor(i)) {
@@ -396,7 +404,7 @@ abstract class Block {
 
         if (children[i] != null && !activeVisited.contains(children[i])) {
           activeVisited.add(children[i]);
-          children[i].updateLeads(offset, col, true, activeVisited, inactiveVisited);
+          children[i].updateLeads(offset, col, true, setBlockColor, activeVisited, inactiveVisited);
         }
       } else {
         leads[i].lines[originId].dashed = false;
@@ -406,7 +414,7 @@ abstract class Block {
 
         if (children[i] != null && !activeVisited.contains(children[i]) && !inactiveVisited.contains(children[i])) {
           inactiveVisited.add(children[i]);
-          children[i].updateLeads(offset, col, false, activeVisited, inactiveVisited);
+          children[i].updateLeads(offset, col, false, setBlockColor, activeVisited, inactiveVisited);
         }
       }
     }
