@@ -28,9 +28,9 @@ abstract class SoundBlock extends Block {
 
 
   void LoadClips() {
-    int clips_id = sym_id;
-    if (!clipDict.containsKey(sym_id)) {
-      println("No clip found for " + sym_id + ": Possible typo");
+    int clips_id = sym_id < 40 ? sym_id%6+10 : sym_id;
+    if (!clipDict.containsKey(clips_id)) {
+      println("No clip found for " + clips_id + ": Possible typo");
       clips_id = 10;
     }
     String[] fileNames =  clipDict.get(clips_id);
@@ -68,16 +68,13 @@ abstract class SoundBlock extends Block {
     clips[activeClip].cue(millis() % millisPerBeat);
     clips[activeClip].play();
     startTime = millis();
-    //println(clip.isPlaying() +" play " + clip.length() + " at millis " + millis());
   }
 
   void Stop() {
-    //println("stop " + clip.position() + " at millis " + millis());
     playTimer = 0;
     isPlaying = false;
     clips[activeClip].rewind();
     clips[activeClip].pause();
-    //println("rewind " + clip.position() + " at millis " + millis());
   }
 
   void Die() {

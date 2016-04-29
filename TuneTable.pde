@@ -28,11 +28,12 @@ boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = false;
 boolean simulateBlocks = false;
+boolean paused = false;
 
 // these are some helper variables which are used
 // to create scalable graphical feedback
 static float cursor_size = 15;
-static int block_diameter = 120;
+static int block_diameter = 130;
 int text_size;
 
 // used for beat calculations
@@ -93,7 +94,7 @@ void setup()
   playShadow = polygon(block_diameter * .62, 6);
   playShadow.disableStyle();
   ellipseMode(CENTER);
-  circleShadow = createShape(ELLIPSE, 0, 0, block_diameter + 10, block_diameter +10);
+  circleShadow = createShape(ELLIPSE, 0, 0, block_diameter, block_diameter);
   circleShadow.disableStyle();
 
 
@@ -172,9 +173,11 @@ void draw()
 
 
   textFont(font, 18);
-
   killRemoved();
+  
+  if(!paused){
   TuioUpdate();
+  }
 
 
   for (Cursor c : cursors) {
@@ -253,6 +256,9 @@ void keyPressed() {
       lock = lock_reg;
       unlock = unlock_reg;
     }
+  }
+  if (key == 'p') {
+    paused = !paused;
   }
 }
 

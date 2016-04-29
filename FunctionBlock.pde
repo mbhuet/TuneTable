@@ -7,11 +7,17 @@ class FunctionBlock extends Block {
   int waitUntil;
 
   FunctionBlock(TuioObject tObj) {
+            canBeChained = false;
+
     Init(tObj, 1);
+
   }
 
   FunctionBlock(int x, int y, int id) {
+            canBeChained = false;
+
     Init(1, x, y, id);
+
   }
 
   void Setup() { //ARRAY INDEX OUT OF BOUNDS
@@ -81,8 +87,9 @@ class FunctionBlock extends Block {
   void drawShadow() {
     shapeMode(CORNER);
     fill(blockColor);
-    stroke(blockColor);
-    strokeWeight(10);
+    //stroke(blockColor);
+    //strokeWeight(10);
+    noStroke();
     pushMatrix();
     translate(x_pos, y_pos);
     rotate(rotation + 2*PI / 12);

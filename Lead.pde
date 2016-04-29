@@ -149,7 +149,6 @@ class Lead {
     //translate(block_diameter/2, 0);
     
     if(options.reverse_march){
-      println("reverse march highlight");
             line(0, 0, (distance) * (percent), 0);
     }
     else{
@@ -182,8 +181,6 @@ class Lead {
   }
 
   public void disconnect(boolean connectAround) {
-        println("LEAD DISCONNECT");
-        println(owner);
 
     occupant = null;
     occupied = false;

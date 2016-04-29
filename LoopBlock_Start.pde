@@ -94,7 +94,6 @@ class StartLoopBlock extends Block {
      float dist = dist(x_pos, y_pos, midpoint.x, midpoint.y);
           
      float avg_radius = min(block_diameter * 2, dist);
-     //println(loopRadius + " " + avg_radius);
      //loopRadius = avg_radius;
      
      
@@ -102,7 +101,6 @@ class StartLoopBlock extends Block {
      
      loopCenter = convertFromPolar(new PVector(x_pos, y_pos), leads[0].rotation, loopRadius);
      //loopCenter = testCenter;
-    //println(testCenter);
   }
 
   //Find the average distance of every block in the loop from the loop center, sets loop radius to that
@@ -115,7 +113,6 @@ class StartLoopBlock extends Block {
     for (Block block : blocksInLoop) {
       total_dist += dist(block.x_pos, block.y_pos, loopCenter.x, loopCenter.y);
     }
-    //println(blocksInLoop.size());
     loopRadius = min(total_dist/blocksInLoop.size(), block_diameter * 2);
   }
 

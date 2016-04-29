@@ -20,7 +20,6 @@ class ClipBlock extends SoundBlock {
     arrangeButtons(rotation);
   }
   void Update() {
-    //println("begin clip update " + this + " playHead " + (playHead == null ? "null" : playHead.toString()));
     super.Update();
     leadsActive = inChain;
 
@@ -45,7 +44,6 @@ class ClipBlock extends SoundBlock {
       }
     }
     arrangeButtons(rotation);
-    //println("end clip update " + this + " playHead " + (playHead == null ? "null" : playHead.toString()));
     
   }
 
@@ -53,7 +51,6 @@ class ClipBlock extends SoundBlock {
   public void Activate(PlayHead play, Block previous) {
     super.Activate(play, previous);
 
-    //println("clip activate playHead = " + ((playHead == null)? "null" : playHead.toString()) );
   }
 
   public int[] getSuccessors() {
@@ -99,7 +96,6 @@ class ClipBlock extends SoundBlock {
       buttons[i] = null;
     }
     if (playHead != null) {  
-      //println("block " + this + " has been removed, killing its playhead " + playHead);
       playHead.dead = true;
     }
   }
@@ -115,13 +111,10 @@ class ClipButton extends Button {
     block = b;
   }
   public void Trigger(Cursor cursor) {
-    println("TRRREIIIIBIGGGERRR");
     block.SwitchClip(index);
   }
   
   public void Trigger(){
-        println("TRRREIIIIBIGGGERRR");
-
     block.SwitchClip(index);
   }
   
@@ -158,7 +151,7 @@ class ClipButton extends Button {
     noFill();
     stroke(strokeCol);
     translate(block.x_pos, block.y_pos);
-    arc(0,0,block_diameter+10, block_diameter +10, rotation - PI/7, rotation + PI/7);
+    //arc(0,0,block_diameter+10, block_diameter +10, rotation - PI/7, rotation + PI/7);
     popMatrix();
   }
 }

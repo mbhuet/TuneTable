@@ -1,10 +1,12 @@
 color[] colorSet = new color[]
 {
-  color(52, 152, 219), //emerald green
+  color(155, 89, 182), //amethyst
   color(231, 76, 60), //alizarin red
-  color(46, 204, 113), //peter river blue
+  color(46, 204, 113), //emerald green
+  color(52, 152, 219), //peter river blue
   color(230, 126, 34), //carrot orange
-  color(155, 89, 182) //amethyst
+
+
 };
 
 
@@ -62,6 +64,19 @@ void SetupClipDict() {
     "eightbit/6_eight-bit Atari Lead-003", 
     "eightbit/6_eight-bit Atari Pad-004", 
     "eightbit/6_eight-bit Atari Synth-003"
+  });
+  
+    clipDict.put(40, new String[] {
+          "eightbit/MakeBeat/eight-bit Analog Drum Loop-012", 
+  });
+  
+    clipDict.put(41, new String[] {
+          //"eightbit/MakeBeat/eight-bit Atari SFX-010", 
+          "kick_export",
+  });
+  
+    clipDict.put(42, new String[] {
+              "eightbit/MakeBeat/eight-bit Video Game Loop-010", 
   });
   
 }
@@ -133,8 +148,7 @@ void SetupIdToType() {
 
 
   //LOOPS 61, 62
-  idToType.put(121, BlockType.START_LOOP);
-  idToType.put(61, BlockType.END_LOOP);
+  idToType.put(61, BlockType.START_LOOP);
 
 
   //BOOLEANS 100-109

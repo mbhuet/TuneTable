@@ -18,8 +18,21 @@ class CallBlock extends Block {
 
   void Setup() {
     endLead = new EndLead(this);
+    //functionId = sym_id - 5; this is how it should be, but we messed up the icons
+    //this switch statement is a quick fix 
     functionId = 0;
-    
+    switch(sym_id) {
+    case 8: 
+      functionId = 3;
+      break;
+    case 7:
+      functionId = 2;
+      break;
+    case 5:
+      functionId = 1;
+      break;
+    }
+
     leads[1].options.unlimitedDistance = true;
     leads[1].options.visible = false;
     endLead.options.visible = false;
@@ -84,7 +97,7 @@ class CallBlock extends Block {
 
     endLead.draw();
   }
- 
+
 
 
 

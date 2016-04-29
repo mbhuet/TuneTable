@@ -93,7 +93,6 @@ class PlayHead {
 
     if (!hasTravelled) {
       dead = true;
-      //println("playhead " + this + " dead");
     }
   }
 
@@ -141,7 +140,6 @@ class PlayHead {
   void addLead(Lead lead) {
     path.offerFirst(lead);
     pathDist += lead.distance;// - block_diameter;
-    println("Add Lead pathDist = " + pathDist);
   }
 
   public void addFunctionCall(CallBlock call) {
@@ -153,7 +151,6 @@ class PlayHead {
   }
 
   void Die() {
-    //println("PlayHead " + this + " Die");
     if (activeBlock instanceof SoundBlock) {
       ((SoundBlock)activeBlock).Stop();
     }
