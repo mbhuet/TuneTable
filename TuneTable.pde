@@ -23,8 +23,8 @@ Delay myDelay;
 
 boolean debug = true;
 boolean invertColor = true;
-boolean showFPS = true;
-boolean hoverDebug = true;
+boolean showFPS = false;
+boolean hoverDebug = false;
 boolean fullscreen = true;
 boolean analyticsOn = false;
 boolean simulateBlocks = false;

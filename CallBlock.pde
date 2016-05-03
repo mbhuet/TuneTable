@@ -67,10 +67,15 @@ class CallBlock extends Block {
   }
 
   void CheckForFunction() {
+    //println((function == null));
     if (function!= null && !funcMap.containsKey(functionId)) {
+          println("CheckForFunction func removed" );
+
       function = null;
       leads[1].disconnect(false);
     } else if (function == null && funcMap.containsKey(functionId)) {
+                println("CheckForFunction func found" );
+
       function = funcMap.get(functionId);
       leads[1].connect(function);
     }

@@ -144,7 +144,19 @@ class ClipButton extends Button {
     translate(0,-size/1.5);
     textSize(text_size/2);
     fill(strokeCol);
-    text(index, 0,0);
+    String label = "";
+    switch(index){
+      case 0:
+      label = "A";
+      break;
+      case 1:
+      label = "B";
+      break;
+      case 2:
+      label = "C";
+      break;
+    }
+    text(label, 0,0);
     popMatrix();
     
     pushMatrix();

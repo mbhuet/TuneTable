@@ -15,10 +15,14 @@ class BeatBlock extends SoundBlock {
   int numBeats = 16;
 
   BeatBlock(TuioObject tObj) {
+        canBeChained = false;
+
     Init(tObj, 0);
   }
 
   BeatBlock(int x, int y) {
+        canBeChained = false;
+
     Init(0, x, y, 62);
   }
 

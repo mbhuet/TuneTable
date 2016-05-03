@@ -42,6 +42,7 @@ abstract class SoundBlock extends Block {
 
 
   void LoadClip(int i, String fileName) {
+    //println("loadClip " + fileName);
     clips[i] = minim.loadFile("clips/"+fileName+".wav");
     clips[i].rewind();
   }

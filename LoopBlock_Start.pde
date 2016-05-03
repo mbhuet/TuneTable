@@ -38,6 +38,8 @@ class StartLoopBlock extends Block {
     leads[0] = headLoopLead;
     updateCountLead();
   }
+  
+  
   void Update() {
     super.Update();
     leadsActive =  inChain;
@@ -137,6 +139,11 @@ class StartLoopBlock extends Block {
       1
     };
   }
+  
+  
+  public void arrangeLeads(float parentLeadRot) {
+  }
+  
 
   void DecrementCount(boolean cycle) {
     count--;

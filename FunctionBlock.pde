@@ -8,16 +8,12 @@ class FunctionBlock extends Block {
 
   FunctionBlock(TuioObject tObj) {
             canBeChained = false;
-
     Init(tObj, 1);
-
   }
 
   FunctionBlock(int x, int y, int id) {
             canBeChained = false;
-
     Init(1, x, y, id);
-
   }
 
   void Setup() { //ARRAY INDEX OUT OF BOUNDS
