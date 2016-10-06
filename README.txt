@@ -4,7 +4,7 @@ SOFTWARE REQUIREMENTS
 ------------
 
 reacTIVision 1.5 (http://reactivision.sourceforge.net/)
-Processing 2.2.1 (https://processing.org/download/?processing)
+Processing 3.x (https://processing.org/download/?processing)
 TUIO Library for Processing (http://www.tuio.org/?processing)
 Minim Library for Processing (http://code.compartmental.net/tools/minim/)
 CL-Eye Platform Driver (https://codelaboratories.com/products/eye/)
