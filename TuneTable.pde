@@ -27,7 +27,7 @@ boolean showFPS = true;
 boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = false;
-boolean simulateBlocks = false;
+boolean simulateBlocks = true;
 boolean paused = false;
 
 // these are some helper variables which are used
@@ -74,10 +74,15 @@ ClipBlock testClip;
 
 boolean isInitiated = false;
 
+void settings()
+{
+  size(displayWidth, displayHeight, P2D);
+}
+
 void setup()
 {
   smooth(0);
-  size(displayWidth, displayHeight, P2D);
+  //size(displayWidth, displayHeight, P2D);
 
   noStroke();
   fill(0);
@@ -232,9 +237,9 @@ void draw()
 }
 
 
-boolean sketchFullScreen() {
-  return (fullscreen);
-}
+//boolean sketchFullScreen() {
+//  return (fullscreen);
+//}
 
 /*
   Space can be used to play all Start blocks
@@ -332,4 +337,3 @@ void cornerBeatGlow() {
   ellipse(0, height, glowRadius, glowRadius);
   ellipse(width, height, glowRadius, glowRadius);
 }
-
