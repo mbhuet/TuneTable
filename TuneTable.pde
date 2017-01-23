@@ -23,11 +23,11 @@ Delay myDelay;
 
 boolean debug = true;
 boolean invertColor = true;
-boolean showFPS = true;
+boolean showFPS = false;
 boolean hoverDebug = true;
 boolean fullscreen = true;
 boolean analyticsOn = false;
-boolean simulateBlocks = true;
+boolean simulateBlocks = false;
 boolean paused = false;
 
 // these are some helper variables which are used
@@ -79,10 +79,14 @@ void settings()
   size(displayWidth, displayHeight, P2D);
 }
 
+boolean sketchFullScreen() {
+  return true;
+}
+
 void setup()
 {
   smooth(0);
-  //size(displayWidth, displayHeight, P2D);
+  size(displayWidth, displayHeight, P2D);
 
   noStroke();
   fill(0);
